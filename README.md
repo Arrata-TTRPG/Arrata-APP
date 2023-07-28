@@ -8,10 +8,15 @@ The application itself is written in Rust and therefore can be compiled for and 
 
 ### Prerequisites
 
-- Any of these operating systems:
+- For these operating systems:
   - Windows 10/11
+    - [Webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/): This should be installed if you have Microsoft Edge.
   - Linux
+    - WebkitGtk
+      - `sudo apt install libwebkit2gtk-4.0-dev libgtk-3-dev libappindicator3-dev`
+      - on Debian/bullseye use: `sudo apt install libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev`
   - Mac OS
+    - No needed dependencies
 
 ### Installing
 

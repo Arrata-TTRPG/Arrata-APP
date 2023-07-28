@@ -1,3 +1,13 @@
+use dioxus::prelude::*;
+
 fn main() {
-    println!("Hello, Arrata!");
+    dioxus_desktop::launch(app);
+}
+
+fn app(cx: Scope) -> Element {
+    cx.render(rsx! {
+        div {
+            "Hello, Arrata!"
+        }
+    })
 }
