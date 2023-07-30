@@ -10,7 +10,13 @@ edition = "2021"
 dioxus = "0.3.2"
 dioxus-desktop = "0.3.0"
 dioxus-web = "0.3.2"
+serde = "1.0.178"
+serde_json = "1.0.104"
 tokio = "1.29.1"
+
+[[bin]]
+name = "Arrata-Character-Sheet-Manager"
+path = "src/main.rs"
 
 [profile.release]
 opt-level = 'z'

@@ -26,17 +26,9 @@ TODO!
 
 To compile locally, you will need the following prerequisites:
 
-- Rust 1.70.0+
+- Rust 1.72.0+
 
-Install cargo-bundle using:
-
-```cargo install cargo-bundle```
-
-Create the application using the following command in the `Arrata-App` directory:
-
-`cargo bundle --release`
-
-This will take a while to download and compile each dependency for the application, but at the end the application will be found under ``
+From the `Arrata-APP` directory, run `cargo build --release`. A new binary will be generated at `Arrata-APP/target/release/Arrata-Character-Sheet-Manager`.
 
 ## Usage
 

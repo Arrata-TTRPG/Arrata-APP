@@ -65,6 +65,8 @@ dependencies = [
  "dioxus",
  "dioxus-desktop",
  "dioxus-web",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 
