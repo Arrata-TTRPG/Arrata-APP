@@ -23,11 +23,20 @@ The application itself is written in Rust and therefore can be compiled for and 
 TODO!
 
 ### Compiling Locally
+
 To compile locally, you will need the following prerequisites:
 
 - Rust 1.70.0+
 
-TODO!
+Install cargo-bundle using:
+
+```cargo install cargo-bundle```
+
+Create the application using the following command in the `Arrata-App` directory:
+
+`cargo bundle --release`
+
+This will take a while to download and compile each dependency for the application, but at the end the application will be found under ``
 
 ## Usage
 
@@ -38,7 +47,7 @@ TODO!
 ### Main features
 
 - [ ] Create a functioning application
-- [ ] Establish character sheet paradigm - (*.arrat)
+- [ ] Establish character sheet paradigm - (`*.arrata`)
 - [ ] Implement the character sheet
   - [ ] Name/Stock/Miscellaneous
   - [ ] Stats
@@ -52,3 +61,4 @@ TODO!
 
 - [ ] Add dice-rolling functionality
   - [ ] Discord integration(?)
+- [ ] Allow exporting into the printable format

@@ -1,0 +1,25 @@
+﻿name: Create new release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})">>$GITHUB_ENV
+        id: extract_branch
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          path: ${{env.BRANCH}}
+
+      - name: Install cargo dependencies
+        run: |
+          cargo install cargo-bundle
+          
