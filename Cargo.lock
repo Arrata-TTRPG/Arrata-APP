@@ -64,7 +64,6 @@ version = "0.1.0"
 dependencies = [
  "dioxus",
  "dioxus-desktop",
- "dioxus-web",
  "serde",
  "serde_json",
  "tokio",
@@ -387,16 +386,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "console_error_panic_hook"
-version = "0.1.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a06aeb73f470f66dcdbf7223caeebb85984942f22f1adb2a088cf9668146bbbc"
-dependencies = [
- "cfg-if",
- "wasm-bindgen",
-]
-
-[[package]]
 name = "convert_case"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -689,8 +678,6 @@ dependencies = [
  "serde",
  "serde-value",
  "serde_repr",
- "wasm-bindgen",
- "web-sys",
 ]
 
 [[package]]
@@ -698,13 +685,6 @@ name = "dioxus-interpreter-js"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1d6a3e878e9623d948ebe14cec62e98af4e5c897f65ae2d27663b209f4d382e2"
-dependencies = [
- "js-sys",
- "sledgehammer_bindgen",
- "sledgehammer_utils",
- "wasm-bindgen",
- "web-sys",
-]
 
 [[package]]
 name = "dioxus-rsx"
@@ -732,34 +712,6 @@ dependencies = [
  "quote",
  "serde",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "dioxus-web"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e7609e4635a0061dc2b0c01fd8f1a9dd3cb27ee786feed2e5a5cedc1110f1d44"
-dependencies = [
- "anyhow",
- "async-trait",
- "console_error_panic_hook",
- "dioxus-core",
- "dioxus-html",
- "dioxus-interpreter-js",
- "futures-channel",
- "futures-util",
- "gloo-timers",
- "js-sys",
- "log",
- "once_cell",
- "rustc-hash",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "smallstr",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
 ]
 
 [[package]]
@@ -1254,18 +1206,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gloo-timers"
-version = "0.2.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9b995a66bb87bebce9a0f4a95aed01daca4872c050bfcb21653361c03bc35e5c"
-dependencies = [
- "futures-channel",
- "futures-core",
- "js-sys",
- "wasm-bindgen",
-]
-
-[[package]]
 name = "gobject-sys"
 version = "0.15.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1720,15 +1660,6 @@ name = "longest-increasing-subsequence"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b3bd0dd2cd90571056fdb71f6275fada10131182f84899f4b2a916e565d81d86"
-
-[[package]]
-name = "lru"
-version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6e8aaa3f231bb4bd57b84b2d5dc3ae7f350265df8aa96492e0bc394a1571909"
-dependencies = [
- "hashbrown 0.12.3",
-]
 
 [[package]]
 name = "mac"
@@ -2435,17 +2366,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "serde-wasm-bindgen"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e3b4c031cd0d9014307d82b8abf653c0290fbdaeb4c02d00c63cf52f728628bf"
-dependencies = [
- "js-sys",
- "serde",
- "wasm-bindgen",
-]
-
-[[package]]
 name = "serde_derive"
 version = "1.0.178"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2530,41 +2450,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "sledgehammer_bindgen"
-version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0bc2cf26c12673eee8674b19d56cec04e9b815704c71298eafac61f131f99d7"
-dependencies = [
- "quote",
- "syn 2.0.27",
-]
-
-[[package]]
-name = "sledgehammer_utils"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "095fd5332b21763203248070746b86b98c6167fc620af73d4cb2bc2d7d9cd815"
-dependencies = [
- "lru",
- "once_cell",
- "rustc-hash",
- "ux",
-]
-
-[[package]]
 name = "smallbox"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4679d6eef28b85020158619fc09769de89e90886c5de7157587d87cb72648faa"
-
-[[package]]
-name = "smallstr"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e922794d168678729ffc7e07182721a14219c65814e66e91b839a272fe5ae4f"
-dependencies = [
- "smallvec",
-]
 
 [[package]]
 name = "smallvec"
@@ -2947,12 +2836,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ux"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2cb3ff47e36907a6267572c1e398ff32ef78ac5131de8aa272e53846592c207e"
-
-[[package]]
 name = "version-compare"
 version = "0.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3027,18 +2910,6 @@ dependencies = [
  "quote",
  "syn 2.0.27",
  "wasm-bindgen-shared",
-]
-
-[[package]]
-name = "wasm-bindgen-futures"
-version = "0.4.37"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c02dbc21516f9f1f04f187958890d7e6026df8d16540b7ad9492bc34a67cea03"
-dependencies = [
- "cfg-if",
- "js-sys",
- "wasm-bindgen",
- "web-sys",
 ]
 
 [[package]]

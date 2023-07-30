@@ -4,12 +4,14 @@ version = "0.1.0"
 description = "An application for handling Arrata character sheets."
 edition = "2021"
 
+[package.metadata.bundle]
+name = "ArrataCharacterSheetManager"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 dioxus = "0.3.2"
 dioxus-desktop = "0.3.0"
-dioxus-web = "0.3.2"
 serde = "1.0.178"
 serde_json = "1.0.104"
 tokio = "1.29.1"
