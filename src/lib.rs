@@ -7,6 +7,7 @@ use dioxus::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "PascalCase")]
 struct Character {
     pub name: String,
     pub stock: String,
@@ -26,14 +27,13 @@ fn write_to_file(character: Character) {
 
     let mut writer = BufWriter::new(f);
 
-    let character_serde = serde_json::to_string(&character).unwrap();
+    let character_serde = serde_json::to_string_pretty(&character).unwrap();
 
-    writer.write(character_serde.as_bytes()).unwrap();
+    writer.write_all(character_serde.as_bytes()).unwrap();
 }
 
 pub fn app(cx: Scope) -> Element {
-
-    let character = use_state(cx, || Character::new());
+    let character = use_state(cx, Character::new);
 
     cx.render(rsx! {
         input {
