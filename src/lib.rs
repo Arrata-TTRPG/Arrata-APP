@@ -13,6 +13,9 @@ struct Character {
     pub stock: String,
     pub stats: Vec<Stat>,
     pub skills: Vec<Stat>,
+    pub quirks: Vec<Quirk>,
+    pub argos: String,
+    pub inventory: Vec<Item>,
 }
 
 impl Character {
@@ -22,6 +25,9 @@ impl Character {
             stock: "Human".to_string(),
             stats: Vec::new(),
             skills: Vec::new(),
+            quirks: Vec::new(),
+            argos: String::new(),
+            inventory: Vec::new(),
         }
     }
 }
@@ -62,6 +68,32 @@ impl std::fmt::Display for Quality {
             Quality::Superb => write!(f, "Superb"),
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "PascalCase")]
+struct Quirk {
+    name: String,
+    category: QuirkCategory,
+    boons: Option<Vec<String>>,
+    flaws: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "PascalCase")]
+enum QuirkCategory {
+    Ethos,
+    Pathos,
+    Logos,
+    Uncategorized,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "PascalCase")]
+struct Item {
+    name: String,
+    quantity: u64,
+    description: Option<String>,
 }
 
 fn write_to_file(character: Character) {
