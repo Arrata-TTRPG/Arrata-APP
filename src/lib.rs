@@ -3,7 +3,8 @@ use std::{
     io::{BufWriter, Write},
 };
 
-use dioxus::prelude::*;
+use dioxus::{prelude::*, html::table};
+use native_dialog::{FileDialog, MessageDialog, MessageType};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -97,7 +98,16 @@ struct Item {
 }
 
 fn write_to_file(character: Character) {
-    let f = File::create("char.arrata").unwrap();
+    let path = FileDialog::new().show_open_single_dir().unwrap();
+
+    let path = match path {
+        Some(path) => path,
+        None => return,
+    };
+
+    let suffix = character.name.clone() + ".arrata";
+
+    let f = File::create(path.to_str().unwrap().to_owned() + "/" + &suffix).unwrap();
 
     let mut writer = BufWriter::new(f);
 
@@ -106,10 +116,21 @@ fn write_to_file(character: Character) {
     writer.write_all(character_serde.as_bytes()).unwrap();
 }
 
+fn read_from_file() -> Character {
+    todo!()
+}
+
 pub fn app(cx: Scope) -> Element {
     let character = use_state(cx, Character::new);
-    
+
     cx.render(rsx! {
+        table {
+
+        }
+        div { 
+            "ARRATA"
+        }
+
         div {
             input {
                 value: "{character.name}",
@@ -125,7 +146,7 @@ pub fn app(cx: Scope) -> Element {
             }
         },
 
-        b { "Stats" },
+        b { "Stats " },
 
         button {
             onclick: move |_| character.make_mut().stats.push(Stat::new()),
@@ -134,7 +155,7 @@ pub fn app(cx: Scope) -> Element {
         
         for (i,stat) in character.get().stats.iter().enumerate() {
             rsx!(
-               div {
+                div {
                     input {
                         value: "{stat.name.clone().unwrap()}",
                         oninput: move |evt| {
@@ -153,7 +174,7 @@ pub fn app(cx: Scope) -> Element {
                             });
                         }
                     },
-                    select {
+                    select { 
                         onchange: move |evt| {
                             character.with_mut(|character| {
                                 character.stats[i].quality = Some(match evt.value.parse::<u64>().unwrap() {
@@ -183,19 +204,25 @@ pub fn app(cx: Scope) -> Element {
                         value: stat.checks.clone().unwrap_or(0) as f64,
                         oninput: move |evt| {
                             character.with_mut(|character| {
-                            character.stats[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
+                                character.stats[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
                             });
                         }
                     },
-                }
-            )
+                 }
+             )
         }
 
         div {
             button {
                 onclick: move |_| write_to_file(character.get().clone()),
                 "Save Character"
-            }
+            },
+            button {
+                onclick: move |_| { 
+                    character.set(read_from_file());
+                },
+                "Load Character"
+            },
         }
     })
 }

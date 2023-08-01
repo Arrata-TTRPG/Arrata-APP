@@ -12,9 +12,13 @@ name = "ArrataCharacterSheetManager"
 [dependencies]
 dioxus = "0.3.2"
 dioxus-desktop = "0.3.0"
-serde = "1.0.178"
+serde = "1.0.180"
 serde_json = "1.0.104"
 tokio = "1.29.1"
+
+[dependencies.native-dialog]
+native-version = "0.6.4"
+features = ["windows_dpi_awareness", "windows_visual_styles"]
 
 [[bin]]
 name = "Arrata-Character-Sheet-Manager"
