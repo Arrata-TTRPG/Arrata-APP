@@ -1,3 +1,6 @@
+// lib.rs
+// A file containing the main components of the Arrata Character Manager.
+
 mod character;
 
 use character::*;
@@ -8,15 +11,21 @@ pub fn app(cx: Scope) -> Element {
     let character = use_state(cx, Character::new);
 
     cx.render(rsx! {
-        figure {
-            class: "md:flex bg-slate-100 rounded-xl p-8 md:p-0 dark:bg-slate-800",
-            blockquote {
-                p {
-                    class: "text-lg font-medium",
-                    "Wow very Arrata!"
-                }
+
+        div {
+            class: "bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300",
+
+            // Arrata logo
+            img {
+                class: "w-24 h-24 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto",
+                src: "assets/rat.png",
+                alt: "",
+                width: 315,
+                height: 315,
             }
         }
+
+        
 
         div {
             "ARRATA"

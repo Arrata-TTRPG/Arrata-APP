@@ -15,6 +15,7 @@ dioxus-desktop = "0.3.0"
 serde = "1.0.180"
 serde_json = "1.0.104"
 tokio = "1.29.1"
+dioxus-free-icons = { version = "0.7.0", features = ["font-awesome-brands"] }
 
 [dependencies.native-dialog]
 native-version = "0.6.4"
