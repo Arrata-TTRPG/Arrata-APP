@@ -1,133 +1,24 @@
-use std::{
-    fs::File,
-    io::{BufWriter, Write},
-};
+mod character;
 
-use dioxus::{prelude::*, html::table};
-use native_dialog::{FileDialog, MessageDialog, MessageType};
-use serde::{Deserialize, Serialize};
+use character::*;
+use dioxus::prelude::*;
 
-#[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "PascalCase")]
-struct Character {
-    pub name: String,
-    pub stock: String,
-    pub stats: Vec<Stat>,
-    pub skills: Vec<Stat>,
-    pub quirks: Vec<Quirk>,
-    pub argos: String,
-    pub inventory: Vec<Item>,
-}
-
-impl Character {
-    pub fn new() -> Character {
-        Character {
-            name: "John Arrata".to_string(),
-            stock: "Human".to_string(),
-            stats: Vec::new(),
-            skills: Vec::new(),
-            quirks: Vec::new(),
-            argos: String::new(),
-            inventory: Vec::new(),
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Clone, Props, PartialEq)]
-#[serde(rename_all = "PascalCase")]
-struct Stat {
-    name: Option<String>,
-    quality: Option<Quality>,
-    quantity: Option<u64>,
-    checks: Option<u64>,
-}
-
-impl Stat {
-    pub fn new() -> Stat {
-        Stat {
-            name: Some("Stat".to_string()),
-            quality: Some(Quality::Basic),
-            quantity: Some(0),
-            checks: Some(0),
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
-#[serde(rename_all = "PascalCase")]
-enum Quality {
-    Basic,
-    Adept,
-    Superb,
-}
-
-impl std::fmt::Display for Quality {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Quality::Basic => write!(f, "Basic"),
-            Quality::Adept => write!(f, "Adept"),
-            Quality::Superb => write!(f, "Superb"),
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "PascalCase")]
-struct Quirk {
-    name: String,
-    category: QuirkCategory,
-    boons: Option<Vec<String>>,
-    flaws: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "PascalCase")]
-enum QuirkCategory {
-    Ethos,
-    Pathos,
-    Logos,
-    Uncategorized,
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-#[serde(rename_all = "PascalCase")]
-struct Item {
-    name: String,
-    quantity: u64,
-    description: Option<String>,
-}
-
-fn write_to_file(character: Character) {
-    let path = FileDialog::new().show_open_single_dir().unwrap();
-
-    let path = match path {
-        Some(path) => path,
-        None => return,
-    };
-
-    let suffix = character.name.clone() + ".arrata";
-
-    let f = File::create(path.to_str().unwrap().to_owned() + "/" + &suffix).unwrap();
-
-    let mut writer = BufWriter::new(f);
-
-    let character_serde = serde_json::to_string_pretty(&character).unwrap();
-
-    writer.write_all(character_serde.as_bytes()).unwrap();
-}
-
-fn read_from_file() -> Character {
-    todo!()
-}
-
+/// The main application.
 pub fn app(cx: Scope) -> Element {
     let character = use_state(cx, Character::new);
 
     cx.render(rsx! {
-        table {
-
+        figure {
+            class: "md:flex bg-slate-100 rounded-xl p-8 md:p-0 dark:bg-slate-800",
+            blockquote {
+                p {
+                    class: "text-lg font-medium",
+                    "Wow very Arrata!"
+                }
+            }
         }
-        div { 
+
+        div {
             "ARRATA"
         }
 
@@ -152,37 +43,37 @@ pub fn app(cx: Scope) -> Element {
             onclick: move |_| character.make_mut().stats.push(Stat::new()),
             "Add Stat",
         },
-        
+
         for (i,stat) in character.get().stats.iter().enumerate() {
             rsx!(
                 div {
                     input {
-                        value: "{stat.name.clone().unwrap()}",
+                        value: "{stat.name.clone()}",
                         oninput: move |evt| {
                         character.with_mut(|character| {
-                            character.stats[i].name = Some(evt.value.to_string());
+                            character.stats[i].name = evt.value.to_string();
                         });
                         }
                     },
                     ":", 
                     input {
                         r#type:"number",
-                        value: stat.quantity.clone().unwrap_or(0) as f64,
+                        value: stat.quantity as f64,
                         oninput: move |evt| {
                             character.with_mut(|character| {
-                            character.stats[i].quantity = Some(evt.value.parse::<u64>().unwrap_or(0));
+                            character.stats[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
                             });
                         }
                     },
-                    select { 
+                    select {
                         onchange: move |evt| {
                             character.with_mut(|character| {
-                                character.stats[i].quality = Some(match evt.value.parse::<u64>().unwrap() {
+                                character.stats[i].quality = match evt.value.parse::<u64>().unwrap() {
                                     0 => Quality::Basic,
                                     1 => Quality::Adept,
                                     2 => Quality::Superb,
                                     _ => Quality::Basic,
-                                })
+                                }
                             });
                         },
                         option {
@@ -201,7 +92,7 @@ pub fn app(cx: Scope) -> Element {
                     " Checks:", 
                     input {
                         r#type:"number",
-                        value: stat.checks.clone().unwrap_or(0) as f64,
+                        value: stat.checks.unwrap_or(0) as f64,
                         oninput: move |evt| {
                             character.with_mut(|character| {
                                 character.stats[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
@@ -218,7 +109,7 @@ pub fn app(cx: Scope) -> Element {
                 "Save Character"
             },
             button {
-                onclick: move |_| { 
+                onclick: move |_| {
                     character.set(read_from_file());
                 },
                 "Load Character"

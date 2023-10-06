@@ -5,7 +5,7 @@ description = "An application for handling Arrata character sheets."
 edition = "2021"
 
 [package.metadata.bundle]
-name = "ArrataCharacterSheetManager"
+name = "arrata_character_sheet_manager"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -21,7 +21,7 @@ native-version = "0.6.4"
 features = ["windows_dpi_awareness", "windows_visual_styles"]
 
 [[bin]]
-name = "Arrata-Character-Sheet-Manager"
+name = "arrata_character_sheet_manager"
 path = "src/main.rs"
 
 [profile.release]
