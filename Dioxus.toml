@@ -11,10 +11,7 @@ default_platform = "desktop"
 out_dir = "dist"
 
 # resource (public) file folder
-asset_dir = "assets"
-
-[bundle]
-resources = ["assets/*"]
+asset_dir = "public"
 
 [web.app]
 
@@ -29,8 +26,11 @@ reload_html = true
 # which files or dirs will be watcher monitoring
 watch_path = ["src", "public"]
 
-# uncomment line below if using Router
-# index_on_404 = true
+[application.plugins]
+
+available = true
+
+required = []
 
 # include `assets` in web platform
 [web.resource]
@@ -49,4 +49,12 @@ style = []
 # Javascript code file
 script = []
 
-icon = ["assets/rat.png"]
+[bundle]
+# Bundle publisher
+publisher = "Kaleb Burris"
+
+# Bundle icon
+icon = ["public/icon.ico"]
+
+# Bundle resources
+resources = ["public"]

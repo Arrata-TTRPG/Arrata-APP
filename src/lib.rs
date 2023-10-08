@@ -13,12 +13,12 @@ pub fn app(cx: Scope) -> Element {
     cx.render(rsx! {
 
         div {
-            class: "bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300",
+            class: "bg-violet-500 hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300 aspect auto",
 
             // Arrata logo
             img {
                 class: "w-24 h-24 md:w-48 md:h-auto md:rounded-none rounded-full mx-auto",
-                src: "assets/rat.png",
+                src: "public/rat.png",
                 alt: "",
                 width: 315,
                 height: 315,

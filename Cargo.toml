@@ -4,30 +4,33 @@ version = "0.1.0"
 description = "An application for handling Arrata character sheets."
 edition = "2021"
 
-[package.metadata.bundle]
-name = "arrata_character_sheet_manager"
+#[package.metadata.bundle]
+#name = "Arrata_Character_Sheet_Manager"
+#identifier = "io.github.kalebvonburris.Arrata-APP"
+#icon = ["public/rat.png"]
+#resources = ["public/*"]
+#vesion = "0.1.0"
+#category = "Utility"
+#short_description = "An application for handling Arrata character sheets."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-dioxus = "0.3.2"
-dioxus-desktop = "0.3.0"
+dioxus = "0.4.0"
+dioxus-desktop = "0.4.0"
 serde = "1.0.180"
 serde_json = "1.0.104"
 tokio = "1.29.1"
 dioxus-free-icons = { version = "0.7.0", features = ["font-awesome-brands"] }
+lodepng = "3.9.1"
+rgb = "0.8"
 
 [dependencies.native-dialog]
-native-version = "0.6.4"
 features = ["windows_dpi_awareness", "windows_visual_styles"]
 
 [[bin]]
-name = "arrata_character_sheet_manager"
+name = "ArrataCharacterSheetManager"
 path = "src/main.rs"
 
 [profile.release]
-opt-level = 'z'
-lto = true
-codegen-units = 1
-strip = true
-panic = 'abort'
+opt-level = 3

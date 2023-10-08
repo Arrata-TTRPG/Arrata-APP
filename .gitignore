@@ -2,3 +2,4 @@
 /dist
 *.arrata
 /public
+Cargo.lock
