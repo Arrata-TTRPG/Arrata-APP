@@ -37,6 +37,50 @@ impl Character {
             inventory: Vec::new(),
         }
     }
+
+    
+    /// Write a character to their relevant `.arrata` file.
+    ///
+    /// `character` - The character to write to the file.
+    ///
+    /// Characters written will be written as
+    /// "`{character.name}.arrata`"
+    ///
+    /// This method only writes if we have relevant permissions.
+    pub fn write_to_file(&self) -> Result<(), std::io::Error> {
+        // Grab the current file path; should never throw unless we don't have file permissions
+        let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_dir().unwrap();
+        let path: std::path::PathBuf = match path {
+            Some(path) => path,
+            None => return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Invalid path given")),
+        };
+
+        // {character.name}.arrata
+        let suffix = self.name.clone() + ".arrata";
+
+        let f = File::create(path.to_str().unwrap().to_owned() + "/" + &suffix).unwrap();
+
+        let mut writer = BufWriter::new(f);
+
+        // Serialize the character with serde and write to file
+        let character_serde = serde_json::to_string_pretty(self)?;
+        writer.write_all(character_serde.as_bytes())?;
+
+        Ok(())
+    }
+
+    pub fn from_file() -> Result<Self, std::io::Error> {
+        // Grab the current file path; should never throw unless we don't have file permissions
+        let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_file().unwrap();
+        let path: std::path::PathBuf = match path {
+            Some(path) => path,
+            None => return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Invalid path given")),
+        };
+
+        let file = File::open(path)?;
+        let module: Character = serde_json::from_reader(file)?;
+        Ok(module)
+    }
 }
 
 /// A struct for Stats.
@@ -112,38 +156,4 @@ pub struct Item {
     pub name: String,
     pub quantity: u64,
     pub description: Option<String>,
-}
-
-/* Utility Functions */
-
-/// Write a character to their relevant `.arrata` file.
-///
-/// `character` - The character to write to the file.
-///
-/// Characters written will be written as
-/// "`{character.name}.arrata`"
-///
-/// This method only writes if we have relevant permissions.
-pub fn write_to_file(character: Character) {
-    // Grab the current file path; should never throw unless we don't have file permissions
-    let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_dir().unwrap();
-    let path: std::path::PathBuf = match path {
-        Some(path) => path,
-        None => return,
-    };
-
-    // {character.name}.arrata
-    let suffix = character.name.clone() + ".arrata";
-
-    let f = File::create(path.to_str().unwrap().to_owned() + "/" + &suffix).unwrap();
-
-    let mut writer = BufWriter::new(f);
-
-    // Serialize the character with serde and write to file
-    let character_serde = serde_json::to_string_pretty(&character).unwrap();
-    writer.write_all(character_serde.as_bytes()).unwrap();
-}
-
-pub fn read_from_file() -> Character {
-    todo!()
 }

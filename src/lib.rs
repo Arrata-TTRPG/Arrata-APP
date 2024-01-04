@@ -114,12 +114,12 @@ pub fn app(cx: Scope) -> Element {
 
         div {
             button {
-                onclick: move |_| write_to_file(character.get().clone()),
+                onclick: move |_| character.get().write_to_file().unwrap(),
                 "Save Character"
             },
             button {
                 onclick: move |_| {
-                    character.set(read_from_file());
+                    character.set(Character::from_file().unwrap());
                 },
                 "Load Character"
             },
