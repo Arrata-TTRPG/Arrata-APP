@@ -3,3 +3,6 @@
 *.arrata
 /public
 Cargo.lock
+*.html
+*.css
+*.wasm

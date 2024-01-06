@@ -6,14 +6,14 @@ use std::{
     io::{BufWriter, Write},
 };
 
-use dioxus::prelude::Props;
+use dioxus::prelude::*;
 use native_dialog::FileDialog;
 use serde::{Deserialize, Serialize};
 
 /* Structs and Enums */
 
 /// A struct containing all info about a character.
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Props, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub struct Character {
     pub name: String,
@@ -130,7 +130,7 @@ impl std::fmt::Display for Quality {
 /// A struct for Quirks. Boons
 /// and flaws are optional as some
 /// Quirks are purely cosmetic/neutral.
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub struct Quirk {
     pub name: String,
@@ -140,7 +140,7 @@ pub struct Quirk {
 }
 
 /// The Quirk category.
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub enum QuirkCategory {
     Ethos,
@@ -150,10 +150,101 @@ pub enum QuirkCategory {
 }
 
 /// A struct for items.
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub struct Item {
     pub name: String,
     pub quantity: u64,
     pub description: Option<String>,
+}
+
+#[component]
+pub fn RenderCharacter<'a>(cx: Scope, character: &'a UseState<Character>) -> Element {
+    cx.render(rsx!{
+        div {
+            input {
+                value: "{character.name}",
+                oninput: move |evt| {
+                    character.make_mut().name = evt.value.clone();
+                },
+            }
+            input {
+                value: "{character.stock}",
+                oninput: move |evt| {
+                    character.make_mut().stock = evt.value.clone();
+                },
+            }
+        },
+
+        h2 {
+            class: "text-center",
+            "Stats" 
+        },
+
+        br {}
+
+        button {
+            onclick: move |_| character.make_mut().stats.push(Stat::new()),
+            "Add Stat",
+        },
+
+        for (i,stat) in character.get().stats.iter().enumerate() {
+            rsx!(
+                div {
+                    input {
+                        value: "{stat.name.clone()}",
+                        oninput: move |evt| {
+                        character.with_mut(|character| {
+                            character.stats[i].name = evt.value.to_string();
+                        });
+                        }
+                    },
+                    ":", 
+                    input {
+                        r#type:"number",
+                        value: stat.quantity as f64,
+                        oninput: move |evt| {
+                            character.with_mut(|character| {
+                            character.stats[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
+                            });
+                        }
+                    },
+                    select {
+                        onchange: move |evt| {
+                            character.with_mut(|character| {
+                                character.stats[i].quality = match evt.value.parse::<u64>().unwrap() {
+                                    0 => Quality::Basic,
+                                    1 => Quality::Adept,
+                                    2 => Quality::Superb,
+                                    _ => Quality::Basic,
+                                }
+                            });
+                        },
+                        option {
+                            value: 0,
+                            "Basic"
+                        },
+                        option {
+                            value: 1,
+                            "Adept"
+                        },
+                        option {
+                            value: 2,
+                            "Superb"
+                        },
+                    },
+                    " Checks:", 
+                    input {
+                        r#type:"number",
+                        value: stat.checks.unwrap_or(0) as f64,
+                        oninput: move |evt| {
+                            character.with_mut(|character| {
+                                character.stats[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
+                            });
+                        }
+                    },
+                 }
+             )
+        }
+    })
 }
