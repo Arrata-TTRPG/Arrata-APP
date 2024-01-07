@@ -300,7 +300,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                         div {
                             class: "border border-spacing-2 px-3 py-3 rounded-lg",
                             div {
-                                class: "justify-center content-center text-2xl py-2 px-1",
+                                class: "justify-center content-center text-2xl py-2 px-1 w-full",
                                 input {
                                     class: "text-mono text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
                                     r#type:"text",
@@ -311,7 +311,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                 }
                                 button {
                                     onclick: move |_| { let _ = character.make_mut().skills.remove(i); },
-                                    class: "inline-flex bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded",
+                                    class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
                                     "Delete"
                                 }
                             }
