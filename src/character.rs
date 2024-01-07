@@ -117,8 +117,8 @@ impl Character {
 pub struct Stat {
     pub name: String,
     pub quality: Quality,
-    pub quantity: u64,
-    pub checks: Option<u64>,
+    pub quantity: usize,
+    pub checks: Option<usize>,
 }
 
 impl Stat {
@@ -164,6 +164,17 @@ pub struct Quirk {
     pub flaws: Option<Vec<String>>,
 }
 
+impl Quirk {
+    pub fn new(name: String) -> Self {
+        Self {
+            name,
+            category: QuirkCategory::Ethos,
+            boons: Some(vec![]),
+            flaws: Some(vec![]),
+        }
+    }
+}
+
 /// The Quirk category.
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "PascalCase")]
@@ -179,7 +190,7 @@ pub enum QuirkCategory {
 #[serde(rename_all = "PascalCase")]
 pub struct Item {
     pub name: String,
-    pub quantity: u64,
+    pub quantity: usize,
     pub description: Option<String>,
 }
 
@@ -221,7 +232,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     class: "font-mono py-2 px-2",
                                     onchange: move |evt| {
                                         character.with_mut(|character| {
-                                            character.stats[i].quality = match evt.value.parse::<u64>().unwrap() {
+                                            character.stats[i].quality = match evt.value.parse::<usize>().unwrap() {
                                                 0 => Quality::Basic,
                                                 1 => Quality::Adept,
                                                 2 => Quality::Superb,
@@ -248,7 +259,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     value: stat.quantity as f64,
                                     oninput: move |evt| {
                                         character.with_mut(|character| {
-                                            character.stats[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
+                                            character.stats[i].quantity = evt.value.parse::<usize>().unwrap_or(0);
                                         });
                                     }
                                 },
@@ -259,7 +270,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     value: stat.checks.unwrap_or(0) as f64,
                                     oninput: move |evt| {
                                         character.with_mut(|character| {
-                                            character.stats[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
+                                            character.stats[i].checks = Some(evt.value.parse::<usize>().unwrap_or(0));
                                         });
                                     }
                                 },
@@ -321,7 +332,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     class: "font-mono py-2 px-1",
                                     onchange: move |evt| {
                                         character.with_mut(|character| {
-                                            character.skills[i].quality = match evt.value.parse::<u64>().unwrap() {
+                                            character.skills[i].quality = match evt.value.parse::<usize>().unwrap() {
                                                 0 => Quality::Basic,
                                                 1 => Quality::Adept,
                                                 2 => Quality::Superb,
@@ -348,7 +359,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     value: skill.quantity as f64,
                                     oninput: move |evt| {
                                         character.with_mut(|character| {
-                                            character.skills[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
+                                            character.skills[i].quantity = evt.value.parse::<usize>().unwrap_or(0);
                                         });
                                     }
                                 },
@@ -359,7 +370,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     value: skill.checks.unwrap_or(0) as f64,
                                     oninput: move |evt| {
                                         character.with_mut(|character| {
-                                            character.skills[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
+                                            character.skills[i].checks = Some(evt.value.parse::<usize>().unwrap_or(0));
                                         });
                                     }
                                 },
@@ -374,6 +385,74 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     }
                                     // TODO: onclick event!
                                 }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+
+        div { class: "flex justify-center content-center items-center",
+            h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
+                "Quirks"
+            }
+            button {
+                onclick: move |_| character.make_mut().quirks.push(Quirk::new("New Quirk!".into())),
+                class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                "+ Add Quirk"
+            }
+        }
+
+        div {
+            class: "flex justify-center",
+            div { class: "grid grid-cols-2 gap-4 justify-items-center content-stretch max-w-5xl",
+                for (i , quirk) in character.get().quirks.iter().enumerate() {
+                    rsx!(
+                        div {
+                            class: "border border-spacing-2 px-3 py-3 rounded-lg",
+                            div {
+                                class: "justify-center content-center text-2xl py-2 px-1 w-full",
+                                input {
+                                    class: "text-mono text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
+                                    r#type:"text",
+                                    value: "{quirk.name.clone()}",
+                                    oninput: move |evt| {
+                                        character.make_mut().quirks[i].name = evt.value.to_string();
+                                    }
+                                }
+                                button {
+                                    onclick: move |_| { let _ = character.make_mut().quirks.remove(i); },
+                                    class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
+                                    "Delete"
+                                }
+                            }
+                            div {
+                                class: "inline-flex w-full justify-center content-center items-center justify-items-center",
+                                div { class: "py-2 px-2", "Category:" },
+                                select {
+                                    class: "font-mono py-2 px-1",
+                                    onchange: move |evt| {
+                                        character.with_mut(|character| {
+                                            character.quirks[i].category = match evt.value.parse::<usize>().unwrap() {
+                                                0 => QuirkCategory::Ethos,
+                                                1 => QuirkCategory::Pathos,
+                                                _ => QuirkCategory::Logos,
+                                            }
+                                        });
+                                    },
+                                    option {
+                                        value: 0,
+                                        "Ethos"
+                                    },
+                                    option {
+                                        value: 1,
+                                        "Pathos"
+                                    },
+                                    option {
+                                        value: 2,
+                                        "Logos"
+                                    },
+                                },
                             }
                         }
                     )
