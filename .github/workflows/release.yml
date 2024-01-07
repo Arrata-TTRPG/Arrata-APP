@@ -99,7 +99,7 @@ jobs:
           key: ${{ runner.os }}-${{ env.NODE_VERSION }}-node_modules-${{ hashFiles('**/package-lock.json') }}
       - name: Create CSS
         run: |
-          nmp install tailwind
+          npm install tailwind
           npx tailwindcss -i input.css -o public/tailwind.css
       - name: Bundle release
         run: |
