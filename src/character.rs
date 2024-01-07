@@ -204,78 +204,78 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                     character.make_mut().stock = evt.value.clone();
                 },
             },
-        },
+        }
 
         h2 {
             class: "top-5 bottom-5 text-center text-4xl font-bold font-mono",
             "Stats"
-        },
+        }
 
-        br {}
-
-        for (i, stat) in character.get().stats.iter().enumerate() {
-            rsx!(
-                div {
-                    class: "col-auto",
-                    div { class: "font-mono", "{stat.name.clone()}:" },
-                    input {
-                        class: "border-spacing-1 border rounded-lg",
-                        r#type:"number",
-                        value: stat.quantity as f64,
-                        oninput: move |evt| {
-                            character.with_mut(|character| {
-                                character.stats[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
-                            });
+        div {
+            class: "grid grid-cols-2 gap-4 items-center content-center justify-items-center justify-center",
+            for (i, stat) in character.get().stats.iter().enumerate() {
+                rsx!(
+                    div {
+                        div { class: "font-mono", "{stat.name.clone()}:" },
+                        input {
+                            class: "w-12 border-spacing-1 border rounded-lg",
+                            r#type:"number",
+                            value: stat.quantity as f64,
+                            oninput: move |evt| {
+                                character.with_mut(|character| {
+                                    character.stats[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
+                                });
+                            }
+                        },
+                        select {
+                            class: "font-mono",
+                            onchange: move |evt| {
+                                character.with_mut(|character| {
+                                    character.stats[i].quality = match evt.value.parse::<u64>().unwrap() {
+                                        0 => Quality::Basic,
+                                        1 => Quality::Adept,
+                                        2 => Quality::Superb,
+                                        _ => Quality::Basic,
+                                    }
+                                });
+                            },
+                            option {
+                                value: 0,
+                                "Basic"
+                            },
+                            option {
+                                value: 1,
+                                "Adept"
+                            },
+                            option {
+                                value: 2,
+                                "Superb"
+                            },
+                        },
+                        "Checks:",
+                        input {
+                            class: "w-12 border-spacing-1 border rounded-lg",
+                            r#type:"number",
+                            value: stat.checks.unwrap_or(0) as f64,
+                            oninput: move |evt| {
+                                character.with_mut(|character| {
+                                    character.stats[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
+                                });
+                            }
+                        },
+                        "Roll:",
+                        button {
+                            Icon {
+                                width: 20,
+                                height: 20,
+                                fill: "white",
+                                icon: BsDice6
+                            }
+                            // TODO: onclick event!
                         }
-                    },
-                    select {
-                        class: "font-mono",
-                        onchange: move |evt| {
-                            character.with_mut(|character| {
-                                character.stats[i].quality = match evt.value.parse::<u64>().unwrap() {
-                                    0 => Quality::Basic,
-                                    1 => Quality::Adept,
-                                    2 => Quality::Superb,
-                                    _ => Quality::Basic,
-                                }
-                            });
-                        },
-                        option {
-                            value: 0,
-                            "Basic"
-                        },
-                        option {
-                            value: 1,
-                            "Adept"
-                        },
-                        option {
-                            value: 2,
-                            "Superb"
-                        },
-                    },
-                    "Checks:",
-                    input {
-                        class: "border-spacing-1 border rounded-lg",
-                        r#type:"number",
-                        value: stat.checks.unwrap_or(0) as f64,
-                        oninput: move |evt| {
-                            character.with_mut(|character| {
-                                character.stats[i].checks = Some(evt.value.parse::<u64>().unwrap_or(0));
-                            });
-                        }
-                    },
-                    "Roll:",
-                    button {
-                        Icon {
-                            width: 20,
-                            height: 20,
-                            fill: "white",
-                            icon: BsDice6
-                        }
-                        // TODO: onclick event!
                     }
-                 }
-             )
+                )
+            }
         }
     })
 }
