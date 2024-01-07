@@ -144,7 +144,7 @@ jobs:
     - name: Zip release
       uses: vimtor/action-zip@v1
       with:
-        files: public/ target/release/${{ env.EXECUTABLE_NAME }}.exe
+        files: public target/release/${{ env.EXECUTABLE_NAME }}.exe
         dest: ${{ env.EXECUTABLE_NAME }}_windows.zip
         recursive: true
     - name: Upload release
