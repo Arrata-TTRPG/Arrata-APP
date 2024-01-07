@@ -190,6 +190,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             class: "flex content-center items-center justify-center text-lg",
             div { class: "px-2 py-2", "Name:" },
             input {
+                class: "border-spacing-1 border rounded-lg",
                 value: "{character.name}",
                 oninput: move |evt| {
                     character.make_mut().name = evt.value.clone();
@@ -197,6 +198,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             },
             div { class: "px-2 py-2", "Stock:" },
             input {
+                class: "border-spacing-1 border rounded-lg",
                 value: "{character.stock}",
                 oninput: move |evt| {
                     character.make_mut().stock = evt.value.clone();
@@ -206,7 +208,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
 
         h2 {
             class: "top-5 bottom-5 text-center text-4xl font-bold font-mono",
-            "Stats" 
+            "Stats"
         },
 
         br {}
@@ -217,11 +219,12 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                     class: "col-auto",
                     div { class: "font-mono", "{stat.name.clone()}:" },
                     input {
+                        class: "border-spacing-1 border rounded-lg",
                         r#type:"number",
                         value: stat.quantity as f64,
                         oninput: move |evt| {
                             character.with_mut(|character| {
-                            character.stats[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
+                                character.stats[i].quantity = evt.value.parse::<u64>().unwrap_or(0);
                             });
                         }
                     },
@@ -250,10 +253,10 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                             "Superb"
                         },
                     },
-                    "Checks:", 
+                    "Checks:",
                     input {
+                        class: "border-spacing-1 border rounded-lg",
                         r#type:"number",
-                        class: "w-auto",
                         value: stat.checks.unwrap_or(0) as f64,
                         oninput: move |evt| {
                             character.with_mut(|character| {
@@ -264,8 +267,8 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                     "Roll:",
                     button {
                         Icon {
-                            width: 30,
-                            height: 30,
+                            width: 20,
+                            height: 20,
                             fill: "white",
                             icon: BsDice6
                         }
