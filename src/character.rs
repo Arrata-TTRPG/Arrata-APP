@@ -218,8 +218,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
 
         h2 { class: "py-4 text-center text-4xl font-bold font-mono", "Stats" }
 
-        div {
-            class: "flex justify-center",
+        div { class: "flex justify-center",
             div { class: "grid grid-cols-2 gap-4 justify-items-center content-stretch max-w-5xl",
                 for (i , stat) in character.get().stats.iter().enumerate() {
                     rsx!(
@@ -303,8 +302,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             }
         }
 
-        div {
-            class: "flex justify-center",
+        div { class: "flex justify-center",
             div { class: "grid grid-cols-2 gap-4 justify-items-center content-stretch max-w-5xl",
                 for (i , skill) in character.get().skills.iter().enumerate() {
                     rsx!(
@@ -403,8 +401,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             }
         }
 
-        div {
-            class: "flex justify-center",
+        div { class: "flex justify-center",
             div { class: "grid grid-cols-2 gap-4 justify-items-center content-stretch max-w-5xl",
                 for (i , quirk) in character.get().quirks.iter().enumerate() {
                     rsx!(
