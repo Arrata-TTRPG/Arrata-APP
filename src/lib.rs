@@ -43,12 +43,12 @@ pub fn app(cx: Scope) -> Element {
 
         div {
             button {
-                class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
+                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| character.get().write_to_file().unwrap(),
                 "Save Character"
             },
             button {
-                class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
+                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| character.set(Character::from_file().unwrap()),
                 "Load Character"
             },

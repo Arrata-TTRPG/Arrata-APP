@@ -257,6 +257,10 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                             });
                         }
                     },
+                    "Roll:",
+                    button {
+                        
+                    }
                  }
              )
         }
