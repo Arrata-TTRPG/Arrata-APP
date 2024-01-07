@@ -212,7 +212,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
         }
 
         div {
-            class: "grid grid-cols-2 gap-4 items-center content-center justify-items-center justify-end",
+            class: "grid grid-cols-2 gap-4 justify-items-center",
             for (i, stat) in character.get().stats.iter().enumerate() {
                 rsx!(
                     div {
@@ -220,7 +220,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                         div {
                             class: "inline-flex",
                             input {
-                                class: "w-12 border-spacing-1 border rounded-lg py-2 px-2",
+                                class: "w-12 border rounded-lg py-2 px-2",
                                 r#type:"number",
                                 value: stat.quantity as f64,
                                 oninput: move |evt| {
@@ -256,7 +256,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                             },
                             div { class: "py-2 px-2", "Checks:" },
                             input {
-                                class: "w-12 border-spacing-1 border rounded-lg py-2 px-2",
+                                class: "w-12 border rounded-lg py-2 px-2",
                                 r#type:"number",
                                 value: stat.checks.unwrap_or(0) as f64,
                                 oninput: move |evt| {
@@ -283,36 +283,44 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
         }
 
         div {
-            class: "inline-flex justify-center content-center items-center",
+            class: "flex justify-center content-center items-center",
             h2 {
-                class: "py-4 px-4 text-center text-4xl font-bold font-mono",
+                class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                 "Skills"
             }
             button {
                 onclick: move |_| character.make_mut().skills.push(Stat::new("New Skill!".into())),
-                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
                 "+ Add Skill",
             }
         }
 
 
         div {
-            class: "grid grid-cols-2 gap-4 items-center content-center justify-items-center justify-end",
+            class: "grid grid-cols-2 gap-4 justify-items-center",
             for (i, skill) in character.get().skills.iter().enumerate() {
                 rsx!(
                     div {
                         div {
-                            class: "inline-flex",
+                            class: "justify-center content-center text-2xl py-2 px-2",
                             input {
-                                class: "w-12 border-spacing-1 border rounded-lg py-2 px-2",
+                                class: "text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
                                 r#type:"text",
                                 value: "{skill.name.clone()}",
                                 oninput: move |evt| {
                                     character.make_mut().skills[i].name = evt.value.to_string();
                                 }
                             }
+                            button {
+                                onclick: move |_| { let _ = character.make_mut().skills.remove(i); },
+                                class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                                "Delete"
+                            }
+                        }
+                        div {
+                            class: "inline-flex",
                             input {
-                                class: "w-12 border-spacing-1 border rounded-lg py-2 px-2",
+                                class: "w-12 border rounded-lg py-2 px-2",
                                 r#type:"number",
                                 value: skill.quantity as f64,
                                 oninput: move |evt| {
@@ -348,7 +356,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                             },
                             div { class: "py-2 px-2", "Checks:" },
                             input {
-                                class: "w-12 border-spacing-1 border rounded-lg py-2 px-2",
+                                class: "w-12 border rounded-lg py-2 px-2",
                                 r#type:"number",
                                 value: skill.checks.unwrap_or(0) as f64,
                                 oninput: move |evt| {
