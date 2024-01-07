@@ -12,7 +12,7 @@ dioxus-desktop = "0.4.3"
 serde = "1.0.194"
 serde_json = "1.0.111"
 tokio = "1.35.1"
-dioxus-free-icons = { version = "0.7.0", features = ["font-awesome-brands"] }
+dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
 lodepng = "3.9.2"
 rgb = "0.8"
 

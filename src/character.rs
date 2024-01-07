@@ -6,6 +6,9 @@ use std::{
     io::{BufWriter, Write},
 };
 
+use dioxus_free_icons::icons::bs_icons::BsDice6;
+use dioxus_free_icons::Icon;
+
 use dioxus::prelude::*;
 use native_dialog::FileDialog;
 use serde::{Deserialize, Serialize};
@@ -212,7 +215,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             rsx!(
                 div {
                     class: "col-auto",
-                    div { "{stat.name.clone()}:" },
+                    div { class: "font-mono", "{stat.name.clone()}:" },
                     input {
                         r#type:"number",
                         value: stat.quantity as f64,
@@ -223,6 +226,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                         }
                     },
                     select {
+                        class: "font-mono",
                         onchange: move |evt| {
                             character.with_mut(|character| {
                                 character.stats[i].quality = match evt.value.parse::<u64>().unwrap() {
@@ -259,7 +263,13 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                     },
                     "Roll:",
                     button {
-                        
+                        Icon {
+                            width: 30,
+                            height: 30,
+                            fill: "white",
+                            icon: BsDice6
+                        }
+                        // TODO: onclick event!
                     }
                  }
              )
