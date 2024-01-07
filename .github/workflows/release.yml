@@ -36,8 +36,6 @@ jobs:
     env:
       VERSION: ${{needs.get-version.outputs.version}}
     steps:
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-      - uses: cargo-bins/cargo-binstall@v1.5.0
       - name: Checkout code
         uses: actions/checkout@v3
         with:
