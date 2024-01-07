@@ -1,7 +1,6 @@
 /target
 /dist
 *.arrata
-/public
 Cargo.lock
 *.html
 *.css
