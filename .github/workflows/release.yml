@@ -146,7 +146,7 @@ jobs:
       with:
         files: public target/release/${{ env.EXECUTABLE_NAME }}.exe
         dest: ${{ env.EXECUTABLE_NAME }}_windows.zip
-        recursive: true
+        recursive: false
     - name: Upload release
       uses: svenstaro/upload-release-action@v2
       with:
