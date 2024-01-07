@@ -214,9 +214,9 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                     rsx!(
                         div {
                             class: "border border-spacing-2 px-3 py-3 rounded-lg",
-                            div { class: "font-mono text-center text-2xl py-2 px-2", "{stat.name.clone()}" },
+                            div { class: "font-mono text-center text-2xl py-2 px-2 w-full", "{stat.name.clone()}" },
                             div {
-                                class: "inline-flex",
+                                class: "inline-flex w-full justify-center content-center items-center justify-items-center",
                                 select {
                                     class: "font-mono py-2 px-2",
                                     onchange: move |evt| {
@@ -316,7 +316,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                 }
                             }
                             div {
-                                class: "inline-flex",
+                                class: "inline-flex w-full justify-center content-center items-center justify-items-center",
                                 select {
                                     class: "font-mono py-2 px-1",
                                     onchange: move |evt| {
