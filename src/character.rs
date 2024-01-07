@@ -162,18 +162,20 @@ pub struct Item {
 pub fn RenderCharacter<'a>(cx: Scope, character: &'a UseState<Character>) -> Element {
     cx.render(rsx!{
         div {
+            "Name:",
             input {
                 value: "{character.name}",
                 oninput: move |evt| {
                     character.make_mut().name = evt.value.clone();
                 },
-            }
+            },
+            "Stock",
             input {
                 value: "{character.stock}",
                 oninput: move |evt| {
                     character.make_mut().stock = evt.value.clone();
                 },
-            }
+            },
         },
 
         h2 {
@@ -185,7 +187,7 @@ pub fn RenderCharacter<'a>(cx: Scope, character: &'a UseState<Character>) -> Ele
 
         button {
             onclick: move |_| character.make_mut().stats.push(Stat::new()),
-            "Add Stat",
+            "+ Add Stat",
         },
 
         for (i,stat) in character.get().stats.iter().enumerate() {
