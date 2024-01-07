@@ -1,0 +1,34 @@
+﻿# Thanks to https://github.com/NiklasEi/bevy_game_template/blob/main/.github/workflows/release.yaml for much of this code
+on:
+  push:
+    branches: [ "dev", "main" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+env:
+  EXECUTABLE_NAME: "arrata_character_sheet_manager"
+
+permissions: write-all
+
+name: Cargo Verify
+jobs:
+  create-release:
+    name: Cargo Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+      - name: Setup Rust Cache
+        uses: Swatinem/rust-cache@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Cargo Check
+        run: cargo check --verbose
+      - name: Cargo Test
+        run: cargo test --verbose
+      - name: Cargo fmt
+        run: cargo fmt --verbose
+      - name: Cargo Clippy
+        run: cargo clippy --verbose
+      
