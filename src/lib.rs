@@ -16,43 +16,36 @@ pub fn app(cx: Scope) -> Element {
     cx.render(rsx! {
         style { arrata_style }
 
-        div {
-            class: "top-5 bottom-5 origin-center justify-center self-center items-center content-center flex",
+        div { class: "top-5 bottom-5 origin-center justify-center self-center items-center content-center flex",
             // Arrata logo
             img {
                 class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
                 src: "public/rat.png",
                 alt: "",
                 width: 300,
-                height: 300,
+                height: 300
             }
 
-            h1 {
-                class: "text-center text-9xl font-mono font-extrabold",
-                "ARRATA"
-            }
+            h1 { class: "text-center text-9xl font-mono font-extrabold", "ARRATA" }
         }
 
         br {}
 
-        div {
-            class: "top-5 bottom-5 origin-center justify-center self-center items-center content-center flex space-x-3",
+        div { class: "top-5 bottom-5 origin-center justify-center self-center items-center content-center flex space-x-3",
             button {
                 class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| character.get().write_to_file().unwrap(),
                 "Save Character"
-            },
+            }
             button {
                 class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| character.set(Character::from_file().unwrap()),
                 "Load Character"
-            },
+            }
         }
 
         br {}
 
-        render_character {
-            character: character
-        }
+        render_character { character: character }
     })
 }

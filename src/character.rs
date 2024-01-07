@@ -186,34 +186,29 @@ pub struct Item {
 #[component(no_case_check)]
 pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> Element {
     cx.render(rsx!{
-        div {
-            class: "flex content-center items-center justify-center text-lg",
-            div { class: "px-2 py-2", "Name:" },
+        div { class: "flex content-center items-center justify-center text-lg",
+            div { class: "px-2 py-2", "Name:" }
             input {
                 class: "border-spacing-1 border rounded-lg",
                 value: "{character.name}",
                 oninput: move |evt| {
                     character.make_mut().name = evt.value.clone();
-                },
-            },
-            div { class: "px-2 py-2", "Stock:" },
+                }
+            }
+            div { class: "px-2 py-2", "Stock:" }
             input {
                 class: "border-spacing-1 border rounded-lg",
                 value: "{character.stock}",
                 oninput: move |evt| {
                     character.make_mut().stock = evt.value.clone();
-                },
-            },
+                }
+            }
         }
 
-        h2 {
-            class: "py-4 text-center text-4xl font-bold font-mono",
-            "Stats"
-        }
+        h2 { class: "py-4 text-center text-4xl font-bold font-mono", "Stats" }
 
-        div {
-            class: "grid grid-cols-2 gap-4 justify-items-center",
-            for (i, stat) in character.get().stats.iter().enumerate() {
+        div { class: "grid grid-cols-2 gap-4 justify-items-center",
+            for (i , stat) in character.get().stats.iter().enumerate() {
                 rsx!(
                     div {
                         div { class: "font-mono text-center text-2xl py-2 px-2", "{stat.name.clone()}" },
@@ -282,23 +277,19 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             }
         }
 
-        div {
-            class: "flex justify-center content-center items-center",
-            h2 {
-                class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
+        div { class: "flex justify-center content-center items-center",
+            h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                 "Skills"
             }
             button {
                 onclick: move |_| character.make_mut().skills.push(Stat::new("New Skill!".into())),
                 class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
-                "+ Add Skill",
+                "+ Add Skill"
             }
         }
 
-
-        div {
-            class: "grid grid-cols-2 gap-4 justify-items-center",
-            for (i, skill) in character.get().skills.iter().enumerate() {
+        div { class: "grid grid-cols-2 gap-4 justify-items-center",
+            for (i , skill) in character.get().skills.iter().enumerate() {
                 rsx!(
                     div {
                         div {
