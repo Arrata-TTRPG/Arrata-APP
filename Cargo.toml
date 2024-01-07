@@ -4,15 +4,6 @@ version = "0.0.1"
 description = "An application for handling Arrata character sheets."
 edition = "2021"
 
-#[package.metadata.bundle]
-#name = "Arrata_Character_Sheet_Manager"
-#identifier = "io.github.kalebvonburris.Arrata-APP"
-#icon = ["public/rat.png"]
-#resources = ["public/*"]
-#vesion = "0.1.0"
-#category = "Utility"
-#short_description = "An application for handling Arrata character sheets."
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -33,5 +24,10 @@ features = ["windows_dpi_awareness", "windows_visual_styles"]
 name = "arrata_character_sheet_manager"
 path = "src/main.rs"
 
+[profile.dev]
+lto = "thin"
+
 [profile.release]
 opt-level = 3
+lto = "thin"
+codegen-units = 1

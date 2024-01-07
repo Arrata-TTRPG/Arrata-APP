@@ -26,7 +26,7 @@ TODO!
 
 To compile locally, you will need the following prerequisites:
 
-- Rust 1.72.0+
+- Rust Nightly
 
 From the `Arrata-APP` directory, run `cargo build --release`. A new binary will be generated at `Arrata-APP/target/release/Arrata-Character-Sheet-Manager`.
 
@@ -39,10 +39,10 @@ TODO!
 ### Main features
 
 - [ ] Create a functioning application
-- [ ] Establish character sheet paradigm - (`*.arrata`)
+- [x] Establish character sheet paradigm - (`*.arrata`)
 - [ ] Implement the character sheet
-  - [ ] Name/Stock/Miscellaneous
-  - [ ] Stats
+  - [x] Name/Stock/Miscellaneous
+  - [x] Stats
   - [ ] Skills
   - [ ] Quirks
   - [ ] Argos
@@ -53,4 +53,4 @@ TODO!
 
 - [ ] Add dice-rolling functionality
   - [ ] Discord integration(?)
-- [ ] Allow exporting into the printable format
+- [ ] Allow exporting into a printable format

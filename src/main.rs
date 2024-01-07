@@ -4,7 +4,6 @@ use arrata_app::*;
 use dioxus_desktop::{Config, WindowBuilder};
 
 fn main() {
-
     dioxus_desktop::launch_cfg(
         app,
         Config::new()

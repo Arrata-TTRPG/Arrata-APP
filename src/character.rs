@@ -30,7 +30,14 @@ impl Character {
         Character {
             name: "John Arrata".to_string(),
             stock: "Human".to_string(),
-            stats: Vec::new(),
+            stats: vec![
+                Stat::new("Will".into()),
+                Stat::new("Perception".into()),
+                Stat::new("Conscious".into()),
+                Stat::new("Power".into()),
+                Stat::new("Speed".into()),
+                Stat::new("Forte".into()),
+            ],
             skills: Vec::new(),
             quirks: Vec::new(),
             argos: String::new(),
@@ -38,10 +45,15 @@ impl Character {
         }
     }
 
-    
     /// Write a character to their relevant `.arrata` file.
     ///
+    /// # Inputs
     /// `character` - The character to write to the file.
+    ///
+    /// # Outputs
+    ///
+    /// `Result<(), std::io::Error>` - None if successful or
+    /// the given IO error if one is encountered.
     ///
     /// Characters written will be written as
     /// "`{character.name}.arrata`"
@@ -52,7 +64,12 @@ impl Character {
         let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_dir().unwrap();
         let path: std::path::PathBuf = match path {
             Some(path) => path,
-            None => return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Invalid path given")),
+            None => {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "Invalid path given",
+                ))
+            }
         };
 
         // {character.name}.arrata
@@ -74,7 +91,12 @@ impl Character {
         let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_file().unwrap();
         let path: std::path::PathBuf = match path {
             Some(path) => path,
-            None => return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Invalid path given")),
+            None => {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "Invalid path given",
+                ))
+            }
         };
 
         let file = File::open(path)?;
@@ -97,11 +119,11 @@ pub struct Stat {
 }
 
 impl Stat {
-    pub fn new() -> Stat {
+    pub fn new(name: String) -> Stat {
         Stat {
-            name: "Stat".to_string(),
+            name,
             quality: Quality::Basic,
-            quantity: 0,
+            quantity: 1,
             checks: Some(0),
         }
     }
@@ -158,18 +180,19 @@ pub struct Item {
     pub description: Option<String>,
 }
 
-#[component]
-pub fn RenderCharacter<'a>(cx: Scope, character: &'a UseState<Character>) -> Element {
+#[component(no_case_check)]
+pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> Element {
     cx.render(rsx!{
         div {
-            "Name:",
+            class: "flex content-center items-center justify-center text-lg",
+            div { class: "px-2 py-2", "Name:" },
             input {
                 value: "{character.name}",
                 oninput: move |evt| {
                     character.make_mut().name = evt.value.clone();
                 },
             },
-            "Stock",
+            div { class: "px-2 py-2", "Stock:" },
             input {
                 value: "{character.stock}",
                 oninput: move |evt| {
@@ -179,29 +202,17 @@ pub fn RenderCharacter<'a>(cx: Scope, character: &'a UseState<Character>) -> Ele
         },
 
         h2 {
-            class: "text-center",
+            class: "top-5 bottom-5 text-center text-4xl font-bold font-mono",
             "Stats" 
         },
 
         br {}
 
-        button {
-            onclick: move |_| character.make_mut().stats.push(Stat::new()),
-            "+ Add Stat",
-        },
-
-        for (i,stat) in character.get().stats.iter().enumerate() {
+        for (i, stat) in character.get().stats.iter().enumerate() {
             rsx!(
                 div {
-                    input {
-                        value: "{stat.name.clone()}",
-                        oninput: move |evt| {
-                        character.with_mut(|character| {
-                            character.stats[i].name = evt.value.to_string();
-                        });
-                        }
-                    },
-                    ":", 
+                    class: "col-auto",
+                    div { "{stat.name.clone()}:" },
                     input {
                         r#type:"number",
                         value: stat.quantity as f64,
@@ -235,9 +246,10 @@ pub fn RenderCharacter<'a>(cx: Scope, character: &'a UseState<Character>) -> Ele
                             "Superb"
                         },
                     },
-                    " Checks:", 
+                    "Checks:", 
                     input {
                         r#type:"number",
+                        class: "w-auto",
                         value: stat.checks.unwrap_or(0) as f64,
                         oninput: move |evt| {
                             character.with_mut(|character| {
