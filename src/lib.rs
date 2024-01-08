@@ -1,5 +1,6 @@
-mod character;
-use character::*;
+pub mod character;
+use character::render::*;
+use character::structs::*;
 
 use dioxus::prelude::*;
 
