@@ -202,5 +202,21 @@ pub enum QuirkCategory {
 pub struct Item {
     pub name: String,
     pub quantity: usize,
-    pub description: Option<String>,
+    pub description: String,
+}
+
+impl Item {
+    pub fn new(name: String) -> Self {
+        Self {
+            name,
+            quantity: 0,
+            description: "".into(),
+        }
+    }
+}
+
+impl Default for Item {
+    fn default() -> Self {
+        Self::new("New Item!".into())
+    }
 }
