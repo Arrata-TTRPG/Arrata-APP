@@ -7,17 +7,17 @@ use dioxus_free_icons::Icon;
 pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> Element {
     cx.render(rsx!{
         div { class: "flex content-center items-center justify-center text-lg",
-            div { class: "px-2 py-2", "Name:" }
+            div { class: "font-mono text-lg px-2 py-2", "Name:" }
             input {
-                class: "border-spacing-1 border rounded-lg",
+                class: "border-spacing-1 border rounded-lg px-2 py-2",
                 value: "{character.name}",
                 oninput: move |evt| {
                     character.make_mut().name = evt.value.clone();
                 }
             }
-            div { class: "px-2 py-2", "Stock:" }
+            div { class: "font-mono text-lg px-2 py-2", "Stock:" }
             input {
-                class: "border-spacing-1 border rounded-lg",
+                class: "border-spacing-1 border rounded-lg px-2 py-2",
                 value: "{character.stock}",
                 oninput: move |evt| {
                     character.make_mut().stock = evt.value.clone();
@@ -116,22 +116,34 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                 for (i , skill) in character.get().skills.iter().enumerate() {
                     rsx!(
                         div {
-                            class: "border border-spacing-2 px-3 py-3 rounded-lg",
+                            class: "w-full border border-spacing-2 px-3 py-3 rounded-lg",
                             div {
-                                class: "justify-center content-center text-2xl py-2 px-1 w-full",
-                                input {
-                                    class: "text-mono text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
-                                    r#type:"text",
-                                    value: "{skill.name.clone()}",
-                                    oninput: move |evt| {
-                                        character.make_mut().skills[i].name = evt.value.to_string();
+                                class: "flex justify-center content-center items-center justify-items-center text-2xl py-2 px-1 w-full",
+                                div {
+                                    class: "flex w-auto content-center justify-center",
+                                    input {
+                                        class: "text-mono text-center w-full border-spacing-1 border rounded-lg py-2 px-2",
+                                        r#type:"text",
+                                        value: "{skill.name.clone()}",
+                                        oninput: move |evt| {
+                                            character.make_mut().skills[i].name = evt.value.to_string();
+                                        }
                                     }
                                 }
-                                button {
-                                    onclick: move |_| { let _ = character.make_mut().skills.remove(i); },
-                                    class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                    "Delete"
+                                div {
+                                    class: "flex px-3 py-3 rounded-lg",
+                                    button {
+                                        onclick: move |_| { let _ = character.make_mut().skills.remove(i); },
+                                        class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
+                                        Icon {
+                                            width: 20,
+                                            height: 20,
+                                            fill: "white",
+                                            icon: BsTrash
+                                        }
+                                    }
                                 }
+
                             }
                             div {
                                 class: "inline-flex w-full justify-center content-center items-center justify-items-center",
@@ -217,24 +229,35 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                         div {
                             class: "border border-spacing-2 px-3 py-3 rounded-lg",
                             div {
-                                class: "justify-center content-center text-2xl py-2 px-1 w-full",
-                                input {
-                                    class: "text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
-                                    r#type:"text",
-                                    value: "{quirk.name.clone()}",
-                                    oninput: move |evt| {
-                                        character.make_mut().quirks[i].name = evt.value.to_string();
+                                class: "flex justify-center content-center items-center justify-items-center text-2xl py-2 px-1 w-full",
+                                div {
+                                    class: "flex w-auto",
+                                    input {
+                                        class: "text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
+                                        r#type:"text",
+                                        value: "{quirk.name.clone()}",
+                                        oninput: move |evt| {
+                                            character.make_mut().quirks[i].name = evt.value.to_string();
+                                        }
                                     }
                                 }
-                                button {
-                                    onclick: move |_| { let _ = character.make_mut().quirks.remove(i); },
-                                    class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                    "Delete"
+                                div {
+                                    class: "flex",
+                                    button {
+                                        onclick: move |_| { let _ = character.make_mut().quirks.remove(i); },
+                                        class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
+                                        Icon {
+                                            width: 20,
+                                            height: 20,
+                                            fill: "white",
+                                            icon: BsTrash
+                                        }
+                                    }
                                 }
                             }
                             div {
-                                class: "inline-flex w-full justify-center content-center items-center justify-items-center",
-                                div { class: "py-2 px-2", "Category:" },
+                                class: "inline-flex w-full justify-center content-center items-center justify-items-center px-2 py-2",
+                                div { class: "font-mono font-lg px-2 py-2", "Category:" },
                                 select {
                                     class: "font-mono border rounded-lg py-2 px-2",
                                     onchange: move |evt| {
@@ -271,11 +294,11 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                 }
                             }
                             div {
-                                class: "grid grid-cols-2",
+                                class: "grid grid-cols-2 py-2 px-2",
                                 div {
-                                    class: "inline-flex font-mono text-xl text-center",
+                                    class: "inline-flex font-mono text-xl justify-center content-center items-center",
                                     div {
-                                        class: "font-mono text-xl text-center px-4",
+                                        class: "font-mono text-xl px-4",
                                         "Boons",
                                     }
                                     button {
@@ -287,9 +310,9 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     }
                                 }
                                 div {
-                                    class: "inline-flex font-mono text-xl text-center",
+                                    class: "inline-flex font-mono text-xl justify-center content-center items-center",
                                     div {
-                                        class: "font-mono text-xl text-center px-4",
+                                        class: "font-mono text-xl px-4",
                                         "Flaws",
                                     }
                                     button {
@@ -301,7 +324,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     }
                                 }
                                 div {
-                                    class: "citems-center justify-items-center",
+                                    class: "w-auto items-center justify-items-center",
                                     for (j, boon) in quirk.boons.iter().enumerate() {rsx!(
                                         div {
                                             class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
@@ -324,7 +347,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     )}
                                 }
                                 div {
-                                    class: "items-center justify-items-center",
+                                    class: "w-auto items-center justify-items-center",
                                     for (j, flaw) in quirk.flaws.iter().enumerate() {rsx!(
                                         div {
                                             class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
