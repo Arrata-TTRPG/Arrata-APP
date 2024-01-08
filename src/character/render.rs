@@ -392,7 +392,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                     }
                 }
                 div { class: "flex flex-wrap justify-center",
-                    for (i, item) in character.get().inventory.iter().enumerate() {
+                    for (i , item) in character.get().inventory.iter().enumerate() {
                         rsx!(
                             div {
                                 class: "justify-center content-center items-center justify-items-center border border-spacing-2 px-3 py-3 top-2 bottom-2 left-2 right-2 rounded-lg",
