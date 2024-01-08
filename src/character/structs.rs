@@ -163,18 +163,26 @@ impl std::fmt::Display for Quality {
 pub struct Quirk {
     pub name: String,
     pub category: QuirkCategory,
-    pub boons: Option<Vec<String>>,
-    pub flaws: Option<Vec<String>>,
+    pub description: String,
+    pub boons: Vec<String>,
+    pub flaws: Vec<String>,
 }
 
 impl Quirk {
     pub fn new(name: String) -> Self {
         Self {
             name,
+            description: "".into(),
             category: QuirkCategory::Ethos,
-            boons: Some(vec![]),
-            flaws: Some(vec![]),
+            boons: vec![],
+            flaws: vec![],
         }
+    }
+}
+
+impl Default for Quirk {
+    fn default() -> Self {
+        Self::new("New Quirk!".into())
     }
 }
 

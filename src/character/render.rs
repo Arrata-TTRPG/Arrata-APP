@@ -1,6 +1,6 @@
 use super::structs::*;
 use dioxus::prelude::*;
-use dioxus_free_icons::icons::bs_icons::BsDice6;
+use dioxus_free_icons::icons::bs_icons::{BsDice6, BsTrash};
 use dioxus_free_icons::Icon;
 
 #[component(no_case_check)]
@@ -37,7 +37,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                             div {
                                 class: "inline-flex w-full justify-center content-center items-center justify-items-center",
                                 select {
-                                    class: "font-mono py-2 px-2",
+                                    class: "font-mono border rounded-lg py-2 px-2",
                                     onchange: move |evt| {
                                         character.with_mut(|character| {
                                             character.stats[i].quality = match evt.value.parse::<usize>().unwrap() {
@@ -71,7 +71,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                         });
                                     }
                                 },
-                                div { class: "py-2 px-2", "Checks:" },
+                                div { class: "font-mono text-lg py-2 px-2", "Checks:" },
                                 input {
                                     class: "w-12 border rounded-lg py-2 px-2",
                                     r#type:"number",
@@ -82,7 +82,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                         });
                                     }
                                 },
-                                div { class: "py-2 px-2", "Roll:" },
+                                div { class: "font-mono text-lg py-2 px-2", "Roll:" },
                                 button {
                                     class: "py-2 px-2",
                                     Icon {
@@ -136,7 +136,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                             div {
                                 class: "inline-flex w-full justify-center content-center items-center justify-items-center",
                                 select {
-                                    class: "font-mono py-2 px-1",
+                                    class: "font-mono border rounded-lg py-2 px-2",
                                     onchange: move |evt| {
                                         character.with_mut(|character| {
                                             character.skills[i].quality = match evt.value.parse::<usize>().unwrap() {
@@ -161,7 +161,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                     },
                                 },
                                 input {
-                                    class: "w-12 border rounded-lg py-2 px-1",
+                                    class: "w-12 border rounded-lg py-2 px-2",
                                     r#type:"number",
                                     value: skill.quantity as f64,
                                     oninput: move |evt| {
@@ -170,9 +170,9 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                         });
                                     }
                                 },
-                                div { class: "py-2 px-2", "Checks:" },
+                                div { class: "font-mono text-lg py-2 px-2", "Checks:" },
                                 input {
-                                    class: "w-12 border rounded-lg py-2 px-1",
+                                    class: "w-12 border rounded-lg py-2 px-2",
                                     r#type:"number",
                                     value: skill.checks.unwrap_or(0) as f64,
                                     oninput: move |evt| {
@@ -181,9 +181,9 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                         });
                                     }
                                 },
-                                div { class: "py-2 px-1", "Roll:" },
+                                div { class: "font-mono text-lg py-2 px-2", "Roll:" },
                                 button {
-                                    class: "py-2 px-1",
+                                    class: "py-2 px-2",
                                     Icon {
                                         width: 20,
                                         height: 20,
@@ -204,7 +204,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                 "Quirks"
             }
             button {
-                onclick: move |_| character.make_mut().quirks.push(Quirk::new("New Quirk!".into())),
+                onclick: move |_| character.make_mut().quirks.push(Quirk::default()),
                 class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
                 "+ Add Quirk"
             }
@@ -219,7 +219,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                             div {
                                 class: "justify-center content-center text-2xl py-2 px-1 w-full",
                                 input {
-                                    class: "text-mono text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
+                                    class: "text-center content-center justify-center w-auto border-spacing-1 border rounded-lg py-2 px-2",
                                     r#type:"text",
                                     value: "{quirk.name.clone()}",
                                     oninput: move |evt| {
@@ -236,7 +236,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                 class: "inline-flex w-full justify-center content-center items-center justify-items-center",
                                 div { class: "py-2 px-2", "Category:" },
                                 select {
-                                    class: "font-mono py-2 px-1",
+                                    class: "font-mono border rounded-lg py-2 px-2",
                                     onchange: move |evt| {
                                         character.with_mut(|character| {
                                             character.quirks[i].category = match evt.value.parse::<usize>().unwrap() {
@@ -259,6 +259,93 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                                         "Logos"
                                     },
                                 },
+                            }
+                            div {
+                                class: "inline-flex w-full border justify-center content-center items-center justify-items-center",
+                                textarea {
+                                    class: "rounded-lg w-full py-2 px-1 bg-black text-white border-white",
+                                    value: "{quirk.description.clone()}",
+                                    oninput: move |evt| {
+                                        character.make_mut().quirks[i].description = evt.value.to_string();
+                                    }
+                                }
+                            }
+                            div {
+                                class: "grid grid-cols-2",
+                                div {
+                                    class: "inline-flex font-mono text-xl text-center",
+                                    div {
+                                        class: "font-mono text-xl text-center px-4",
+                                        "Boons",
+                                    }
+                                    button {
+                                        onclick: move |_| character.with_mut(|character| {
+                                            character.quirks[i].boons.push("New Boon!".into())
+                                        }),
+                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white font-bold py-1 px-4 rounded",
+                                        "+ Add Boon"
+                                    }
+                                }
+                                div {
+                                    class: "inline-flex font-mono text-xl text-center",
+                                    div {
+                                        class: "font-mono text-xl text-center px-4",
+                                        "Flaws",
+                                    }
+                                    button {
+                                        onclick: move |_| character.with_mut(|character| {
+                                            character.quirks[i].flaws.push("New Flaw!".into())
+                                        }),
+                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white font-bold py-1 px-4 rounded",
+                                        "+ Add Flaw"
+                                    }
+                                }
+                                div {
+                                    class: "citems-center justify-items-center",
+                                    for (j, boon) in quirk.boons.iter().enumerate() {rsx!(
+                                        div {
+                                            class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
+                                            textarea {
+                                                class: "text-mono w-full content-center justify-center border-spacing-1 border rounded-lg py-2 px-2 bg-black text-white",
+                                                value: "{boon.clone()}",
+                                                oninput: move |evt| character.make_mut().quirks[i].boons[j] = evt.value.to_string()
+                                            }
+                                            button {
+                                                onclick: move |_| { let _ = character.make_mut().quirks[i].boons.remove(j); },
+                                                class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
+                                                Icon {
+                                                    width: 20,
+                                                    height: 20,
+                                                    fill: "white",
+                                                    icon: BsTrash
+                                                }
+                                            }
+                                        }
+                                    )}
+                                }
+                                div {
+                                    class: "items-center justify-items-center",
+                                    for (j, flaw) in quirk.flaws.iter().enumerate() {rsx!(
+                                        div {
+                                            class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
+                                            textarea {
+                                                class: "text-mono w-auto content-center justify-center border-spacing-1 border rounded-lg py-2 px-2 bg-black text-white",
+                                                value: "{flaw.clone()}",
+                                                oninput: move |evt| character.make_mut().quirks[i].flaws[j] = evt.value.to_string()
+                                            }
+                                            button {
+                                                onclick: move |_| { let _ = character.make_mut().quirks[i].flaws.remove(j); },
+                                                class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
+                                                Icon {
+                                                    width: 20,
+                                                    height: 20,
+                                                    fill: "white",
+                                                    icon: BsTrash
+                                                }
+                                            }
+                                        }
+                                    )}
+                                }
                             }
                         }
                     )
