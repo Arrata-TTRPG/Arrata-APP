@@ -34,12 +34,12 @@ pub fn app(cx: Scope) -> Element {
 
         div { class: "top-5 bottom-5 origin-center justify-center self-center items-center content-center flex space-x-3",
             button {
-                class: "bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| character.get().write_to_file().unwrap(),
                 "Save Character"
             }
             button {
-                class: "bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| character.set(Character::from_file().unwrap()),
                 "Load Character"
             }
