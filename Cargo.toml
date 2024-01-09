@@ -1,8 +1,5 @@
 cargo-features = ["profile-rustflags"]
 
-[unstable]
-profile-rustflags = true
-
 [package]
 name = "arrata_app"
 version = "0.0.0"
