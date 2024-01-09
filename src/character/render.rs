@@ -27,7 +27,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
 
         div { class: "flex flex-wrap",
             div { class: "flex-auto",
-                h2 { class: "py-4 text-center text-4xl font-bold font-mono", "Stats" }
+                h2 { class: "w-[748px] py-4 text-center text-4xl font-bold font-mono", "Stats" }
                 div { class: "flex justify-center justify-items-center content-center",
                     div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center content-center max-w-5xl",
                         for (i , stat) in character.get().stats.iter().enumerate() {
@@ -215,7 +215,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             }
 
             div { class: "flex-auto",
-                div { class: "flex justify-center content-center items-center",
+                div { class: "w-[1108px] flex justify-center content-center items-center",
                     h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                         "Quirks"
                     }
@@ -381,7 +381,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             }
 
             div { class: "flex-auto",
-                div { class: "flex justify-center content-center items-center",
+                div { class: "w-[704px] flex justify-center content-center items-center",
                     h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                         "Inventory"
                     }
