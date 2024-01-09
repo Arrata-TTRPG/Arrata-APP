@@ -391,50 +391,52 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                         "+ Add Item"
                     }
                 }
-                div { class: "flex flex-wrap justify-center",
-                    for (i , item) in character.get().inventory.iter().enumerate() {
-                        rsx!(
-                            div {
-                                class: "justify-center content-center items-center justify-items-center border border-spacing-2 px-3 py-3 top-2 bottom-2 left-2 right-2 rounded-lg",
-                                div { class: "inline-flex items-center content-center",
-                                    div {
-                                        input {
-                                            class: "w-44 font-mono text-lg text-center border-spacing-1 border rounded-lg py-2 px-2",
-                                            r#type:"text",
-                                            value: "{item.name.clone()}",
-                                            oninput: move |evt| {
-                                                character.make_mut().inventory[i].name = evt.value.to_string();
+                div { class: "flex justify-center",
+                    div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center max-w-2xl",
+                        for (i , item) in character.get().inventory.iter().enumerate() {
+                            rsx!(
+                                div {
+                                    class: "justify-center content-center items-center justify-items-center border border-spacing-2 px-3 py-3 top-2 bottom-2 left-2 right-2 rounded-lg",
+                                    div { class: "inline-flex items-center content-center",
+                                        div {
+                                            input {
+                                                class: "w-44 font-mono text-lg text-center border-spacing-1 border rounded-lg py-2 px-2",
+                                                r#type:"text",
+                                                value: "{item.name.clone()}",
+                                                oninput: move |evt| {
+                                                    character.make_mut().inventory[i].name = evt.value.to_string();
+                                                }
                                             }
                                         }
-                                    }
-                                    div {
-                                        input {
-                                            class: "w-12 border rounded-lg py-2 px-2",
-                                            r#type:"number",
-                                            value: item.quantity as f64,
-                                            oninput: move |evt| {
-                                                character.with_mut(|character| {
-                                                    character.inventory[i].quantity = evt.value.parse::<usize>().unwrap_or(0);
-                                                });
-                                            }
-                                        },
-                                    }
-                                    div {
-                                        class: "px-2 py-2",
-                                        button {
-                                            onclick: move |_| { let _ = character.make_mut().inventory.remove(i); },
-                                            class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                            Icon {
-                                                width: 20,
-                                                height: 20,
-                                                fill: "white",
-                                                icon: BsTrash
+                                        div {
+                                            input {
+                                                class: "w-12 border rounded-lg py-2 px-2",
+                                                r#type:"number",
+                                                value: item.quantity as f64,
+                                                oninput: move |evt| {
+                                                    character.with_mut(|character| {
+                                                        character.inventory[i].quantity = evt.value.parse::<usize>().unwrap_or(0);
+                                                    });
+                                                }
+                                            },
+                                        }
+                                        div {
+                                            class: "px-2 py-2",
+                                            button {
+                                                onclick: move |_| { let _ = character.make_mut().inventory.remove(i); },
+                                                class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
+                                                Icon {
+                                                    width: 20,
+                                                    height: 20,
+                                                    fill: "white",
+                                                    icon: BsTrash
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
