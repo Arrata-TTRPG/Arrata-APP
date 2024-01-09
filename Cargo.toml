@@ -1,33 +1,43 @@
 [package]
 name = "arrata_app"
+edition = "2021"
 version = "0.0.0"
 description = "An application for handling Arrata character sheets."
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 dioxus = "0.4.3"
 dioxus-desktop = "0.4.3"
+lodepng = "3.9.2"
 serde = "1.0.194"
 serde_json = "1.0.111"
 tokio = "1.35.1"
-dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
-lodepng = "3.9.2"
-rgb = "0.8"
+
+[dependencies.dioxus-free-icons]
+version = "0.7.0"
+features = ["bootstrap"]
 
 [dependencies.native-dialog]
 version = "0.7.0"
 features = ["windows_dpi_awareness", "windows_visual_styles"]
 
-[[bin]]
-name = "arrata_character_sheet_manager"
-path = "src/main.rs"
-
-[profile.dev]
-lto = "thin"
+[dependencies.rgb]
+version = "0.8"
+features = []
+default-features = false
 
 [profile.release]
 opt-level = 3
 lto = "thin"
 codegen-units = 1
+
+[profile.release.package]
+
+[profile.dev]
+lto = "thin"
+
+[profile.dev.package]
+
+[[bin]]
+path = "src/main.rs"
+name = "arrata_character_sheet_manager"
+required-features = []

@@ -98,7 +98,7 @@ jobs:
       - name: Create CSS
         run: |
           npm install -D tailwindcss
-          npx tailwindcss -i input.css -o public/tailwind.css
+          npx tailwindcss -i input.css -o public/tailwind.css --minify
       - name: Bundle release
         run: |
           tar -czf ${{ env.EXECUTABLE_NAME }}_linux.tar.gz ${{ env.EXECUTABLE_NAME }} public
@@ -140,7 +140,7 @@ jobs:
     - name: Create CSS
       run: |
         npm install -D tailwindcss
-        npx tailwindcss -i input.css -o public/tailwind.css
+        npx tailwindcss -i input.css -o public/tailwind.css --minify
     - name: Zip release
       uses: vimtor/action-zip@v1
       with:
