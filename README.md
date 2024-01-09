@@ -20,33 +20,21 @@ The application itself is written in Rust and therefore can be compiled for and 
 
 ### Installing
 
-TODO!
-
-### Compiling Locally
-
-To compile locally, you will need the following prerequisites:
-
-- Rust Nightly
-
-From the `Arrata-APP` directory, run `cargo build --release`. A new binary will be generated at `Arrata-APP/target/release/Arrata-Character-Sheet-Manager`.
-
-## Usage
-
-TODO!
+To install, go to the [latest release](https://github.com/kalebvonburris/Arrata-APP/releases/latest) and download the zip that matches your system. Extract into a folder of your choosing but maintain the file structure. You should be able to run the executable and use the app.
 
 ## Roadmap
 
 ### Main features
 
-- [ ] Create a functioning application
+- [x] Create a functioning application
 - [x] Establish character sheet paradigm - (`*.arrata`)
 - [ ] Implement the character sheet
   - [x] Name/Stock/Miscellaneous
   - [x] Stats
-  - [ ] Skills
-  - [ ] Quirks
+  - [x] Skills
+  - [x] Quirks
   - [ ] Argos
-  - [ ] Equipment
+  - [x] Inventory
 - [ ] Implement NPC character sheets
 
 ### Miscellaneous QOL features
