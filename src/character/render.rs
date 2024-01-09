@@ -217,6 +217,21 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
             div { class: "flex-auto",
                 div { class: "w-[1108px] flex justify-center content-center items-center",
                     h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
+                        "Argos"
+                    }
+                }
+                div { class: "flex justify-center content-center items-center py-2 px-2",
+                    textarea {
+                        class: "rounded-lg w-2/3 py-2 px-2 bg-black text-white border border-white",
+                        value: "{character.argos.clone()}",
+                        oninput: move |evt| {
+                            character.make_mut().argos = evt.value.to_string();
+                        }
+                    }
+                }
+
+                div { class: "flex justify-center content-center items-center",
+                    h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                         "Quirks"
                     }
                     button {
@@ -230,7 +245,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseState<Character>) -> El
                     div { class: "grid grid-cols-2 gap-4 justify-items-center max-w-5xl",
                         for (i , quirk) in character.get().quirks.iter().enumerate() {
                             rsx!(
-                                div { class: "flex flex-col border border-spacing-2 px-3 py-3 rounded-lg",
+                                div { class: "w-[504px] flex flex-col border border-spacing-2 px-3 py-3 rounded-lg",
                                     div {
                                         class: "flex justify-center content-center items-center justify-items-center text-2xl py-2 px-2 w-full",
                                         div {
