@@ -6,7 +6,7 @@ use dioxus::prelude::*;
 
 /// The main application.
 pub fn app(cx: Scope) -> Element {
-    let character: &UseState<Character> = use_state(cx, Character::new);
+    let character = use_ref(cx, Character::new);
 
     let arrata_style = r#"
     body { background-color: black; color: white; }
@@ -35,7 +35,7 @@ pub fn app(cx: Scope) -> Element {
         div { class: "top-5 bottom-5 origin-center justify-center self-center items-center content-center flex space-x-3",
             button {
                 class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                onclick: move |_| character.get().write_to_file().unwrap(),
+                onclick: move |_| character.read().write_to_file().unwrap(),
                 "Save Character"
             }
             button {
