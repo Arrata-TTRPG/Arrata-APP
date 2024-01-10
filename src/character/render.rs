@@ -6,8 +6,8 @@ use dioxus_free_icons::Icon;
 #[component(no_case_check)]
 pub fn render_character<'a>(cx: Scope, character: &'a UseRef<Character>) -> Element {
     cx.render(rsx!{
-        div { class: "flex content-center items-center justify-center text-lg",
-            div { class: "font-mono text-lg px-2 py-2", "Name:" }
+        div { class: "flex content-center items-center justify-center",
+            div { class: "font-mono text-xl px-2 py-2", "Name:" }
             input {
                 class: "border-spacing-1 border rounded-lg px-2 py-2",
                 value: "{character.read().name}",
@@ -15,7 +15,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseRef<Character>) -> Elem
                     character.write().name = evt.value.clone();
                 }
             }
-            div { class: "font-mono text-lg px-2 py-2", "Stock:" }
+            div { class: "font-mono text-xl px-2 py-2", "Stock:" }
             input {
                 class: "border-spacing-1 border rounded-lg px-2 py-2",
                 value: "{character.read().stock}",
@@ -224,7 +224,7 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseRef<Character>) -> Elem
                     textarea {
                         class: "rounded-lg w-2/3 py-2 px-2 bg-black text-white border border-white",
                         value: "{character.read().argos}",
-                        oninput: move |evt| character.write().argos = evt.value.to_string(),
+                        oninput: move |evt| character.write().argos = evt.value.to_string()
                     }
                 }
 
