@@ -6,7 +6,8 @@ on:
     branches: [ "main", "dev" ]
 
 env:
-  EXECUTABLE_NAME: "arrata_character_sheet_manager"
+  RUSTFLAGS: "-D warning -Z threads=8"
+  CARGO_INCREMENTAL: 1
 
 permissions: write-all
 

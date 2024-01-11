@@ -1,4 +1,6 @@
 pub mod character;
+pub mod dice;
+
 use character::render::*;
 use character::structs::*;
 
@@ -7,6 +9,7 @@ use dioxus::prelude::*;
 /// The main application.
 pub fn app(cx: Scope) -> Element {
     let character = use_ref(cx, Character::new);
+    let render_dice_roll = use_state(cx, || false);
 
     let arrata_style = r#"
     body { background-color: black; color: white; }
@@ -48,5 +51,17 @@ pub fn app(cx: Scope) -> Element {
         br {}
 
         render_character { character: character }
+
+        if **render_dice_roll {
+            render! { "stuff" }
+        }
+
+        button {
+            onclick: |_| {
+                let new_state = !**render_dice_roll;
+                render_dice_roll.set(new_state);
+            },
+            "render stuff"
+        }
     })
 }

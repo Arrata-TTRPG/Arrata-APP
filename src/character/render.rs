@@ -39,13 +39,13 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseRef<Character>) -> Elem
                                         div {
                                             class: "bg-slate-900 hover:bg-slate-600 py-2 px-2 space-x-5 rounded",
                                             button {
+                                                // TODO: onclick
                                                 Icon {
                                                     width: 30,
                                                     height: 30,
                                                     fill: "white",
                                                     icon: BsDice6
-                                                }
-                                                // TODO: onclick event!
+                                                },
                                             }
                                         }
                                     },
