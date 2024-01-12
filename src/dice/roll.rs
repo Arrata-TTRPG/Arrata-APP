@@ -1,4 +1,4 @@
-use crate::character::structs::Stat;
+﻿use crate::character::structs::Stat;
 use crate::dice::structs::*;
 
 pub fn roll_stat(stat: &Stat) -> DiceResult {
@@ -8,7 +8,7 @@ pub fn roll_stat(stat: &Stat) -> DiceResult {
     let results = (0..stat.quantity)
         .map(|_| {
             let result: u8 = rand::random::<u8>();
-            successes += (result > quality) as usize;
+            successes += (result >= quality) as usize;
             result
         })
         .collect::<Vec<u8>>();
