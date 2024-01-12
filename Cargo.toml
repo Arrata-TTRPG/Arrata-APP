@@ -17,6 +17,7 @@ tokio = "1.35.1"
 dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
 lodepng = { features = ["rust_backend"], default-features = false, version = "3.9.2" }
 rgb = { default-features = false, version = "0.8" }
+rand = "0.8.5"
 
 [dependencies.native-dialog]
 version = "0.7.0"

@@ -9,7 +9,7 @@ use dioxus::prelude::*;
 /// The main application.
 pub fn app(cx: Scope) -> Element {
     let character = use_ref(cx, Character::new);
-    let render_dice_roll = use_state(cx, || false);
+    let render_dice_roll = use_state(cx, || true);
 
     let arrata_style = r#"
     body { background-color: black; color: white; }
@@ -53,7 +53,15 @@ pub fn app(cx: Scope) -> Element {
         render_character { character: character }
 
         if **render_dice_roll {
-            render! { "stuff" }
+            render! {
+                div { class: "z-10 fixed text-center max-w-[80%] w-96 h-48 border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
+                    div {
+                        "Outcome:"
+
+
+                    }
+                }
+            }
         }
 
         button {
