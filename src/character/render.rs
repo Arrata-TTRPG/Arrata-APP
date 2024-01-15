@@ -4,7 +4,11 @@ use dioxus_free_icons::icons::bs_icons::{BsDice6, BsTrash};
 use dioxus_free_icons::Icon;
 
 #[component(no_case_check)]
-pub fn render_character<'a>(cx: Scope, character: &'a UseRef<Character>) -> Element {
+pub fn render_character<'a>(
+    cx: Scope,
+    character: &'a UseRef<Character>,
+    dice_roll_state: &'a UseState<(bool, Option<Stat>)>,
+) -> Element<'a> {
     cx.render(rsx!{
         div { class: "flex content-center items-center justify-center",
             div { class: "font-mono text-xl px-2 py-2", "Name:" }
@@ -34,10 +38,15 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseRef<Character>) -> Elem
                             rsx!(
                                 div { class: "flex flex-col border border-spacing-2 items-center justify-center justify-items-center px-2 py-2 rounded-lg",
                                     div { class: "inline-flex items-center justify-center py-2 px-2 w-auto",
-                                        div { class: "font-mono text-center text-2xl py-2 py-2", "{stat.name}" }
-                                        div { class: "bg-slate-900 hover:bg-slate-600 py-2 px-2 space-x-5 rounded",
+                                        div { class: "font-mono text-center text-2xl py-2 space-x-5", "{stat.name}" }
+                                        div { class: "bg-slate-900 hover:bg-slate-600 rounded",
                                             button {
-                                                // TODO: onclick
+                                                onclick: move |_| {
+                                                    dice_roll_state.with_mut(|state| {
+                                                        state.0 = true;
+                                                        state.1 = Some(character.read().stats[i].clone());
+                                                    });
+                                                },
                                                 Icon {
                                                     width: 30,
                                                     height: 30,
@@ -121,15 +130,20 @@ pub fn render_character<'a>(cx: Scope, character: &'a UseRef<Character>) -> Elem
                                                 }
                                             }
                                         }
-                                        div { class: "flex px-2 py-2",
-                                            button { class: "bg-slate-900 hover:bg-slate-600 py-2 px-2 space-x-5 rounded",
+                                        div { class: "flex px-2 py-2 space-x-5",
+                                            button { class: "bg-slate-900 hover:bg-slate-600 rounded",
+                                                onclick: move |_| {
+                                                    dice_roll_state.with_mut(|state| {
+                                                        state.0 = true;
+                                                        state.1 = Some(character.read().skills[i].clone());
+                                                    });
+                                                },
                                                 Icon {
                                                     width: 30,
                                                     height: 30,
                                                     fill: "white",
                                                     icon: BsDice6
                                                 }
-                                                // TODO: onclick event!
                                             }
                                         }
                                         div { class: "flex px-2 py-2 rounded-lg",

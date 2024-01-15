@@ -3,11 +3,15 @@ pub mod dice;
 
 use character::render::*;
 use character::structs::*;
+use dice::render::*;
+
 use dioxus::prelude::*;
 
 /// The main application.
 pub fn app(cx: Scope) -> Element {
     let character = use_ref(cx, Character::new);
+
+    let dice_roll_state: &UseState<(bool, Option<Stat>)> = use_state(cx, || (false, None));
 
     let arrata_style = r#"
     body { background-color: black; color: white; }
@@ -20,8 +24,7 @@ pub fn app(cx: Scope) -> Element {
 
         div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex",
             // Arrata logo
-            img {
-                class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
+            img { class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
                 src: "public/rat.png",
                 alt: "",
                 width: 300,
@@ -47,6 +50,16 @@ pub fn app(cx: Scope) -> Element {
 
         br {}
 
-        render_character { character: character }
+        render_character {
+            character: character,
+            dice_roll_state: dice_roll_state
+        }
+
+        if dice_roll_state.0 {
+            match &dice_roll_state.1 {
+                Some(s) => rsx!(render_rolls { stat: s.clone() }),
+                None    => rsx!(""),
+            }
+        }
     })
 }

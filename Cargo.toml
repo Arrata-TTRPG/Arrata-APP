@@ -9,8 +9,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-dioxus = { default-features = false, version = "0.4.3" }
-dioxus-desktop = { features = ["tokio_runtime"], default-features = false, version = "0.4.3" }
 serde = { default-features = false, version = "1.0.194" }
 serde_json = { default-features = false, version = "1.0.111" }
 tokio = "1.35.1"
@@ -18,6 +16,15 @@ dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
 lodepng = { features = ["rust_backend"], default-features = false, version = "3.9.2" }
 rgb = { default-features = false, version = "0.8" }
 rand = "0.8.5"
+
+[dependencies.dioxus]
+version = "0.4.3"
+default-features = false
+
+[dependencies.dioxus-desktop]
+version = "0.4.3"
+features = ["tokio_runtime"]
+default-features = false
 
 [dependencies.native-dialog]
 version = "0.7.0"
