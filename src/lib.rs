@@ -24,7 +24,9 @@ pub fn app(cx: Scope) -> Element {
 
         div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex",
             // Arrata logo
-            img { class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
+            img {
+                // Arrata logo
+                class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
                 src: "public/rat.png",
                 alt: "",
                 width: 300,
@@ -42,7 +44,8 @@ pub fn app(cx: Scope) -> Element {
                 onclick: move |_| character.read().write_to_file().unwrap(),
                 "Save Character"
             }
-            button { class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+            button {
+                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| character.set(Character::from_file().unwrap()),
                 "Load Character"
             }
@@ -50,10 +53,7 @@ pub fn app(cx: Scope) -> Element {
 
         br {}
 
-        render_character {
-            character: character,
-            dice_roll_state: dice_roll_state
-        }
+        render_character { character: character, dice_roll_state: dice_roll_state }
 
         if dice_roll_state.0 {
             match &dice_roll_state.1 {

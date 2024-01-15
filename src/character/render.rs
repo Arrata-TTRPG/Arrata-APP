@@ -110,7 +110,8 @@ pub fn render_character<'a>(
                     h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                         "Skills"
                     }
-                    button { class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                    button {
+                        class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
                         onclick: move |_| character.write().skills.push(Stat::new("New Skill!".into())),
                         "+ Add Skill"
                     }
@@ -217,7 +218,8 @@ pub fn render_character<'a>(
                     }
                 }
                 div { class: "flex justify-center content-center items-center py-2 px-2",
-                    textarea { class: "rounded-lg w-2/3 py-2 px-2 bg-black text-white border border-white",
+                    textarea {
+                        class: "rounded-lg w-2/3 py-2 px-2 bg-black text-white border border-white",
                         value: "{character.read().argos}",
                         oninput: move |evt| character.write().argos = evt.value.to_string()
                     }
@@ -227,7 +229,8 @@ pub fn render_character<'a>(
                     h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                         "Quirks"
                     }
-                    button { class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                    button {
+                        class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
                         onclick: move |_| character.write().quirks.push(Quirk::default()),
                         "+ Add Quirk"
                     }
@@ -368,7 +371,8 @@ pub fn render_character<'a>(
                     h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                         "Inventory"
                     }
-                    button { class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                    button {
+                        class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
                         onclick: move |_| character.write().inventory.push(Item::default()),
                         "+ Add Item"
                     }
