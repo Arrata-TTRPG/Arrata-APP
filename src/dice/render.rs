@@ -18,7 +18,7 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
             // Close button
             div { class: "z-20 absolute right-0 px-2 py-2",
                 div {
-                    class: "bg-slate-900 hover:bg-slate-600",
+                    class: "bg-slate-900 hover:bg-slate-600 rounded",
                     onclick: move |_| {
                         state
                             .with_mut(|state| {
@@ -29,44 +29,54 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                     Icon { width: 50, height: 50, fill: "red", icon: BsX }
                 }
             }
-            div {
+            div { class: "content-center justify-items-center",
                 // Stat
-                div { class: "flex flex-wrap px-2 py-2 justify-center content-center",
+                div { class: "content-center",
                     // Stat Name
-                    h2 { class: "text-xl text-center font-mono",
+                    h2 { class: "text-xl text-center font-mono px-2 py-2",
                         "{stat.name}"
                     }
 
-                    br {}
-
                     // Quality + Quantity
-                    div { class: "inline-flex",
-                        div { class: "text-xl font-mono",
+                    div { class: "inline-flex w-full justify-center justify-items-center content-center",
+                        div { class: "text-xl justify-center font-mono px-2 py-2",
                             "{stat.quality}"
                         }
-                        div { class: "text-xl font-mono",
+                        div { class: "text-xl justify-center font-mono px-2 py-2",
                             "{stat.quantity}"
                         }
+                        // Rolling
+                        div { class: "justify-center",
+                            button {
+                                class: "max-w-fit font-mono place-self-center bg-slate-900 hover:bg-slate-600 py-2 px-2 rounded",
+                                onclick: move |_| {
+                                    dice_results
+                                        .with_mut(|results| {
+                                            *results = Some(roll_stat(&stat));
+                                        });
+                                },
+                                "Roll!"
+                            }
+                        }
                     }
-
                 }
-                // Rolling
-                div { class: "flex w-full content-center",
-                    button {
-                        class: "max-w-fit font-mono place-self-center bg-slate-900 hover:bg-slate-600 py-2 px-2 rounded",
-                        onclick: move |_| {
-                            dice_results
-                                .with_mut(|results| {
-                                    *results = Some(roll_stat(&stat));
-                                });
-                        },
-                        "Roll!"
-                    }
-                }
-
 
                 if let Some(results) = dice_results.get() {
-                    rsx!( div { class: "font-mono", "{results:#?}" } )
+                    rsx!(
+                        div { class: "font-mono justify-center",
+                            div { class: "inline-flex justify-center",
+                                // Successes
+                                div { class: "text-center text-green-600 px-2 py-2",
+                                    "Successes: {results.successes}"
+                                }
+                                // Failures
+                                div { class: "text-center text-red-600 px-2 py-2",
+                                    "Failures: {results.failures}"
+                                }
+                            }
+
+                        }
+                    )
                 }
             }
         }
