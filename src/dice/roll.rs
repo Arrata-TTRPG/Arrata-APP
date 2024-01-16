@@ -7,7 +7,7 @@ pub fn roll_stat(stat: &Stat) -> DiceResult {
 
     let results = (0..stat.quantity)
         .map(|_| {
-            let result: u8 = rand::random::<u8>();
+            let result: u8 = (rand::random::<u8>() % 6) + 1;
             successes += (result >= quality) as usize;
             result
         })

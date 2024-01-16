@@ -9,7 +9,7 @@ use dioxus::prelude::*;
 
 /// The main application.
 pub fn app(cx: Scope) -> Element {
-    let character = use_ref(cx, Character::new);
+    let character: &UseRef<Character> = use_ref(cx, Character::new);
 
     let dice_roll_state: &UseState<(bool, Option<Stat>)> = use_state(cx, || (false, None));
 
@@ -57,7 +57,7 @@ pub fn app(cx: Scope) -> Element {
 
         if dice_roll_state.0 {
             match &dice_roll_state.1 {
-                Some(s) => rsx!(render_rolls { stat: s.clone() }),
+                Some(_) => rsx!(render_rolls { state: dice_roll_state }),
                 None    => rsx!(""),
             }
         }
