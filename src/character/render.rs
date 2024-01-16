@@ -38,9 +38,9 @@ pub fn render_character<'a>(
                             rsx!(
                                 div { class: "flex flex-col border border-spacing-2 items-center justify-center justify-items-center px-2 py-2 rounded-lg",
                                     div { class: "inline-flex items-center justify-center py-2 px-2 w-auto",
-                                        div { class: "font-mono text-center text-2xl py-2 space-x-5", "{stat.name}" }
-                                        div { class: "bg-slate-900 hover:bg-slate-600 rounded",
-                                            button {
+                                        div { class: "font-mono text-center text-2xl py-2 px-2", "{stat.name}" }
+                                        div { class: "py-2 px-2",
+                                            button { class: "bg-slate-900 hover:bg-slate-600",
                                                 onclick: move |_| {
                                                     dice_roll_state.with_mut(|state| {
                                                         state.0 = true;
@@ -131,8 +131,8 @@ pub fn render_character<'a>(
                                                 }
                                             }
                                         }
-                                        div { class: "flex px-2 py-2 space-x-5",
-                                            button { class: "bg-slate-900 hover:bg-slate-600 rounded",
+                                        div { class: "px-2 py-2",
+                                            button { class: "bg-slate-900 hover:bg-slate-600",
                                                 onclick: move |_| {
                                                     dice_roll_state.with_mut(|state| {
                                                         state.0 = true;
@@ -147,7 +147,7 @@ pub fn render_character<'a>(
                                                 }
                                             }
                                         }
-                                        div { class: "flex px-2 py-2 rounded-lg",
+                                        div { class: "px-2 py-2 rounded-lg",
                                             button { class: "bg-slate-900 hover:bg-slate-600 py-2 px-2 space-x-5 rounded",
                                                 onclick: move |_| { let _ = character.write().skills.remove(i); },
                                                 Icon {

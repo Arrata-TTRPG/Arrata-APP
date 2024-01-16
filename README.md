@@ -6,6 +6,10 @@ The application itself is written in Rust and therefore can be compiled for and 
 
 ## Installation
 
+To install, go to the [latest release](https://github.com/kalebvonburris/Arrata-APP/releases/latest) and download the zip that matches your system. Extract into a folder of your choosing but maintain the file structure. You should be able to run the executable and use the app.
+
+## Compiling Locally
+
 ### Prerequisites
 
 - For these operating systems:
@@ -17,10 +21,17 @@ The application itself is written in Rust and therefore can be compiled for and 
       - on Debian/bullseye use: `sudo apt install libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev`
   - Mac OS
     - No needed dependencies
+- Rust Nightly
+- Tailwind CSS
+  - `npm install -D tailwindcss`
 
-### Installing
+### Compilation
 
-To install, go to the [latest release](https://github.com/kalebvonburris/Arrata-APP/releases/latest) and download the zip that matches your system. Extract into a folder of your choosing but maintain the file structure. You should be able to run the executable and use the app.
+Clone the repo: `git clone https://github.com/kalebvonburris/Arrata-APP`
+
+`cd` into `Arrata-APP`
+
+Run `npx tailwindcss -i input.css -o public/tailwind.css` and then `cargo run`. The application should launch after compiling.
 
 ## Roadmap
 
@@ -33,7 +44,7 @@ To install, go to the [latest release](https://github.com/kalebvonburris/Arrata-
   - [x] Stats
   - [x] Skills
   - [x] Quirks
-  - [ ] Argos
+  - [x] Argos
   - [x] Inventory
 - [ ] Implement NPC character sheets
 
