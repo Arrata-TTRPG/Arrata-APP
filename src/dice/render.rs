@@ -42,12 +42,8 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                     }
                     // Quality + Quantity
                     div { class: "inline-flex w-full justify-center justify-items-center content-center",
-                        div { class: "text-xl justify-center font-mono px-2 py-2",
-                            "{stat.quality}"
-                        }
-                        div { class: "text-xl justify-center font-mono px-2 py-2",
-                            "{stat.quantity}"
-                        }
+                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quality}" }
+                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quantity}" }
                         // Rolling
                         div { class: "justify-center",
                             button {
@@ -55,7 +51,9 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                 onclick: move |_| {
                                     dice_results
                                         .with_mut(|results| {
-                                            *results = Some(roll_stat(stat.clone(), *advantage.get(), *disadvantage.get()));
+                                            *results = Some(
+                                                roll_stat(stat.clone(), *advantage.get(), *disadvantage.get()),
+                                            );
                                         });
                                 },
                                 "Roll!"
@@ -66,29 +64,31 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                     div { class: "grid grid-cols-2 justify-center content-even",
                         div { class: "grid grid-cols-1 px-2 py-2",
                             div { class: "px-1 py-1 items-center justify-center bg-green-950 rounded border",
-                                div { class: "font-mono text-center", "Advantage"}
+                                div { class: "font-mono text-center", "Advantage" }
                                 div { class: "flex justify-center",
-                                    input { class: "w-12 border rounded-lg py-1 px-1",
-                                        r#type:"number",
+                                    input {
+                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type: "number",
                                         value: *advantage.get() as f64,
                                         oninput: move |evt| {
                                             advantage.set(evt.value.parse::<usize>().unwrap_or(0));
                                         }
-                                    },
+                                    }
                                 }
                             }
                         }
                         div { class: "grid grid-cols-1 px-2 py-2",
                             div { class: "px-1 py-1 items-center justify-center bg-red-950 rounded border",
-                                div { class: "font-mono text-center", "Disadvantage"}
+                                div { class: "font-mono text-center", "Disadvantage" }
                                 div { class: "flex justify-center",
-                                    input { class: "w-12 border rounded-lg py-1 px-1",
-                                        r#type:"number",
+                                    input {
+                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type: "number",
                                         value: *disadvantage.get() as f64,
                                         oninput: move |evt| {
                                             disadvantage.set(evt.value.parse::<usize>().unwrap_or(0));
                                         }
-                                    },
+                                    }
                                 }
                             }
                         }
