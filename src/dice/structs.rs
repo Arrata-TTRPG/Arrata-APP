@@ -1,3 +1,4 @@
+#[derive(Debug, Clone)]
 pub struct DiceResult {
     pub successes: usize,
     pub failures: usize,
