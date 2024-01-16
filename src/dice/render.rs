@@ -10,9 +10,11 @@ use crate::{
 pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) -> Element {
     // Stat being passed must be given as a Some(Stat) otherwise the app will crash.
     let stat = state.get().1.clone().unwrap();
-
+    // Create a state for the dice results
     let dice_results: &UseState<Option<DiceResult>> = use_state(cx, || None);
-
+    // Create a state for advantage and disadvantage
+    //let advantage = use_state(cx, || 0);
+    //let disadvantage = use_state(cx, || 0);
     cx.render(rsx! {
         div { class: "z-10 fixed flex justify-center content-center max-w-[80%] w-96 h-fit border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
@@ -33,10 +35,11 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                 // Stat
                 div { class: "content-center",
                     // Stat Name
-                    h2 { class: "text-xl text-center font-mono px-2 py-2",
-                        "{stat.name}"
+                    div { class: "flex justify-center px-2 py-2",
+                        h2 { class: "w-fit text-2xl text-center font-mono px-2 py-2 bg-slate-900 rounded border",
+                            "{stat.name}"
+                        }
                     }
-
                     // Quality + Quantity
                     div { class: "inline-flex w-full justify-center justify-items-center content-center",
                         div { class: "text-xl justify-center font-mono px-2 py-2",
