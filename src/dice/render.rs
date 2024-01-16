@@ -13,14 +13,14 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
     // Create a state for the dice results
     let dice_results: &UseState<Option<DiceResult>> = use_state(cx, || None);
     // Create a state for advantage and disadvantage
-    //let advantage = use_state(cx, || 0);
-    //let disadvantage = use_state(cx, || 0);
+    let advantage = use_state(cx, || 0);
+    let disadvantage = use_state(cx, || 0);
     cx.render(rsx! {
         div { class: "z-10 fixed flex justify-center content-center max-w-[80%] w-96 h-fit border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
             div { class: "z-20 absolute right-0 px-2 py-2",
                 div {
-                    class: "bg-slate-900 hover:bg-slate-600 rounded",
+                    class: "bg-slate-950 hover:bg-slate-700 rounded",
                     onclick: move |_| {
                         state
                             .with_mut(|state| {
@@ -28,7 +28,7 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                 state.1 = None;
                             });
                     },
-                    Icon { width: 50, height: 50, fill: "red", icon: BsX }
+                    Icon { width: 35, height: 35, fill: "red", icon: BsX }
                 }
             }
             div { class: "content-center justify-items-center",
@@ -55,10 +55,41 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                 onclick: move |_| {
                                     dice_results
                                         .with_mut(|results| {
-                                            *results = Some(roll_stat(stat.clone()));
+                                            *results = Some(roll_stat(stat.clone(), *advantage.get(), *disadvantage.get()));
                                         });
                                 },
                                 "Roll!"
+                            }
+                        }
+                    }
+                    // Advantage + Disadvantage
+                    div { class: "grid grid-cols-2 justify-center content-even",
+                        div { class: "grid grid-cols-1 px-2 py-2",
+                            div { class: "px-1 py-1 items-center justify-center bg-green-950 rounded border",
+                                div { class: "font-mono text-center", "Advantage"}
+                                div { class: "flex justify-center",
+                                    input { class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type:"number",
+                                        value: *advantage.get() as f64,
+                                        oninput: move |evt| {
+                                            advantage.set(evt.value.parse::<usize>().unwrap_or(0));
+                                        }
+                                    },
+                                }
+                            }
+                        }
+                        div { class: "grid grid-cols-1 px-2 py-2",
+                            div { class: "px-1 py-1 items-center justify-center bg-red-950 rounded border",
+                                div { class: "font-mono text-center", "Disadvantage"}
+                                div { class: "flex justify-center",
+                                    input { class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type:"number",
+                                        value: *disadvantage.get() as f64,
+                                        oninput: move |evt| {
+                                            disadvantage.set(evt.value.parse::<usize>().unwrap_or(0));
+                                        }
+                                    },
+                                }
                             }
                         }
                     }
