@@ -1,6 +1,19 @@
 ﻿use crate::character::structs::Stat;
 use crate::dice::structs::*;
 
+/// Rolls a given stat with advantage and disadvantage.
+///
+/// # Inputs
+///
+/// `stat: Stat` - The stat to roll.
+///
+/// `advantage: usize` - The level of advantage on the roll.
+///
+/// `disadvantage: usize` - The level of disadvantage on the roll.
+///
+/// # Outputs
+///
+/// `DiceResult` - The result of the roll.
 pub fn roll_stat(stat: Stat, advantage: usize, disadvantage: usize) -> DiceResult {
     let mut quantity: isize = stat.quantity as isize;
     let quality = stat.quality as u8;
