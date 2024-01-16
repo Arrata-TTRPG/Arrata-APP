@@ -137,7 +137,7 @@ impl Stat {
 
 /// A struct for Quality. Determines the
 /// lower bound for rolls.
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Copy, PartialEq)]
 #[serde(rename_all = "PascalCase")]
 pub enum Quality {
     Basic = 4,

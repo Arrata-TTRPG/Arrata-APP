@@ -52,7 +52,7 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                 onclick: move |_| {
                                     dice_results
                                         .with_mut(|results| {
-                                            *results = Some(roll_stat(&stat));
+                                            *results = Some(roll_stat(stat.clone()));
                                         });
                                 },
                                 "Roll!"
@@ -64,7 +64,7 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                 if let Some(results) = dice_results.get() {
                     rsx!(
                         div { class: "font-mono justify-center",
-                            div { class: "inline-flex justify-center",
+                            div { class: "flex justify-center",
                                 // Successes
                                 div { class: "text-center text-green-600 px-2 py-2",
                                     "Successes: {results.successes}"
@@ -74,7 +74,23 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                     "Failures: {results.failures}"
                                 }
                             }
-
+                            div { class: "px-2 py-2 text-lg text-center", "Results" },
+                            // Results
+                            div { class: "px-2 py-2",
+                                div { class: "px-1 py-1 flex flex-wrap content-around justify-center text-center border bg-slate-900",
+                                    for r in results.results.iter() {
+                                        rsx! (
+                                            div { class: "px-1 py-1",
+                                                if *r >= stat.quality as u8 {
+                                                    rsx!( div { class: "px-1 text-green-500 bg-slate-800 rounded", "{r}" } )
+                                                } else {
+                                                    rsx!( div { class: "px-1 text-red-600 bg-slate-950 rounded", "{r}" } )
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            }
                         }
                     )
                 }

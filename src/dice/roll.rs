@@ -1,8 +1,8 @@
 ﻿use crate::character::structs::Stat;
 use crate::dice::structs::*;
 
-pub fn roll_stat(stat: &Stat) -> DiceResult {
-    let quality = stat.quality.clone() as u8;
+pub fn roll_stat(stat: Stat) -> DiceResult {
+    let quality = stat.quality as u8;
     let mut successes = 0;
 
     let results = (0..stat.quantity)

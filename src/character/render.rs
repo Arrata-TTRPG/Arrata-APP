@@ -81,7 +81,7 @@ pub fn render_character<'a>(
                                                 "Superb"
                                             },
                                         },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: stat.quantity as f64,
                                             oninput: move |evt| {
@@ -91,7 +91,7 @@ pub fn render_character<'a>(
                                             }
                                         },
                                         div { class: "font-mono text-lg py-2 px-2", "Checks:" },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: stat.checks.unwrap_or(0) as f64,
                                             oninput: move |evt| {
@@ -184,7 +184,7 @@ pub fn render_character<'a>(
                                                 "Superb"
                                             },
                                         },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: skill.quantity as f64,
                                             oninput: move |evt| {
@@ -194,7 +194,7 @@ pub fn render_character<'a>(
                                             }
                                         },
                                         div { class: "font-mono text-lg py-2 px-2", "Checks:" },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: skill.checks.unwrap_or(0) as f64,
                                             oninput: move |evt| {
@@ -393,7 +393,7 @@ pub fn render_character<'a>(
                                             }
                                         }
                                         div {
-                                            input { class: "w-12 border rounded-lg py-2 px-2",
+                                            input { class: "w-16 border rounded-lg py-2 px-2",
                                                 r#type:"number",
                                                 value: item.quantity as f64,
                                                 oninput: move |evt| {
