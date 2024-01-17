@@ -31,7 +31,9 @@ pub fn render_character<'a>(
 
         div { class: "flex flex-wrap",
             div { class: "w-[748px] flex-auto justify-items-center justify-center",
-                h2 { class: "py-4 text-center text-4xl font-bold font-mono", "Stats" }
+                h2 { class: "py-4 text-center text-4xl font-bold font-mono",
+                    "Stats {character.read().stats.iter().map(|stat| stat.quantity).sum::<usize>()}"
+                }
                 div { class: "flex justify-center justify-items-center content-center",
                     div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center content-center max-w-5xl",
                         for (i , stat) in character.read().stats.iter().enumerate() {
@@ -81,7 +83,7 @@ pub fn render_character<'a>(
                                                 "Superb"
                                             },
                                         },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: stat.quantity as f64,
                                             oninput: move |evt| {
@@ -91,7 +93,7 @@ pub fn render_character<'a>(
                                             }
                                         },
                                         div { class: "font-mono text-lg py-2 px-2", "Checks:" },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: stat.checks.unwrap_or(0) as f64,
                                             oninput: move |evt| {
@@ -184,7 +186,7 @@ pub fn render_character<'a>(
                                                 "Superb"
                                             },
                                         },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: skill.quantity as f64,
                                             oninput: move |evt| {
@@ -194,7 +196,7 @@ pub fn render_character<'a>(
                                             }
                                         },
                                         div { class: "font-mono text-lg py-2 px-2", "Checks:" },
-                                        input { class: "w-12 border rounded-lg py-2 px-2",
+                                        input { class: "w-16 border rounded-lg py-2 px-2",
                                             r#type:"number",
                                             value: skill.checks.unwrap_or(0) as f64,
                                             oninput: move |evt| {
@@ -393,7 +395,7 @@ pub fn render_character<'a>(
                                             }
                                         }
                                         div {
-                                            input { class: "w-12 border rounded-lg py-2 px-2",
+                                            input { class: "w-16 border rounded-lg py-2 px-2",
                                                 r#type:"number",
                                                 value: item.quantity as f64,
                                                 oninput: move |evt| {

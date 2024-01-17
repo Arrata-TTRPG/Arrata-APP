@@ -10,15 +10,17 @@ use crate::{
 pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) -> Element {
     // Stat being passed must be given as a Some(Stat) otherwise the app will crash.
     let stat = state.get().1.clone().unwrap();
-
+    // Create a state for the dice results
     let dice_results: &UseState<Option<DiceResult>> = use_state(cx, || None);
-
+    // Create a state for advantage and disadvantage
+    let advantage = use_state(cx, || 0);
+    let disadvantage = use_state(cx, || 0);
     cx.render(rsx! {
         div { class: "z-10 fixed flex justify-center content-center max-w-[80%] w-96 h-fit border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
             div { class: "z-20 absolute right-0 px-2 py-2",
                 div {
-                    class: "bg-slate-900 hover:bg-slate-600 rounded",
+                    class: "bg-slate-950 hover:bg-slate-700 rounded",
                     onclick: move |_| {
                         state
                             .with_mut(|state| {
@@ -26,25 +28,22 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                 state.1 = None;
                             });
                     },
-                    Icon { width: 50, height: 50, fill: "red", icon: BsX }
+                    Icon { width: 35, height: 35, fill: "red", icon: BsX }
                 }
             }
             div { class: "content-center justify-items-center",
                 // Stat
                 div { class: "content-center",
                     // Stat Name
-                    h2 { class: "text-xl text-center font-mono px-2 py-2",
-                        "{stat.name}"
+                    div { class: "flex justify-center px-2 py-2",
+                        h2 { class: "w-fit text-2xl text-center font-mono px-2 py-2 bg-slate-900 rounded border",
+                            "{stat.name}"
+                        }
                     }
-
                     // Quality + Quantity
                     div { class: "inline-flex w-full justify-center justify-items-center content-center",
-                        div { class: "text-xl justify-center font-mono px-2 py-2",
-                            "{stat.quality}"
-                        }
-                        div { class: "text-xl justify-center font-mono px-2 py-2",
-                            "{stat.quantity}"
-                        }
+                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quality}" }
+                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quantity}" }
                         // Rolling
                         div { class: "justify-center",
                             button {
@@ -52,10 +51,45 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                 onclick: move |_| {
                                     dice_results
                                         .with_mut(|results| {
-                                            *results = Some(roll_stat(&stat));
+                                            *results = Some(
+                                                roll_stat(stat.clone(), *advantage.get(), *disadvantage.get()),
+                                            );
                                         });
                                 },
                                 "Roll!"
+                            }
+                        }
+                    }
+                    // Advantage + Disadvantage
+                    div { class: "grid grid-cols-2 justify-center content-even",
+                        div { class: "grid grid-cols-1 px-2 py-2",
+                            div { class: "px-1 py-1 items-center justify-center bg-green-950 rounded border",
+                                div { class: "font-mono text-center", "Advantage" }
+                                div { class: "flex justify-center",
+                                    input {
+                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type: "number",
+                                        value: *advantage.get() as f64,
+                                        oninput: move |evt| {
+                                            advantage.set(evt.value.parse::<usize>().unwrap_or(0));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        div { class: "grid grid-cols-1 px-2 py-2",
+                            div { class: "px-1 py-1 items-center justify-center bg-red-950 rounded border",
+                                div { class: "font-mono text-center", "Disadvantage" }
+                                div { class: "flex justify-center",
+                                    input {
+                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type: "number",
+                                        value: *disadvantage.get() as f64,
+                                        oninput: move |evt| {
+                                            disadvantage.set(evt.value.parse::<usize>().unwrap_or(0));
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -64,7 +98,7 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                 if let Some(results) = dice_results.get() {
                     rsx!(
                         div { class: "font-mono justify-center",
-                            div { class: "inline-flex justify-center",
+                            div { class: "flex justify-center",
                                 // Successes
                                 div { class: "text-center text-green-600 px-2 py-2",
                                     "Successes: {results.successes}"
@@ -74,7 +108,23 @@ pub fn render_rolls<'a>(cx: Scope, state: &'a UseState<(bool, Option<Stat>)>) ->
                                     "Failures: {results.failures}"
                                 }
                             }
-
+                            div { class: "px-2 py-2 text-lg text-center", "Results" },
+                            // Results
+                            div { class: "px-2 py-2",
+                                div { class: "px-1 py-1 flex flex-wrap content-around justify-center text-center border bg-slate-900",
+                                    for r in results.results.iter() {
+                                        rsx! (
+                                            div { class: "px-1 py-1",
+                                                if *r >= stat.quality as u8 {
+                                                    rsx!( div { class: "px-1 text-green-500 bg-slate-800 rounded", "{r}" } )
+                                                } else {
+                                                    rsx!( div { class: "px-1 text-red-600 bg-slate-950 rounded", "{r}" } )
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            }
                         }
                     )
                 }
