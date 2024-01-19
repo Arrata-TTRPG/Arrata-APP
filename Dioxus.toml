@@ -54,7 +54,7 @@ script = []
 publisher = "Kaleb Burris"
 
 # Bundle icon
-icon = ["public/icon.ico"]
+icon = ["public/rat.png"]
 
 # Bundle resources
 resources = ["public"]
