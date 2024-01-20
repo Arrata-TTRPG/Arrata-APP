@@ -3,7 +3,7 @@ on:
   push:
     branches: [ "dev", "main" ]
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: [ "dev", "main" ]
 
 env:
   RUSTFLAGS: "-D warning -Z threads=8"
