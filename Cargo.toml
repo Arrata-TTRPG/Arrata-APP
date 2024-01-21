@@ -9,11 +9,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { default-features = false, version = "1.0.194" }
+serde = { default-features = false, version = "1.0.195" }
 serde_json = { default-features = false, version = "1.0.111" }
 tokio = "1.35.1"
 dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
-lodepng = { features = ["rust_backend"], default-features = false, version = "3.9.2" }
+lodepng = { features = ["rust_backend"], default-features = false, version = "3.10.0" }
 rgb = { default-features = false, version = "0.8" }
 rand = "0.8.5"
 
