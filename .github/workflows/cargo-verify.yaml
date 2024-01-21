@@ -1,5 +1,4 @@
-﻿# Thanks to https://github.com/NiklasEi/bevy_game_template/blob/main/.github/workflows/release.yaml for much of this code
-on:
+﻿on:
   push:
     branches: [ "dev", "main" ]
   pull_request:
