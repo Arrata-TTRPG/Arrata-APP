@@ -18,6 +18,8 @@ asset_dir = "public"
 # HTML title tag content
 title = "Arrata Character Sheet Manager"
 
+base_path = "Arrata-APP"
+
 [web.watcher]
 
 # when watcher trigger, regenerate the `index.html`
