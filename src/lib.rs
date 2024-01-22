@@ -44,9 +44,7 @@ pub fn app(cx: Scope) -> Element {
 
         br {}
 
-        character_io {
-            character: character,
-        }
+        character_io { character: character }
 
         br {}
 
@@ -65,9 +63,7 @@ pub fn app(cx: Scope) -> Element {
 fn character_io<'a>(cx: Scope<'a>, character: &'a UseRef<Character>) -> Element<'a> {
     if cfg!(feature = "web") {
         cx.render(rsx! {
-            div { class: "px-5 py-5 font-mono flex justify-center text-center",
-                "No IO for wasm :("
-            }
+            div { class: "px-5 py-5 font-mono flex justify-center text-center", "No IO for wasm :(" }
         })
     } else if cfg!(feature = "desktop") {
         cx.render(rsx!{
