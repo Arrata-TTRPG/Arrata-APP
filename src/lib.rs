@@ -19,6 +19,12 @@ pub fn app(cx: Scope) -> Element {
     select { background-color: black; color: white; }
     "#;
 
+    let rat_path = if cfg!(feature = "web") {
+        "rat.png"
+    } else {
+        "public/rat.png"
+    };
+
     cx.render(rsx! {
         style { arrata_style }
 
@@ -27,7 +33,7 @@ pub fn app(cx: Scope) -> Element {
             img {
                 // Arrata logo
                 class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
-                src: "public/rat.png",
+                src: rat_path,
                 alt: "",
                 width: 300,
                 height: 300
@@ -38,17 +44,8 @@ pub fn app(cx: Scope) -> Element {
 
         br {}
 
-        div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex space-x-3",
-            button {
-                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                onclick: move |_| character.read().write_to_file().unwrap(),
-                "Save Character"
-            }
-            button {
-                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                onclick: move |_| character.set(Character::from_file().unwrap()),
-                "Load Character"
-            }
+        character_io {
+            character: character,
         }
 
         br {}
@@ -62,4 +59,32 @@ pub fn app(cx: Scope) -> Element {
             }
         }
     })
+}
+
+#[component(no_case_check)]
+fn character_io<'a>(cx: Scope<'a>, character: &'a UseRef<Character>) -> Element<'a> {
+    if cfg!(feature = "web") {
+        cx.render(rsx! {
+            div { class: "px-5 py-5 font-mono flex justify-center text-center",
+                "No IO for wasm :("
+            }
+        })
+    } else if cfg!(feature = "desktop") {
+        cx.render(rsx!{
+            div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex space-x-3",
+                button {
+                    class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                    onclick: move |_| character.read().write_to_file().unwrap(),
+                    "Save Character"
+                }
+                button {
+                    class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                    onclick: move |_| character.set(Character::from_file().unwrap()),
+                    "Load Character"
+                }
+            }
+        })
+    } else {
+        panic!("No correct flag selected!")
+    }
 }

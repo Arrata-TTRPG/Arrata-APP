@@ -1,12 +1,14 @@
 // character.rs
 // All structs and enums relating to characters.
 
+#[cfg(feature = "Desktop")]
 use std::{
     fs::File,
     io::{BufWriter, Write},
 };
 
 use dioxus::prelude::*;
+#[cfg(feature = "desktop")]
 use native_dialog::FileDialog;
 use serde::{Deserialize, Serialize};
 
@@ -59,6 +61,7 @@ impl Character {
     /// "`{character.name}.arrata`"
     ///
     /// This method only writes if we have relevant permissions.
+    #[cfg(feature = "desktop")]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_dir().unwrap();
@@ -86,6 +89,12 @@ impl Character {
         Ok(())
     }
 
+    #[cfg(not(feature = "deskop"))]
+    pub fn write_to_file(&self) -> Result<(), std::io::Error> {
+        panic!("This is not yet implemented!")
+    }
+
+    #[cfg(feature = "deskop")]
     pub fn from_file() -> Result<Self, std::io::Error> {
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_file().unwrap();
@@ -102,6 +111,11 @@ impl Character {
         let file = File::open(path)?;
         let module: Character = serde_json::from_reader(file)?;
         Ok(module)
+    }
+
+    #[cfg(not(feature = "deskop"))]
+    pub fn from_file() -> Result<Self, std::io::Error> {
+        todo!("This is not yet implemented!")
     }
 }
 
