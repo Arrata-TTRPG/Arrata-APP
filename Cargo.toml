@@ -39,7 +39,7 @@ optional = true
 
 [features]
 desktop = ["dep:dioxus-desktop", "dep:native-dialog"]
-web = ["dep:dioxus-web", "dep:getrandom"]
+web = ["dep:dioxus-web", "getrandom"]
 
 [[bin]]
 name = "arrata_character_sheet_manager"

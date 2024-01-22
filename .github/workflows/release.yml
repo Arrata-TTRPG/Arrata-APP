@@ -68,7 +68,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install rust toolchain
+      - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: nightly
@@ -80,7 +80,7 @@ jobs:
           sudo apt-get install libsoup2.4 javascriptcoregtk-4.0 -y
           sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev -y
       - name: Build release
-        run: cargo build --release
+        run: cargo build --release --features desktop
       - name: Prepare release
         run: |
           strip target/release/${{ env.EXECUTABLE_NAME }}
@@ -120,13 +120,13 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-    - name: Install rust toolchain
+    - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
     - name: Setup Rust Cache
       uses: Swatinem/rust-cache@v2
     - name: Build release
       run: |
-        cargo build --release
+        cargo build --release --features desktop
         cp target/release/${{ env.EXECUTABLE_NAME }}.exe .
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
@@ -155,3 +155,52 @@ jobs:
         asset_name: ${{ env.EXECUTABLE_NAME }}_${{ env.VERSION }}_windows.zip
         tag: ${{ env.VERSION }}
         overwrite: true
+
+  build-web:
+    runs-on: ubuntu-latest
+    needs: [get-version, create-release]
+    env:
+      VERSION: ${{needs.get-version.outputs.version}}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Merge into web-deployment
+        run: |
+          git merge web-deployment
+      - name: Checkout web-deployment
+        uses: actions/checkout@v3
+        with:
+          ref: 'web-deployment'
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libsoup2.4 javascriptcoregtk-4.0 -y
+          sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev -y
+          cargo binstall dioxus-cli
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ env.NODE_VERSION }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Create CSS
+        run: |
+          npm install -D tailwindcss
+          npx tailwindcss -i input.css -o public/tailwind.css --minify
+      - name: Create WASM with Dioxus CLI
+        run: dx build --release --platform --features web
+      - name: Overwrite docs folder
+        run: |
+          rm -r -f docs
+          mv dist docs

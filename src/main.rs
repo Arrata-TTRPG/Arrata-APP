@@ -3,7 +3,7 @@
 
 #[cfg(any(feature = "desktop", feature = "web"))]
 use arrata_app::*;
-#[cfg(any(feature = "desktop", feature = "web"))]
+#[cfg(feature = "desktop")]
 use dioxus::prelude::*;
 
 #[cfg(feature = "desktop")]
