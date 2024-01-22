@@ -61,26 +61,26 @@ pub fn app(cx: Scope) -> Element {
 
 #[component(no_case_check)]
 fn character_io<'a>(cx: Scope<'a>, character: &'a UseRef<Character>) -> Element<'a> {
-    if cfg!(feature = "web") {
-        cx.render(rsx! {
-            div { class: "px-5 py-5 font-mono flex justify-center text-center", "No IO for wasm :(" }
-        })
-    } else if cfg!(feature = "desktop") {
-        cx.render(rsx!{
-            div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex space-x-3",
-                button {
-                    class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                    onclick: move |_| character.read().write_to_file().unwrap(),
-                    "Save Character"
-                }
-                button {
-                    class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                    onclick: move |_| character.set(Character::from_file().unwrap()),
-                    "Load Character"
-                }
+    cx.render(rsx!{
+        div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex space-x-3",
+            button {
+                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                onclick: move |_| {
+                    if cfg!(target = "desktop") {
+                        character.read().write_to_file().unwrap()
+                    }
+                },
+                "Save Character"
             }
-        })
-    } else {
-        panic!("No correct flag selected!")
-    }
+            button {
+                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                onclick: move |_| {
+                    if cfg!(target = "desktop") {
+                        character.set(Character::from_file().unwrap())
+                    }
+                },
+                "Load Character"
+            }
+        }
+    })
 }

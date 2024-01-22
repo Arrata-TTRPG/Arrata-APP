@@ -1,15 +1,17 @@
 // character.rs
 // All structs and enums relating to characters.
 
-#[cfg(feature = "Desktop")]
+#[cfg(feature = "desktop")]
 use std::{
     fs::File,
     io::{BufWriter, Write},
 };
 
 use dioxus::prelude::*;
+
 #[cfg(feature = "desktop")]
 use native_dialog::FileDialog;
+
 use serde::{Deserialize, Serialize};
 
 /* Structs and Enums */
@@ -89,9 +91,9 @@ impl Character {
         Ok(())
     }
 
-    #[cfg(not(feature = "deskop"))]
+    #[cfg(not(feature = "desktop"))]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
-        panic!("This is not yet implemented!")
+        todo!("This is not yet implemented!")
     }
 
     #[cfg(feature = "deskop")]
@@ -113,7 +115,7 @@ impl Character {
         Ok(module)
     }
 
-    #[cfg(not(feature = "deskop"))]
+    #[cfg(not(feature = "desktop"))]
     pub fn from_file() -> Result<Self, std::io::Error> {
         todo!("This is not yet implemented!")
     }

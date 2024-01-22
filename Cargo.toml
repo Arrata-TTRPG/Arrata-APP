@@ -13,7 +13,11 @@ serde = { default-features = false, version = "1.0.195" }
 serde_json = { default-features = false, version = "1.0.111" }
 dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
 rand = { version = "0.8.5" }
-getrandom = { version = "0.2.12", features = ["js"]}
+
+[dependencies.getrandom]
+version = "0.2.12"
+features = ["js"]
+optional = true
 
 [dependencies.dioxus-web]
 version = "0.4.3"
@@ -35,7 +39,7 @@ optional = true
 
 [features]
 desktop = ["dep:dioxus-desktop", "dep:native-dialog"]
-web = ["dep:dioxus-web"]
+web = ["dep:dioxus-web", "dep:getrandom"]
 
 [[bin]]
 name = "arrata_character_sheet_manager"

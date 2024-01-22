@@ -31,7 +31,17 @@ Clone the repo: `git clone https://github.com/kalebvonburris/Arrata-APP`
 
 `cd` into `Arrata-APP`
 
-Run `npx tailwindcss -i input.css -o public/tailwind.css` and then `cargo run`. The application should launch after compiling.
+Run `npx tailwindcss -i input.css -o public/tailwind.css`.
+
+#### Web
+
+To compile and run the web version, install Dioxus CLI: `cargo install dioxus-cli`.
+
+Then compile and run by `cd Arrata-APP` and `dx serve --platform web --features web`.
+
+#### Desktop
+
+To compile and run the desktop version, `cd` into `Arrata-APP` and run `cargo run --release --features desktop`
 
 ## Roadmap
 
