@@ -62,24 +62,24 @@ pub fn app(cx: Scope) -> Element {
 #[component(no_case_check)]
 fn character_io<'a>(cx: Scope<'a>, character: &'a UseRef<Character>) -> Element<'a> {
     cx.render(rsx!{
-        div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex space-x-3",
-            button {
-                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                onclick: move |_| {
-                    if cfg!(target = "desktop") {
-                        character.read().write_to_file().unwrap()
+        div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
+            if cfg!(feature = "desktop") {
+                rsx! {
+                    button {
+                        class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                        onclick: move |_| character.read().write_to_file().unwrap(),
+                        "Save Character"
                     }
-                },
-                "Save Character"
-            }
-            button {
-                class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                onclick: move |_| {
-                    if cfg!(target = "desktop") {
-                        character.set(Character::from_file().unwrap())
+                    button {
+                        class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                        onclick: move |_| character.set(Character::from_file().unwrap()),
+                        "Load Character"
                     }
-                },
-                "Load Character"
+                }
+            } else {
+                rsx! {
+                    "Character Saving/Loading is disabled for this platform."
+                }
             }
         }
     })

@@ -3,8 +3,6 @@
 
 #[cfg(any(feature = "desktop", feature = "web"))]
 use arrata_app::*;
-#[cfg(any(feature = "desktop", feature = "web"))]
-use dioxus::prelude::*;
 
 #[cfg(feature = "desktop")]
 use dioxus_desktop::{Config, WindowBuilder};

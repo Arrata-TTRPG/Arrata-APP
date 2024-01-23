@@ -96,7 +96,7 @@ impl Character {
         todo!("This is not yet implemented!")
     }
 
-    #[cfg(feature = "deskop")]
+    #[cfg(feature = "desktop")]
     pub fn from_file() -> Result<Self, std::io::Error> {
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_file().unwrap();
