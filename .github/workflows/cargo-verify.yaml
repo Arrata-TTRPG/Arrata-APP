@@ -35,7 +35,7 @@ jobs:
         run: cargo build --features desktop
       - name: Cargo build web
         run: |
-          cargo binstall dioxus-cli
+          cargo binstall dioxus-cli --no-confirm
           dx build --platform web --features web
       - name: Cargo Check
         run: cargo check --verbose
