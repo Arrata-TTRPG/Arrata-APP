@@ -5,7 +5,7 @@
     branches: [ "dev", "main" ]
 
 env:
-  RUSTFLAGS: "-D warning -Z threads=8"
+  RUSTFLAGS: "-D warnings -Z threads=8"
   CARGO_INCREMENTAL: 1
 
 permissions: write-all
@@ -36,6 +36,7 @@ jobs:
       - name: Cargo build web
         run: |
           cargo binstall dioxus-cli --no-confirm
+          rustup target add wasm32-unknown-unknown
           dx build --platform web --features web
       - name: Cargo Check
         run: cargo check --verbose
