@@ -5,7 +5,7 @@
     branches: [ "dev", "main" ]
 
 env:
-  RUSTFLAGS: "-D warnings -Z threads=8 -C link-arg=--ld-path=/usr/local/bin/mold"
+  RUSTFLAGS: "-D warnings -Z threads=8"
   CARGO_INCREMENTAL: 1
 
 permissions: write-all
