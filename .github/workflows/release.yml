@@ -200,4 +200,4 @@ jobs:
           branch: web-deployment
           folder: docs
           target-folder: docs
-          commit-message: "chore(cd): Deploy to GH Pages for v${{ env.VERSION }}"
+          commit-message: "chore(cd): Deploy to GH Pages for ${{ env.VERSION }}"
