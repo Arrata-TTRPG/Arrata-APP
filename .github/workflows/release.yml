@@ -74,6 +74,8 @@ jobs:
           toolchain: nightly
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
       - name: Install Dependencies
         run: |
           sudo apt-get update
