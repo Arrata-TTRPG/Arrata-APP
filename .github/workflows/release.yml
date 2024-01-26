@@ -65,6 +65,7 @@ jobs:
     needs: [get-version, create-release]
     env:
       VERSION: ${{needs.get-version.outputs.version}}
+      RUSTFLAGS: "-C link-arg=--ld-path=/usr/local/bin/mold"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
