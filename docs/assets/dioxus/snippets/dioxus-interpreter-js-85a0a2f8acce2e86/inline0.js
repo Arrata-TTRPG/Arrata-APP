@@ -1,5 +1,5 @@
 let m,p,ls,d,t,op,i,e,z,metaflags;
-
+            
     class ListenerMap {
         constructor(root) {
             // bubbling events can listen at the root element
@@ -169,7 +169,7 @@ let m,p,ls,d,t,op,i,e,z,metaflags;
       function truthy(val) {
         return val === "true" || val === true;
       }
-    const evt = [];
+    let u32buf,u32bufp;let s = "";let lsp,sp,sl; let c = new TextDecoder();const evt = [];
                     let evt_tmp1, evt_tmp2;
                     function get_evt() {
                         evt_tmp2 = u8buf[u8bufp++];
@@ -193,7 +193,7 @@ let m,p,ls,d,t,op,i,e,z,metaflags;
                         else{
                             return attr[attr_tmp2&4294967167];
                         }
-                    }let u32buf,u32bufp;const ns_cache = [];
+                    }const ns_cache = [];
                     let ns_cache_tmp1, ns_cache_tmp2;
                     function get_ns_cache() {
                         ns_cache_tmp2 = u8buf[u8bufp++];
@@ -205,8 +205,8 @@ let m,p,ls,d,t,op,i,e,z,metaflags;
                         else{
                             return ns_cache[ns_cache_tmp2&4294967167];
                         }
-                    }let s = "";let lsp,sp,sl; let c = new TextDecoder();let u8buf,u8bufp;
-            let ns,value,field,bubbles,event_name,ptr,len,id;
+                    }let u8buf,u8bufp;
+            let field,ptr,id,ns,value,event_name,len,bubbles;
             export function create(r){
                 d=r;
             }
