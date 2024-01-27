@@ -72,7 +72,16 @@ fn character_io<'a>(cx: Scope<'a>, character: &'a UseRef<Character>) -> Element<
                     }
                     button {
                         class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                        onclick: move |_| character.set(Character::from_file().unwrap()),
+                        onclick: move |_| {
+                            let new_character = Character::from_file();
+                            match new_character {
+                                Ok(c) => character.set(c),
+                                Err(e) => match e.kind() {
+                                    std::io::ErrorKind::Other => (),
+                                    _ => panic!("{:?}", e),
+                                }
+                            }
+                        },
                         "Load Character"
                     }
                 }

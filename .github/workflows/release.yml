@@ -164,17 +164,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Merge into web-deployment
-        run: |
-          git merge web-deployment
-      - name: Checkout web-deployment
-        uses: actions/checkout@v3
-        with:
-          ref: 'web-deployment'
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: nightly
+          target: wasm32-unknown-unknown
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Setup Rust cache
@@ -200,7 +194,10 @@ jobs:
           npx tailwindcss -i input.css -o public/tailwind.css --minify
       - name: Create WASM with Dioxus CLI
         run: dx build --release --platform web --features web
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Deploy to GH Pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          commit_message: "chore(web): Bump web version"
+          branch: web-deployment
+          folder: docs
+          target-folder: docs
+          commit-message: "chore(cd): Deploy to GH Pages for ${{ env.VERSION }}"
