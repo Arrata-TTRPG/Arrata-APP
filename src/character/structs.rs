@@ -66,15 +66,12 @@ impl Character {
     #[cfg(feature = "desktop")]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         // Grab the current file path; should never throw unless we don't have file permissions
-        let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_dir().unwrap();
-        let path: std::path::PathBuf = match path {
-            Some(path) => path,
-            None => {
-                return Err(std::io::Error::new(
-                    std::io::ErrorKind::InvalidInput,
-                    "Invalid path given",
-                ))
-            }
+        let path: std::path::PathBuf = match FileDialog::new().show_open_single_dir() {
+            Ok(p) => match p {
+                Some(p) => p,
+                None => return Ok(()),
+            },
+            Err(_) => return Ok(()),
         };
 
         // {character.name}.arrata
@@ -99,10 +96,17 @@ impl Character {
     #[cfg(feature = "desktop")]
     pub fn from_file() -> Result<Self, std::io::Error> {
         // Grab the current file path; should never throw unless we don't have file permissions
-        let path: Option<std::path::PathBuf> = FileDialog::new().show_open_single_file().unwrap();
-        let path: std::path::PathBuf = match path {
-            Some(path) => path,
-            None => {
+        let path: std::path::PathBuf = match FileDialog::new().show_open_single_file() {
+            Ok(p) => match p {
+                Some(p) => p,
+                None => {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::Other,
+                        "No file selected",
+                    ))
+                }
+            },
+            Err(_) => {
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::InvalidInput,
                     "Invalid path given",
