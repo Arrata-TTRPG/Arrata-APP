@@ -38,19 +38,16 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
       - name: Install Dioxus CLI
         run: cargo binstall dioxus-cli --no-confirm --force
-      - name: Cargo build desktop
-        run: cargo build --features desktop
-      - name: Cargo build web
-        run: dx build --platform web --features web
+      - name: Cargo build --all
+        run: cargo build
+      - name: dx build web
+        run: dx build --platform web
       - name: Cargo Check
         run: |
-          cargo check --verbose --features desktop
-          cargo check --verbose --features web
+          cargo check --all
       - name: Cargo Test
         run: |
-          cargo test --verbose --features desktop
-          cargo test --verbose --features web
+          cargo test --all
       - name: Cargo Clippy
         run: |
-          cargo clippy --verbose --features desktop
-          cargo clippy --verbose --features web
+          cargo clippy --all
