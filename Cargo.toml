@@ -1,42 +1,74 @@
 [package]
 name = "arrata_app"
+edition = "2021"
 version = "0.0.0"
 description = "An application for handling Arrata character sheets."
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-serde = { default-features = false, version = "1.0.196" }
-serde_json = { default-features = false, version = "1.0.113" }
-dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
-rand = { version = "0.8.5" }
 
 [dependencies.dioxus]
 version = "0.4.3"
+features = []
 default-features = false
 
-[target.'cfg(not(target_family="wasm"))'.dependencies]
-native-dialog = "0.7.0"
-dioxus-desktop = { version = "0.4.3", default-features = false, features = [ "tokio_runtime" ] }
+[dependencies.dioxus-free-icons]
+version = "0.7.0"
+features = []
+default-features = false
+
+[dependencies.rand]
+version = "0.8.5"
+features = []
+
+[dependencies.serde]
+version = "1.0.196"
+features = []
+default-features = false
+
+[dependencies.serde_json]
+version = "1.0.113"
+features = []
+default-features = false
+
+[target."cfg(not(target_family=\"wasm\"))".dependencies]
 getrandom = "0.2.12"
+native-dialog = "0.7.0"
 
-[target.'cfg(target_family="wasm")'.dependencies]
+[target."cfg(not(target_family=\"wasm\"))".dependencies.dioxus-desktop]
+version = "0.4.3"
+features = ["tokio_runtime"]
+default-features = false
+
+[target."cfg(not(target_family=\"wasm\"))".dev-dependencies]
+
+[target."cfg(not(target_family=\"wasm\"))".build-dependencies]
+
+[target."cfg(target_family=\"wasm\")".dependencies]
 dioxus-web = "0.4.3"
-getrandom = { version = "0.2.12", features = [ "js" ] }
 
-[[bin]]
-name = "arrata_character_sheet_manager"
-path = "src/main.rs"
+[target."cfg(target_family=\"wasm\")".dependencies.getrandom]
+version = "0.2.12"
+features = ["js"]
+
+[target."cfg(target_family=\"wasm\")".dev-dependencies]
+
+[target."cfg(target_family=\"wasm\")".build-dependencies]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+incremental = false
+strip = true
+
+[profile.release.package]
 
 [profile.dev]
 lto = "off"
 incremental = true
 
-[profile.release]
-opt-level = 3
-lto = true
-incremental = false
-codegen-units = 1
-panic = "abort"
-strip = "symbols"
+[profile.dev.package]
+
+[[bin]]
+path = "src/main.rs"
+name = "arrata_character_sheet_manager"
+required-features = []
