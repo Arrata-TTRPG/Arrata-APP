@@ -1,9 +1,0 @@
-/target
-/dist
-*.arrata
-Cargo.lock
-*.html
-*.css
-*.wasm
-*.exe
-!docs/**/*
