@@ -9,6 +9,10 @@ env:
 
 permissions: write-all
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 name: Cargo Verify
 jobs:
   checks:

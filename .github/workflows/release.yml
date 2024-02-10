@@ -16,6 +16,10 @@ env:
   EXECUTABLE_NAME: "arrata_character_sheet_manager"
   NODE_VERSION: 18
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions: write-all
 
 name: Create release
