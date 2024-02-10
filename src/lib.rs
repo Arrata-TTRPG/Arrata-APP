@@ -19,7 +19,7 @@ pub fn app(cx: Scope) -> Element {
     select { background-color: black; color: white; }
     "#;
 
-    let rat_path = if cfg!(feature = "web") {
+    let rat_path = if cfg!(target_family = "wasm") {
         "rat.png"
     } else {
         "public/rat.png"
@@ -63,7 +63,7 @@ pub fn app(cx: Scope) -> Element {
 fn character_io<'a>(cx: Scope<'a>, character: &'a UseRef<Character>) -> Element<'a> {
     cx.render(rsx!{
         div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
-            if cfg!(feature = "desktop") {
+            if cfg!(not(target_family = "wasm")) {
                 rsx! {
                     button {
                         class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",

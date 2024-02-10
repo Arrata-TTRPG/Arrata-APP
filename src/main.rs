@@ -1,17 +1,16 @@
 // If we're not in a prod compilation, allow a window for debug prints
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-#[cfg(any(feature = "desktop", feature = "web"))]
 use arrata_app::*;
 
-#[cfg(feature = "desktop")]
+#[cfg(not(target_family = "wasm"))]
 use dioxus_desktop::{Config, WindowBuilder};
 
 fn main() {
     launch();
 }
 
-#[cfg(feature = "desktop")]
+#[cfg(not(target_family = "wasm"))]
 fn launch() {
     dioxus_desktop::launch_cfg(
         app,
@@ -22,12 +21,7 @@ fn launch() {
     );
 }
 
-#[cfg(feature = "web")]
+#[cfg(target_family = "wasm")]
 fn launch() {
     dioxus_web::launch(app);
-}
-
-#[cfg(all(not(feature = "desktop"), not(feature = "web")))]
-fn launch() {
-    panic!("No feature selected!")
 }
