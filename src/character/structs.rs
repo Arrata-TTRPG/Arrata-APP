@@ -9,7 +9,8 @@ use serde::{Deserialize, Serialize};
 /* Structs and Enums */
 
 /// A struct containing all info about a character.
-#[derive(Serialize, Deserialize, Clone, Props, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[cfg_attr(feature = "app", derive(Props))]
 #[serde(rename_all = "PascalCase")]
 pub struct Character {
     pub name: String,

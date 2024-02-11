@@ -1,6 +1,6 @@
 #[cfg(feature = "app")]
 pub mod app;
-#[cfg(feature = "character")]
+#[cfg(any(feature = "character", feature = "dice"))]
 pub mod character;
 #[cfg(feature = "dice")]
 pub mod dice;
