@@ -1,10 +1,10 @@
 // If we're not in a prod compilation, allow a window for debug prints
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use arrata_app::*;
-
 #[cfg(not(target_family = "wasm"))]
 use dioxus_desktop::{Config, WindowBuilder};
+
+use arrata_app::app::render::app;
 
 fn main() {
     launch();

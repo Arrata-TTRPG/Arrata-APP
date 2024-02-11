@@ -28,6 +28,12 @@ getrandom = { version = "0.2.12", features = [ "js" ] }
 name = "arrata_character_sheet_manager"
 path = "src/main.rs"
 
+[features]
+default = ["character", "dice", "app"]
+character = []
+dice = []
+app = []
+
 [profile.dev]
 lto = "off"
 incremental = true
