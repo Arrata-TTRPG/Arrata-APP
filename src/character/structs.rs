@@ -1,12 +1,6 @@
 // character.rs
 // All structs and enums relating to characters.
 
-#[cfg(not(target_family = "wasm"))]
-use std::{
-    fs::File,
-    io::{BufWriter, Write},
-};
-
 #[cfg(feature = "character")]
 use dioxus::prelude::*;
 
@@ -61,9 +55,13 @@ impl Character {
     /// "`{character.name}.arrata`"
     ///
     /// This method only writes if we have relevant permissions.
-    #[cfg(all(not(target_family = "wasm"), feature = "character"))]
+    #[cfg(all(not(target_family = "wasm"), feature = "app"))]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         use native_dialog::FileDialog;
+        use std::{
+            fs::File,
+            io::{BufWriter, Write},
+        };
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: std::path::PathBuf = match FileDialog::new().show_open_single_dir() {
             Ok(p) => match p {
@@ -87,14 +85,16 @@ impl Character {
         Ok(())
     }
 
-    #[cfg(target_family = "wasm")]
+    #[cfg(all(target_family = "wasm", feature = "app"))]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         todo!("This is not yet implemented!")
     }
 
-    #[cfg(all(not(target_family = "wasm"), feature = "character"))]
+    #[cfg(all(not(target_family = "wasm"), feature = "app"))]
     pub fn from_file() -> Result<Self, std::io::Error> {
         use native_dialog::FileDialog;
+        use std::fs::File;
+
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: std::path::PathBuf = match FileDialog::new().show_open_single_file() {
             Ok(p) => match p {
@@ -135,7 +135,8 @@ impl Default for Character {
 ///
 /// `checks` is optional as some stats don't
 /// require checks to function.
-#[derive(Serialize, Deserialize, Clone, Props, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[cfg_attr(feature = "app", derive(Props))]
 #[serde(rename_all = "PascalCase")]
 pub struct Stat {
     pub name: String,
