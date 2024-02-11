@@ -7,17 +7,18 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { default-features = false, version = "1.0.196" }
-serde_json = { default-features = false, version = "1.0.113" }
-dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"] }
-rand = { version = "0.8.5" }
+serde = { default-features = false, version = "1.0.196", optional = true }
+serde_json = { default-features = false, version = "1.0.113", optional = true }
+dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"], optional = true }
+rand = { version = "0.8.5", optional = true }
 
 [dependencies.dioxus]
 version = "0.4.3"
 default-features = false
+optional = true
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-native-dialog = "0.7.0"
+native-dialog = { version = "0.7.0" }
 dioxus-desktop = { version = "0.4.3", default-features = false, features = [ "tokio_runtime" ] }
 
 [target.'cfg(target_family="wasm")'.dependencies]
@@ -29,10 +30,11 @@ name = "arrata_character_sheet_manager"
 path = "src/main.rs"
 
 [features]
-default = ["character", "dice", "app"]
-character = []
-dice = []
-app = []
+default = ["character", "dice", "app", "render"]
+character = ["dep:serde", "dep:serde_json", "dep:dioxus-free-icons", "dep:dioxus"]
+dice = ["dep:rand"]
+app = ["dep:dioxus"]
+render = []
 
 [profile.dev]
 lto = "off"
