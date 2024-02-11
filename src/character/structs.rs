@@ -7,10 +7,8 @@ use std::{
     io::{BufWriter, Write},
 };
 
+#[cfg(feature = "character")]
 use dioxus::prelude::*;
-
-#[cfg(not(target_family = "wasm"))]
-use native_dialog::FileDialog;
 
 use serde::{Deserialize, Serialize};
 
@@ -63,8 +61,9 @@ impl Character {
     /// "`{character.name}.arrata`"
     ///
     /// This method only writes if we have relevant permissions.
-    #[cfg(not(target_family = "wasm"))]
+    #[cfg(all(not(target_family = "wasm"), feature = "character"))]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
+        use native_dialog::FileDialog;
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: std::path::PathBuf = match FileDialog::new().show_open_single_dir() {
             Ok(p) => match p {
@@ -93,8 +92,9 @@ impl Character {
         todo!("This is not yet implemented!")
     }
 
-    #[cfg(not(target_family = "wasm"))]
+    #[cfg(all(not(target_family = "wasm"), feature = "character"))]
     pub fn from_file() -> Result<Self, std::io::Error> {
+        use native_dialog::FileDialog;
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: std::path::PathBuf = match FileDialog::new().show_open_single_file() {
             Ok(p) => match p {
