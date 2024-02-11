@@ -31,10 +31,10 @@ path = "src/main.rs"
 
 [features]
 default = ["character", "dice", "app", "render"]
-character = ["dep:serde", "dep:serde_json", "dep:dioxus-free-icons", "dep:dioxus"]
+character = ["dep:serde", "dep:serde_json"]
 dice = ["dep:rand"]
 app = ["dep:dioxus"]
-render = []
+render = ["dep:dioxus-free-icons"]
 
 [profile.dev]
 lto = "off"

@@ -1,7 +1,7 @@
 // character.rs
 // All structs and enums relating to characters.
 
-#[cfg(feature = "character")]
+#[cfg(feature = "app")]
 use dioxus::prelude::*;
 
 use serde::{Deserialize, Serialize};
