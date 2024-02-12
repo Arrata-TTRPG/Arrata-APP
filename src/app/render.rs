@@ -3,10 +3,12 @@ use crate::character::structs::*;
 use crate::dice::render::*;
 
 use dioxus::prelude::*;
+use dioxus_signals::use_signal;
+use dioxus_signals::Signal;
 
 /// The main application.
 pub fn app(cx: Scope) -> Element {
-    let character: &UseRef<Character> = use_ref(cx, Character::new);
+    let character = use_signal(cx, Character::new);
 
     let dice_roll_state: &UseState<(bool, Option<Stat>)> = use_state(cx, || (false, None));
 
@@ -57,7 +59,7 @@ pub fn app(cx: Scope) -> Element {
 }
 
 #[component(no_case_check)]
-fn character_io<'a>(cx: Scope<'a>, character: &'a UseRef<Character>) -> Element<'a> {
+fn character_io(cx: Scope, character: Signal<Character>) -> Element {
     cx.render(rsx!{
         div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
             if cfg!(not(target_family = "wasm")) {

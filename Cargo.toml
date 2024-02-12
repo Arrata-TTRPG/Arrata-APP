@@ -11,6 +11,7 @@ serde = { default-features = false, version = "1.0.196", optional = true }
 serde_json = { default-features = false, version = "1.0.113", optional = true }
 dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"], optional = true }
 rand = { version = "0.8.5", optional = true }
+dioxus-signals = "0.4.3"
 
 [dependencies.dioxus]
 version = "0.4.3"

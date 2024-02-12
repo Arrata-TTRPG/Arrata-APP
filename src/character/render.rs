@@ -2,11 +2,12 @@ use super::structs::*;
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::bs_icons::{BsDice6, BsTrash};
 use dioxus_free_icons::Icon;
+use dioxus_signals::Signal;
 
 #[component(no_case_check)]
 pub fn render_character<'a>(
     cx: Scope,
-    character: &'a UseRef<Character>,
+    character: Signal<Character>,
     dice_roll_state: &'a UseState<(bool, Option<Stat>)>,
 ) -> Element<'a> {
     cx.render(rsx!{
