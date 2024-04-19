@@ -7,7 +7,7 @@ name = "Arrata Character Sheet Manager"
 # desktop, web, mobile, ssr
 default_platform = "desktop"
 
-# `build` & `serve` dist path
+# `build` & `serve` docs path
 out_dir = "docs"
 
 # resource (public) file folder
@@ -18,7 +18,8 @@ asset_dir = "public"
 # HTML title tag content
 title = "Arrata Character Sheet Manager"
 
-base_path = "Arrata-APP"
+# Base path for GitHub Pages
+#base_path = "Arrata-APP"
 
 [web.watcher]
 
@@ -28,35 +29,9 @@ reload_html = true
 # which files or dirs will be watcher monitoring
 watch_path = ["src", "public"]
 
-[application.plugins]
-
-available = true
-
-required = []
-
-# include `assets` in web platform
-[web.resource]
-
-# CSS style file
-style = ["tailwind.css"]
-
-# Javascript code file
-script = []
-
-[web.resource.dev]
-
-# CSS style file
-style = ["tailwind.css"]
-
-# Javascript code file
-script = []
-
 [bundle]
 # Bundle publisher
 publisher = "Kaleb Burris"
 
 # Bundle icon
 icon = ["public/rat.png"]
-
-# Bundle resources
-resources = ["public"]
