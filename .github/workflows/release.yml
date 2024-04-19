@@ -134,7 +134,8 @@ jobs:
     - name: Binstall Dioxus-CLI
       run: cargo binstall dioxus-cli --no-confirm
     - name: Build release
-      run: dx build --release --platform desktop
+      run: |
+        dx build --release --platform desktop
         cp target/release/${{ env.EXECUTABLE_NAME }}.exe .
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
