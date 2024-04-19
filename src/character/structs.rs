@@ -7,7 +7,6 @@ use std::{
     io::{BufWriter, Write},
 };
 
-#[cfg(feature = "character")]
 use dioxus::prelude::*;
 
 use serde::{Deserialize, Serialize};
@@ -64,6 +63,10 @@ impl Character {
     #[cfg(feature = "desktop")]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         use native_dialog::FileDialog;
+        use std::{
+            fs::File,
+            io::{BufWriter, Write},
+        };
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: std::path::PathBuf = match FileDialog::new().show_open_single_dir() {
             Ok(p) => match p {
@@ -104,6 +107,8 @@ impl Character {
     #[cfg(feature = "desktop")]
     pub fn from_file() -> Result<Self, std::io::Error> {
         use native_dialog::FileDialog;
+        use std::fs::File;
+
         // Grab the current file path; should never throw unless we don't have file permissions
         let path: std::path::PathBuf = match FileDialog::new().show_open_single_file() {
             Ok(p) => match p {

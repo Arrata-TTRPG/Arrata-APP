@@ -25,7 +25,7 @@ path = "src/main.rs"
 
 [features]
 web = ["dioxus/web", "getrandom/js"]
-desktop = ["dioxus/desktop", "dep:native-dialog"]
+desktop = ["dioxus/desktop", "dep:native-dialog"]\
 
 [profile.dev]
 lto = "off"
