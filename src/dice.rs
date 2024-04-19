@@ -1,5 +1,5 @@
-#[derive(Debug, Clone)]
-pub struct DiceResult {
+﻿#[derive(Debug, Clone)]
+pub struct RollResult {
     pub successes: isize,
     pub failures: usize,
     pub results: Vec<u8>,
@@ -18,7 +18,7 @@ pub struct DiceResult {
 /// # Outputs
 ///
 /// `DiceResult` - The result of the roll.
-#[must_use] pub fn roll_stat(stat: &crate::character::Stat, advantage: usize, disadvantage: usize) -> DiceResult {
+#[must_use] pub fn roll_stat(stat: &crate::character::Stat, advantage: usize, disadvantage: usize) -> RollResult {
     let mut quantity = stat.quantity;
     let quality = stat.quality as u8;
 
@@ -32,7 +32,7 @@ pub struct DiceResult {
     if disadvantage > 0 {
         // No dice to roll!
         if disadvantage - 1 > quantity {
-            return DiceResult {
+            return RollResult {
                 successes: 0,
                 failures: 0,
                 results: Vec::new(),
@@ -57,7 +57,7 @@ pub struct DiceResult {
         quantity -= 1;
     }
 
-    DiceResult {
+    RollResult {
         successes,
         failures,
         results,

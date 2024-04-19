@@ -1,13 +1,5 @@
-// character.rs
+﻿// character.rs
 // All structs and enums relating to characters.
-
-#[cfg(feature = "desktop")]
-use std::{
-    fs::File,
-    io::{BufWriter, Write},
-};
-
-use dioxus::prelude::*;
 
 use serde::{Deserialize, Serialize};
 
@@ -51,15 +43,18 @@ impl Character {
     /// # Inputs
     /// `character` - The character to write to the file.
     ///
-    /// # Outputs
+    /// # Errors
     ///
-    /// `Result<(), std::io::Error>` - None if successful or
-    /// the given IO error if one is encountered.
+    /// `Err(std::io::Error)` - Returns the given IO 
+    /// error if one is encountered.
     ///
     /// Characters written will be written as
     /// "`{character.name}.arrata`"
     ///
-    /// This method only writes if we have relevant permissions.
+    /// # Panics
+    /// 
+    /// This method only writes if we have relevant permissions,
+    /// otherwise it will panic.
     #[cfg(feature = "desktop")]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         use native_dialog::FileDialog;
@@ -105,6 +100,15 @@ impl Character {
     }
 
     #[cfg(feature = "desktop")]
+    /// Read a character from a file.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `std::io::Error` if there is an error reading the file.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the read character if successful.
     pub fn from_file() -> Result<Self, std::io::Error> {
         use native_dialog::FileDialog;
         use std::fs::File;

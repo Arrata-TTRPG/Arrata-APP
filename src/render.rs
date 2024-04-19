@@ -1,7 +1,134 @@
-use super::structs::{Character, Item, Quality, Quirk, QuirkCategory, Stat};
-use dioxus::prelude::*;
-use dioxus_free_icons::icons::bs_icons::{BsDice6, BsTrash};
-use dioxus_free_icons::Icon;
+﻿use dioxus::prelude::*;
+use dioxus_free_icons::{icons::bs_icons::{BsDice6, BsTrash, BsX}, Icon};
+
+use crate::{
+    character::{Stat, Character, Item, Quality, Quirk, QuirkCategory},
+    dice::{roll_stat, RollResult}
+};
+
+#[component(no_case_check)]
+pub fn render_rolls(state: Signal<(bool, Option<Stat>)>) -> Element {
+    // Stat being passed must be given as a Some(Stat) otherwise the app will crash.
+    let stat = state().1.clone().unwrap();
+    // Create a state for the dice results
+    let mut dice_results: Signal<Option<RollResult>> = use_signal(|| None);
+    // Create a state for advantage and disadvantage
+    let mut advantage = use_signal(|| 0);
+    let mut disadvantage = use_signal(|| 0);
+    rsx! {
+        div { class: "z-10 fixed flex justify-center content-center max-w-[80%] w-96 h-fit border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
+            // Close button
+            div { class: "z-20 absolute right-0 px-2 py-2",
+                div {
+                    class: "bg-slate-950 hover:bg-slate-700 rounded",
+                    onclick: move |_| {
+                        state
+                            .with_mut(|state| {
+                                state.0 = false;
+                                state.1 = None;
+                            });
+                    },
+                    Icon { width: 35, height: 35, fill: "red", icon: BsX }
+                }
+            }
+            div { class: "content-center justify-items-center",
+                // Stat
+                div { class: "content-center",
+                    // Stat Name
+                    div { class: "flex justify-center px-2 py-2",
+                        h2 { class: "w-fit text-2xl text-center font-mono px-2 py-2 bg-slate-900 rounded border",
+                            "{stat.name}"
+                        }
+                    }
+                    // Quality + Quantity
+                    div { class: "inline-flex w-full justify-center justify-items-center content-center",
+                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quality}" }
+                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quantity}" }
+                        // Rolling
+                        div { class: "justify-center",
+                            button {
+                                class: "max-w-fit font-mono place-self-center bg-slate-900 hover:bg-slate-600 py-2 px-2 rounded",
+                                onclick: move |_| {
+                                    dice_results
+                                        .with_mut(|results| {
+                                            *results = Some(
+                                                roll_stat(&stat, advantage(), disadvantage()),
+                                            );
+                                        });
+                                },
+                                "Roll!"
+                            }
+                        }
+                    }
+                    // Advantage + Disadvantage
+                    div { class: "grid grid-cols-2 justify-center content-even",
+                        div { class: "grid grid-cols-1 px-2 py-2",
+                            div { class: "px-1 py-1 items-center justify-center bg-green-950 rounded border",
+                                div { class: "font-mono text-center", "Advantage" }
+                                div { class: "flex justify-center",
+                                    input {
+                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type: "number",
+                                        value: i64::try_from(advantage()).unwrap_or_default(),
+                                        oninput: move |evt| {
+                                            advantage.set(evt.value().parse::<usize>().unwrap_or(0));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        div { class: "grid grid-cols-1 px-2 py-2",
+                            div { class: "px-1 py-1 items-center justify-center bg-red-950 rounded border",
+                                div { class: "font-mono text-center", "Disadvantage" }
+                                div { class: "flex justify-center",
+                                    input {
+                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        r#type: "number",
+                                        value: i64::try_from(disadvantage()).unwrap_or_default(),
+                                        oninput: move |evt| {
+                                            disadvantage.set(evt.value().parse::<usize>().unwrap_or(0));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if let Some(results) = dice_results() {
+                    div { class: "font-mono justify-center",
+                        div { class: "flex justify-center",
+                            // Successes
+                            div { class: "text-center text-green-600 px-2 py-2",
+                                "Successes: {results.successes}"
+                            }
+                            // Failures
+                            div { class: "text-center text-red-600 px-2 py-2",
+                                "Failures: {results.failures}"
+                            }
+                        }
+                        div { class: "px-2 py-2 text-lg text-center", "Results" },
+                        // Results
+                        div { class: "px-2 py-2",
+                            div { class: "px-1 py-1 flex flex-wrap content-around justify-center text-center border bg-slate-900",
+                                for r in results.results.iter() {
+                                    div { class: "px-1 py-1",
+                                        if *r >= stat.quality as u8 {
+                                            div { class: "px-1 text-green-500 bg-slate-800 rounded", "{r}" }
+                                        } else {
+                                            div { class: "px-1 text-red-600 bg-slate-950 rounded", "{r}" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                
+                }
+            }
+        }
+    }
+}
 
 #[component(no_case_check)]
 pub fn render_character(
@@ -410,6 +537,89 @@ pub fn render_character(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+/// The main application.
+pub fn app() -> Element {
+    let character = use_signal(Character::new);
+
+    let dice_roll_state: Signal<(bool, Option<Stat>)> = use_signal(|| (false, None));
+
+    let arrata_style = r"
+    body { background-color: black; color: white; }
+    input { background-color: black; color: white; }
+    select { background-color: black; color: white; }
+    ";
+
+    let rat_path = if cfg!(target_family = "wasm") {
+        "rat.png"
+    } else {
+        "public/rat.png"
+    };
+
+    rsx! {
+        style { "{arrata_style}" }
+
+        div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex",
+            // Arrata logo
+            img {
+                // Arrata logo
+                class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
+                src: rat_path,
+                alt: "",
+                width: 300,
+                height: 300
+            }
+
+            h1 { class: "text-center text-9xl font-mono font-extrabold", "ARRATA" }
+        }
+
+        br {}
+
+        character_io { character: character }
+
+        br {}
+
+        render_character { character: character, dice_roll_state: dice_roll_state }
+
+        if dice_roll_state().0 {
+            match &dice_roll_state().1 {
+                Some(_) => rsx!(render_rolls { state: dice_roll_state }),
+                None    => rsx!(""),
+            }
+        }
+    }
+}
+
+#[component(no_case_check)]
+fn character_io(character: Signal<Character>) -> Element {
+    rsx!{
+        div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
+            if cfg!(feature = "desktop") {
+                button {
+                    class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                    onclick: move |_| character().write_to_file().unwrap(),
+                    "Save Character"
+                }
+                button {
+                    class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                    onclick: move |_| {
+                        let new_character = Character::from_file();
+                        match new_character {
+                            Ok(c) => character.set(c),
+                            Err(e) => match e.kind() {
+                                std::io::ErrorKind::Other => (),
+                                _ => panic!("{e:?}"),
+                            }
+                        }
+                    },
+                    "Load Character"
+                }
+            } else {
+                "Character Saving/Loading is disabled for this platform."
             }
         }
     }
