@@ -7,34 +7,25 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { default-features = false, version = "1.0.196", optional = true }
-serde_json = { default-features = false, version = "1.0.113", optional = true }
-dioxus-free-icons = { version = "0.7.0", features = ["bootstrap"], optional = true }
-rand = { version = "0.8.5", optional = true }
+serde = { default-features = false, version = "1.0.198" }
+serde_json = { default-features = false, version = "1.0.116" }
+dioxus-free-icons = { version = "0.8.3", features = ["bootstrap"] }
+rand = { version = "0.8.5" }
+dioxus = "0.5.1"
 
-[dependencies.dioxus]
-version = "0.4.3"
-default-features = false
-optional = true
+# Desktop dependencies
+native-dialog = { version = "0.7.0", optional = true }
 
-[target.'cfg(not(target_family="wasm"))'.dependencies]
-native-dialog = { version = "0.7.0" }
-dioxus-desktop = { version = "0.4.3", default-features = false, features = [ "tokio_runtime" ] }
-
-[target.'cfg(target_family="wasm")'.dependencies]
-dioxus-web = "0.4.3"
-getrandom = { version = "0.2.12", features = [ "js" ] }
+# Web dependencies
+getrandom = { version = "0.2.14", optional = true }
 
 [[bin]]
 name = "arrata_character_sheet_manager"
 path = "src/main.rs"
 
 [features]
-default = ["character", "dice", "app", "render"]
-character = ["dep:serde", "dep:serde_json"]
-dice = ["dep:rand"]
-app = ["dep:dioxus"]
-render = ["dep:dioxus-free-icons"]
+web = ["dioxus/web", "getrandom/js"]
+desktop = ["dioxus/desktop", "dep:native-dialog"]\
 
 [profile.dev]
 lto = "off"

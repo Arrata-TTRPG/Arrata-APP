@@ -1,6 +1,5 @@
-#[cfg(feature = "app")]
+#![warn(clippy::all, clippy::pedantic)]
+
 pub mod app;
-#[cfg(feature = "character")]
 pub mod character;
-#[cfg(feature = "dice")]
 pub mod dice;

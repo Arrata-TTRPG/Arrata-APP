@@ -1,2 +1,2 @@
-#[cfg(feature = "render")]
 pub mod render;
+pub use render::*;

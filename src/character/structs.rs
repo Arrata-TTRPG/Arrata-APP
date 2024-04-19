@@ -1,7 +1,12 @@
 // character.rs
 // All structs and enums relating to characters.
 
-#[cfg(feature = "app")]
+#[cfg(feature = "desktop")]
+use std::{
+    fs::File,
+    io::{BufWriter, Write},
+};
+
 use dioxus::prelude::*;
 
 use serde::{Deserialize, Serialize};
@@ -10,7 +15,6 @@ use serde::{Deserialize, Serialize};
 
 /// A struct containing all info about a character.
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
-#[cfg_attr(feature = "app", derive(Props))]
 #[serde(rename_all = "PascalCase")]
 pub struct Character {
     pub name: String,
@@ -23,7 +27,7 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn new() -> Character {
+    #[must_use] pub fn new() -> Character {
         Character {
             name: "John Arrata".to_string(),
             stock: "Human".to_string(),
@@ -56,7 +60,7 @@ impl Character {
     /// "`{character.name}.arrata`"
     ///
     /// This method only writes if we have relevant permissions.
-    #[cfg(all(not(target_family = "wasm"), feature = "app"))]
+    #[cfg(feature = "desktop")]
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         use native_dialog::FileDialog;
         use std::{
@@ -86,12 +90,21 @@ impl Character {
         Ok(())
     }
 
-    #[cfg(all(target_family = "wasm", feature = "app"))]
+    #[cfg(not(feature = "desktop"))]
+    /// Write a character to their relevant `.arrata` file.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `std::io::Error` if there is an error writing to the file.
+    ///
+    /// # Returns
+    ///
+    /// Returns `Ok(())` if the write operation is successful.
     pub fn write_to_file(&self) -> Result<(), std::io::Error> {
         todo!("This is not yet implemented!")
     }
 
-    #[cfg(all(not(target_family = "wasm"), feature = "app"))]
+    #[cfg(feature = "desktop")]
     pub fn from_file() -> Result<Self, std::io::Error> {
         use native_dialog::FileDialog;
         use std::fs::File;
@@ -120,7 +133,16 @@ impl Character {
         Ok(module)
     }
 
-    #[cfg(target_family = "wasm")]
+    #[cfg(not(feature = "desktop"))]
+    /// Read a character from a file.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `std::io::Error` if there is an error reading the file.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the read character if successful.
     pub fn from_file() -> Result<Self, std::io::Error> {
         todo!("This is not yet implemented!")
     }
@@ -137,7 +159,6 @@ impl Default for Character {
 /// `checks` is optional as some stats don't
 /// require checks to function.
 #[derive(Serialize, Deserialize, Clone, PartialEq)]
-#[cfg_attr(feature = "app", derive(Props))]
 #[serde(rename_all = "PascalCase")]
 pub struct Stat {
     pub name: String,
@@ -147,7 +168,7 @@ pub struct Stat {
 }
 
 impl Stat {
-    pub fn new(name: String) -> Stat {
+    #[must_use] pub fn new(name: String) -> Stat {
         Stat {
             name,
             quality: Quality::Basic,
@@ -191,10 +212,10 @@ pub struct Quirk {
 }
 
 impl Quirk {
-    pub fn new(name: String) -> Self {
+    #[must_use] pub fn new(name: String) -> Self {
         Self {
             name,
-            description: "".into(),
+            description: String::new(),
             category: QuirkCategory::Ethos,
             boons: vec![],
             flaws: vec![],
@@ -228,11 +249,11 @@ pub struct Item {
 }
 
 impl Item {
-    pub fn new(name: String) -> Self {
+    #[must_use] pub fn new(name: String) -> Self {
         Self {
             name,
             quantity: 0,
-            description: "".into(),
+            description: String::new(),
         }
     }
 }

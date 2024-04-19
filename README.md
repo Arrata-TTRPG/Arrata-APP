@@ -1,5 +1,7 @@
 # Arrata-APP
 
+Access the online version here: https://kalebvonburris.github.io/Arrata-APP/
+
 This repo contains the code for an [Arrata](https://github.com/kalebvonburris/Arrata-TTRPG) character sheet manager.
 
 The application itself is written in Rust and therefore can be compiled for and used across multiple platforms if you would like to do so for yourself. See [Compiling Locally](#compiling-locally) for details if you're on an unusual platform.
