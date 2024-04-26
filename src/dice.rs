@@ -1,7 +1,13 @@
-﻿#[derive(Debug, Clone)]
+﻿/// The result of rolling `quantity` dice with a `quality` threshold.
+#[derive(Debug, Clone)]
 pub struct RollResult {
+    /// The number of successes. Can be negative
+    /// with disadvantage.
     pub successes: isize,
+    /// The number of failures.
     pub failures: usize,
+    /// The result of each roll. Will be in the
+    /// range 1-6.
     pub results: Vec<u8>,
 }
 
