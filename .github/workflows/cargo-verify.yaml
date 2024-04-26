@@ -18,8 +18,6 @@ jobs:
   checks:
     name: Cargo Checks
     runs-on: ubuntu-latest
-    container:
-      image: "rust"
     steps:
       - uses: fkirc/skip-duplicate-actions@master
       - uses: rui314/setup-mold@v1
