@@ -91,7 +91,6 @@ jobs:
         run: |
           mv .cargo-disabled .cargo
           dx build --release --platform desktop
-          rm dist/tailwind.css # Get rid of duplicate tailwind
       - name: Prepare release
         run: |
           strip dist/${{ env.EXECUTABLE_NAME }}
