@@ -86,7 +86,9 @@ jobs:
       - name: Binstall Dioxus-CLI
         run: cargo binstall dioxus-cli --no-confirm
       - name: Build release
-        run: dx build --release --platform desktop
+        run: |
+          mv .cargo-disabled .cargo
+          dx build --release --platform desktop
       - name: Prepare release
         run: |
           strip target/release/${{ env.EXECUTABLE_NAME }}
@@ -135,6 +137,7 @@ jobs:
       run: cargo binstall dioxus-cli --no-confirm
     - name: Build release
       run: |
+        mv .cargo-disabled .cargo
         dx build --release --platform desktop
         cp target/release/${{ env.EXECUTABLE_NAME }}.exe .
     - name: Use Node.js ${{ env.NODE_VERSION }}

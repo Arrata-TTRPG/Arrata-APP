@@ -1,4 +1,5 @@
-﻿on:
+﻿# Thanks to https://github.com/NiklasEi/bevy_game_template/blob/main/.github/workflows/release.yaml for much of this code
+on:
   push:
     branches: [ "main" ]
   pull_request:
@@ -13,34 +14,80 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-name: Cargo Verify
+name: Run Rust checks across all platforms
 jobs:
-  checks:
-    name: Cargo Checks
+  check-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: fkirc/skip-duplicate-actions@master
-      - uses: rui314/setup-mold@v1
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          components: rustfmt, clippy
-          target: wasm32-unknown-unknown
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Setup Rust Cache
+        uses: Swatinem/rust-cache@v2
       - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install libsoup2.4 javascriptcoregtk-4.0 -y
           sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev libxdo-dev -y
-      - name: Setup Rust Cache
-        uses: Swatinem/rust-cache@v2
-      - name: Checkout code
-        uses: actions/checkout@v3
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
-      - name: Install Dioxus CLI
-        run: cargo binstall dioxus-cli --no-confirm --force
-      - name: Test build Desktop
+      - name: Binstall Dioxus-CLI
+        run: cargo binstall dioxus-cli --no-confirm
+      - name: Enable .cargo
+        run: |
+          mv .cargo-disabled .cargo
+      - name: dx build
         run: dx build --platform desktop
-      - name: Test build Web
+      - name: Cargo Check
+        run: cargo check --all
+      - name: Cargo Test
+        run: cargo test --all
+      - name: Cargo Clippy
+        run: cargo clippy --all
+
+  test-windows:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Install Rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+    - name: Setup Rust Cache
+      uses: Swatinem/rust-cache@v2
+    - name: Install cargo-binstall
+      uses: cargo-bins/cargo-binstall@main
+    - name: Binstall Dioxus-CLI
+      run: cargo binstall dioxus-cli --no-confirm
+    - name: Enable .cargo
+      run: |
+        mv .cargo-disabled .cargo
+    - name: dx build
+      run: dx build --platform desktop
+    - name: Cargo Check
+      run: cargo check --all
+    - name: Cargo Test
+      run: cargo test --all
+    - name: Cargo Clippy
+      run: cargo clippy --all
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: wasm32-unknown-unknown
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
+      - name: Binstall Dioxus-CLI
+        run: cargo binstall dioxus-cli --no-confirm
+      - name: Enable .cargo
+        run: |
+          mv .cargo-disabled .cargo
+      - name: dx build
         run: dx build --platform web
       - name: Cargo Check
         run: cargo check --all
