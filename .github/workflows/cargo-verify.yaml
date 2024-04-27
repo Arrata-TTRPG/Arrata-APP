@@ -25,7 +25,7 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: nightly
-          components: rustfmt, clippy, rust-src
+          components: rustfmt, clippy
           target: wasm32-unknown-unknown
       - name: Install Dependencies
         run: |
@@ -36,18 +36,16 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
         run: cargo binstall dioxus-cli --no-confirm
-      - name: Enable .cargo
-        run: mv .cargo-disabled .cargo
       - name: dx build
-        run: dx build --platform desktop --release
+        run: dx build --platform desktop
       - name: Cargo Check
-        run: cargo check --all --release
+        run: cargo check --all
       - name: Cargo Test
-        run: cargo test --all --release
+        run: cargo test --all
       - name: Cargo Clippy
-        run: cargo clippy --all --release
+        run: cargo clippy --all
       - name: Cargo fmt
-        run: cargo fmt -- --check --release
+        run: cargo fmt -- --check
 
   test-windows:
     runs-on: windows-latest
@@ -58,24 +56,22 @@ jobs:
       uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
         toolchain: nightly
-        components: rustfmt, clippy, rust-src
+        components: rustfmt, clippy
         target: wasm32-unknown-unknown
     - name: Install cargo-binstall
       uses: cargo-bins/cargo-binstall@main
     - name: Binstall Dioxus-CLI
       run: cargo binstall dioxus-cli --no-confirm
-    - name: Enable .cargo
-      run: mv .cargo-disabled .cargo
     - name: dx build
-      run: dx build --platform desktop --release
+      run: dx build --platform desktop
     - name: Cargo Check
-      run: cargo check --all --release
+      run: cargo check --all
     - name: Cargo Test
-      run: cargo test --all --release
+      run: cargo test --all
     - name: Cargo Clippy
-      run: cargo clippy --all --release
+      run: cargo clippy --all
     - name: Cargo fmt
-      run: cargo fmt -- --check --release
+      run: cargo fmt -- --check
 
   build-web:
     runs-on: ubuntu-latest
@@ -86,21 +82,19 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: nightly
-          components: rustfmt, clippy, rust-src
+          components: rustfmt, clippy
           target: wasm32-unknown-unknown
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
         run: cargo binstall dioxus-cli --no-confirm
-      - name: Enable .cargo
-        run: mv .cargo-disabled .cargo
       - name: dx build
-        run: dx build --platform web --release
+        run: dx build --platform web
       - name: Cargo Check
-        run: cargo check --all --release
+        run: cargo check --all
       - name: Cargo Test
-        run: cargo test --all --release
+        run: cargo test --all
       - name: Cargo Clippy
-        run: cargo clippy --all --release
+        run: cargo clippy --all
       - name: Cargo fmt
-        run: cargo fmt -- --check --release
+        run: cargo fmt -- --check
