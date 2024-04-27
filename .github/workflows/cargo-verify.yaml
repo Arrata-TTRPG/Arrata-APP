@@ -45,7 +45,7 @@ jobs:
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm
+        run: cargo binstall dioxus-cli --no-confirm --force
       - name: dx build
         run: dx build --platform desktop
       - name: Cargo Check
@@ -71,7 +71,7 @@ jobs:
     - name: Install cargo-binstall
       uses: cargo-bins/cargo-binstall@main
     - name: Binstall Dioxus-CLI
-      run: cargo binstall dioxus-cli --no-confirm
+      run: cargo binstall dioxus-cli --no-confirm --force
     - name: dx build
       run: dx build --platform desktop
     - name: Cargo Check
@@ -97,7 +97,7 @@ jobs:
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm
+        run: cargo binstall dioxus-cli --no-confirm --force
       - name: dx build
         run: dx build --platform web
       - name: Cargo Check
