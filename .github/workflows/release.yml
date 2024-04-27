@@ -162,9 +162,9 @@ jobs:
     - name: Zip release
       uses: vimtor/action-zip@v1
       with:
-        files: dist/*
+        files: dist
         dest: ${{ env.EXECUTABLE_NAME }}_windows.zip
-        recursive: false
+        recursive: true
     - name: Upload release
       uses: svenstaro/upload-release-action@v2
       with:
