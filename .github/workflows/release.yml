@@ -209,11 +209,13 @@ jobs:
           sed -i 's/#base_path/base_path/' Dioxus.toml
           mv .cargo-disabled .cargo
       - name: Create WASM with Dioxus CLI
-        run: dx build --release --platform web
+        run: |
+          dx build --release --platform web
+          mv dist docs
       - name: Deploy to GH Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: web-deployment
-          folder: dist
+          folder: docs
           target-folder: docs
           commit-message: "chore(cd): Deploy to GH Pages for ${{ env.VERSION }}"
