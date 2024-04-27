@@ -77,7 +77,6 @@ jobs:
         with:
           toolchain: nightly
           components: rustfmt, clippy, rust-src
-          target: wasm32-unknown-unknown
       - name: Install Dependencies
         run: |
           sudo apt-get update
@@ -133,7 +132,6 @@ jobs:
       with:
         toolchain: nightly
         components: rustfmt, clippy, rust-src
-        target: wasm32-unknown-unknown
     - name: Install cargo-binstall
       uses: cargo-bins/cargo-binstall@main
     - name: Binstall Dioxus-CLI
