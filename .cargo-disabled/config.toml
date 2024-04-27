@@ -1,7 +1,0 @@
-﻿[build]
-target = 'x86_64-unknown-linux-gnu'
-rustflags = ["-Zlocation-detail=none"]
-
-[unstable]
-build-std = ["std", "panic_abort"]
-build-std-features = ["panic_immediate_abort"]
