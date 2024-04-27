@@ -1,4 +1,4 @@
-﻿// character.rs
+// character.rs
 // All structs and enums relating to characters.
 
 use serde::{Deserialize, Serialize};
@@ -19,7 +19,8 @@ pub struct Character {
 }
 
 impl Character {
-    #[must_use] pub fn new() -> Character {
+    #[must_use]
+    pub fn new() -> Character {
         Character {
             name: "John Arrata".to_string(),
             stock: "Human".to_string(),
@@ -45,14 +46,14 @@ impl Character {
     ///
     /// # Errors
     ///
-    /// `Err(std::io::Error)` - Returns the given IO 
+    /// `Err(std::io::Error)` - Returns the given IO
     /// error if one is encountered.
     ///
     /// Characters written will be written as
     /// "`{character.name}.arrata`"
     ///
     /// # Panics
-    /// 
+    ///
     /// This method only writes if we have relevant permissions,
     /// otherwise it will panic.
     #[cfg(feature = "desktop")]
@@ -172,7 +173,8 @@ pub struct Stat {
 }
 
 impl Stat {
-    #[must_use] pub fn new(name: String) -> Stat {
+    #[must_use]
+    pub fn new(name: String) -> Stat {
         Stat {
             name,
             quality: Quality::Basic,
@@ -216,7 +218,8 @@ pub struct Quirk {
 }
 
 impl Quirk {
-    #[must_use] pub fn new(name: String) -> Self {
+    #[must_use]
+    pub fn new(name: String) -> Self {
         Self {
             name,
             description: String::new(),
@@ -253,7 +256,8 @@ pub struct Item {
 }
 
 impl Item {
-    #[must_use] pub fn new(name: String) -> Self {
+    #[must_use]
+    pub fn new(name: String) -> Self {
         Self {
             name,
             quantity: 0,

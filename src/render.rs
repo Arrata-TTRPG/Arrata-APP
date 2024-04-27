@@ -1,10 +1,15 @@
-﻿use dioxus::prelude::*;
-use dioxus_free_icons::{icons::bs_icons::{BsDice6, BsTrash, BsX}, Icon};
+use dioxus::prelude::*;
+use dioxus_free_icons::{
+    icons::bs_icons::{BsDice6, BsTrash, BsX},
+    Icon,
+};
 
 use crate::{
-    character::{Stat, Character, Item, Quality, Quirk, QuirkCategory},
-    dice::{roll_stat, RollResult}
+    character::{Character, Item, Quality, Quirk, QuirkCategory, Stat},
+    dice::{roll_stat, RollResult},
 };
+
+pub static CHARACTER: GlobalSignal<Character> = GlobalSignal::new(Character::new);
 
 #[component(no_case_check)]
 pub fn render_rolls(state: Signal<(bool, Option<Stat>)>) -> Element {
@@ -123,7 +128,7 @@ pub fn render_rolls(state: Signal<(bool, Option<Stat>)>) -> Element {
                             }
                         }
                     }
-                
+
                 }
             }
         }
@@ -131,26 +136,23 @@ pub fn render_rolls(state: Signal<(bool, Option<Stat>)>) -> Element {
 }
 
 #[component(no_case_check)]
-pub fn render_character(
-    character: Signal<Character>,
-    dice_roll_state: Signal<(bool, Option<Stat>)>,
-) -> Element {
-    rsx!{
+pub fn render_character(dice_roll_state: Signal<(bool, Option<Stat>)>) -> Element {
+    rsx! {
         div { class: "flex content-center items-center justify-center",
             div { class: "font-mono text-xl px-2 py-2", "Name:" }
             input {
                 class: "border-spacing-1 border rounded-lg px-2 py-2",
-                value: "{character.read().name}",
+                value: "{CHARACTER().name}",
                 oninput: move |evt| {
-                    character.write().name = evt.value().clone();
+                    CHARACTER.write().name = evt.value();
                 }
             }
             div { class: "font-mono text-xl px-2 py-2", "Stock:" }
             input {
                 class: "border-spacing-1 border rounded-lg px-2 py-2",
-                value: "{character.read().stock}",
+                value: "{CHARACTER().stock}",
                 oninput: move |evt| {
-                    character.write().stock = evt.value().clone();
+                    CHARACTER.write().stock = evt.value();
                 }
             }
         }
@@ -158,11 +160,11 @@ pub fn render_character(
         div { class: "flex flex-wrap",
             div { class: "w-[748px] flex-auto justify-items-center justify-center",
                 h2 { class: "py-4 text-center text-4xl font-bold font-mono",
-                    "Stats {character.read().stats.iter().map(|stat| stat.quantity).sum::<usize>()}"
+                    "Stats {CHARACTER().stats.iter().map(|stat| stat.quantity).sum::<usize>()}"
                 }
                 div { class: "flex justify-center justify-items-center content-center",
                     div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center content-center max-w-5xl",
-                        for (i , stat) in character.read().stats.iter().enumerate() {
+                        for (i , stat) in CHARACTER().stats.iter().enumerate() {
                             div { class: "flex flex-col border border-spacing-2 items-center justify-center justify-items-center px-2 py-2 rounded-lg",
                                 div { class: "inline-flex items-center justify-center py-2 px-2 w-auto",
                                     div { class: "font-mono text-center text-2xl py-2 px-2", "{stat.name}" }
@@ -171,7 +173,7 @@ pub fn render_character(
                                             onclick: move |_| {
                                                 dice_roll_state.with_mut(|state| {
                                                     state.0 = true;
-                                                    state.1 = Some(character.read().stats[i].clone());
+                                                    state.1 = Some(CHARACTER().stats[i].clone());
                                                 });
                                             },
                                             Icon {
@@ -186,7 +188,7 @@ pub fn render_character(
                                 div { class: "inline-flex w-full justify-center content-center items-center justify-items-center",
                                     select { class: "font-mono border rounded-lg py-2 px-2",
                                         onchange: move |evt| {
-                                            character.with_mut(|character| {
+                                            CHARACTER.with_mut(|character| {
                                                 character.stats[i].quality = match evt.value().parse::<usize>().unwrap() {
                                                     1 => Quality::Adept,
                                                     2 => Quality::Superb,
@@ -211,7 +213,7 @@ pub fn render_character(
                                         r#type:"number",
                                         value: i64::try_from(stat.quantity).unwrap_or_default(),
                                         oninput: move |evt| {
-                                            character.with_mut(|character| {
+                                            CHARACTER.with_mut(|character| {
                                                 character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
                                             });
                                         }
@@ -221,7 +223,7 @@ pub fn render_character(
                                         r#type:"number",
                                         value: i64::try_from(stat.checks.unwrap_or_default()).unwrap_or_default(),
                                         oninput: move |evt| {
-                                            character.with_mut(|character| {
+                                            CHARACTER.with_mut(|character| {
                                                 character.stats[i].checks = Some(evt.value().parse::<usize>().unwrap_or(0));
                                             });
                                         }
@@ -237,13 +239,13 @@ pub fn render_character(
                     }
                     button {
                         class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
-                        onclick: move |_| character.write().skills.push(Stat::new("New Skill!".into())),
+                        onclick: move |_| CHARACTER.write().skills.push(Stat::new("New Skill!".into())),
                         "+ Add Skill"
                     }
                 }
                 div { class: "flex justify-center",
                     div { class: "grid grid-cols-2 gap-4 justify-items-center max-w-5xl",
-                    for (i , skill) in character.read().skills.iter().enumerate() {
+                    for (i , skill) in CHARACTER().skills.iter().enumerate() {
                             div { class: "flex flex-col border border-spacing-2 px-2 py-2 rounded-lg",
                                 div { class: "flex justify-center content-center items-center justify-items-center text-2xl py-2 px-2",
                                     div { class: "flex px-2 py-2",
@@ -251,7 +253,7 @@ pub fn render_character(
                                             r#type:"text",
                                             value: "{skill.name}",
                                             oninput: move |evt| {
-                                                character.write().skills[i].name = evt.value().to_string();
+                                                CHARACTER.write().skills[i].name = evt.value().to_string();
                                             }
                                         }
                                     }
@@ -260,7 +262,7 @@ pub fn render_character(
                                             onclick: move |_| {
                                                 dice_roll_state.with_mut(|state| {
                                                     state.0 = true;
-                                                    state.1 = Some(character.read().skills[i].clone());
+                                                    state.1 = Some(CHARACTER().skills[i].clone());
                                                 });
                                             },
                                             Icon {
@@ -273,7 +275,7 @@ pub fn render_character(
                                     }
                                     div { class: "px-2 py-2 rounded-lg",
                                         button { class: "bg-slate-900 hover:bg-slate-600 py-2 px-2 space-x-5 rounded",
-                                            onclick: move |_| { let _ = character.write().skills.remove(i); },
+                                            onclick: move |_| { let _ = CHARACTER.write().skills.remove(i); },
                                             Icon {
                                                 width: 20,
                                                 height: 20,
@@ -286,7 +288,7 @@ pub fn render_character(
                                 div { class: "inline-flex justify-center content-center items-center justify-items-center",
                                     select { class: "font-mono border rounded-lg py-2 px-2",
                                         onchange: move |evt| {
-                                            character.with_mut(|character| {
+                                            CHARACTER.with_mut(|character| {
                                                 character.skills[i].quality = match evt.value().parse::<usize>().unwrap() {
                                                     1 => Quality::Adept,
                                                     2 => Quality::Superb,
@@ -311,7 +313,7 @@ pub fn render_character(
                                         r#type:"number",
                                         value: i64::try_from(skill.quantity).unwrap_or_default(),
                                         oninput: move |evt| {
-                                            character.with_mut(|character| {
+                                            CHARACTER.with_mut(|character| {
                                                 character.skills[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
                                             });
                                         }
@@ -321,7 +323,7 @@ pub fn render_character(
                                         r#type:"number",
                                         value: i64::try_from(skill.checks.unwrap_or(0)).unwrap_or_default(),
                                         oninput: move |evt| {
-                                            character.with_mut(|character| {
+                                            CHARACTER.with_mut(|character| {
                                                 character.skills[i].checks = Some(evt.value().parse::<usize>().unwrap_or(0));
                                             });
                                         }
@@ -342,8 +344,8 @@ pub fn render_character(
                 div { class: "flex justify-center content-center items-center py-2 px-2",
                     textarea {
                         class: "rounded-lg w-2/3 py-2 px-2 bg-black text-white border border-white",
-                        value: "{character.read().argos}",
-                        oninput: move |evt| character.write().argos = evt.value().to_string()
+                        value: "{CHARACTER().argos}",
+                        oninput: move |evt| CHARACTER.write().argos = evt.value().to_string()
                     }
                 }
 
@@ -353,14 +355,14 @@ pub fn render_character(
                     }
                     button {
                         class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
-                        onclick: move |_| character.write().quirks.push(Quirk::default()),
+                        onclick: move |_| CHARACTER.write().quirks.push(Quirk::default()),
                         "+ Add Quirk"
                     }
                 }
 
                 div { class: "flex justify-center",
                     div { class: "grid grid-cols-2 gap-4 justify-items-center max-w-5xl",
-                        for (i , quirk) in character.read().quirks.iter().enumerate() {
+                        for (i , quirk) in CHARACTER().quirks.iter().enumerate() {
                             div { class: "w-[504px] border border-spacing-2 px-3 py-3 rounded-lg",
                                 div { class: "flex justify-center content-center items-center justify-items-center text-2xl py-2 px-2 w-full",
                                     div { class: "flex",
@@ -368,14 +370,14 @@ pub fn render_character(
                                             r#type:"text",
                                             value: "{quirk.name}",
                                             oninput: move |evt| {
-                                                character.write().quirks[i].name = evt.value().to_string();
+                                                CHARACTER.write().quirks[i].name = evt.value().to_string();
                                             }
                                         }
                                     }
                                     div { class: "inline-flex justify-center content-center items-center justify-items-center px-2 py-2",
                                         select { class: "font-mono text-lg border rounded-lg py-2 px-2",
                                             onchange: move |evt| {
-                                                character.with_mut(|character| {
+                                                CHARACTER.with_mut(|character| {
                                                     character.quirks[i].category = match evt.value().parse::<usize>().unwrap() {
                                                         0 => QuirkCategory::Ethos,
                                                         1 => QuirkCategory::Pathos,
@@ -399,7 +401,7 @@ pub fn render_character(
                                     }
                                     div { class: "flex",
                                         button { class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                            onclick: move |_| { let _ = character.write().quirks.remove(i); },
+                                            onclick: move |_| { let _ = CHARACTER.write().quirks.remove(i); },
                                             Icon {
                                                 width: 20,
                                                 height: 20,
@@ -413,7 +415,7 @@ pub fn render_character(
                                     textarea { class: "rounded-lg w-full py-2 px-2 bg-black text-white border-white",
                                         value: "{quirk.description}",
                                         oninput: move |evt| {
-                                            character.write().quirks[i].description = evt.value().to_string();
+                                            CHARACTER.write().quirks[i].description = evt.value().to_string();
                                         }
                                     }
                                 }
@@ -423,7 +425,7 @@ pub fn render_character(
                                             "Boons",
                                         }
                                         button { class: "bg-slate-900 hover:bg-slate-500 text-lg text-white font-bold py-1 px-4 rounded",
-                                            onclick: move |_| character.with_mut(|character| 
+                                            onclick: move |_| CHARACTER.with_mut(|character|
                                                 character.quirks[i].boons.push("New Boon!".into())
                                             ),
                                             "+ Boon"
@@ -434,7 +436,7 @@ pub fn render_character(
                                             "Flaws",
                                         }
                                         button { class: "bg-slate-900 hover:bg-slate-500 text-lg text-white font-bold py-1 px-4 rounded",
-                                            onclick: move |_| character.with_mut(|character|
+                                            onclick: move |_| CHARACTER.with_mut(|character|
                                                 character.quirks[i].flaws.push("New Flaw!".into())
                                             ),
                                             "+ Flaw"
@@ -445,10 +447,10 @@ pub fn render_character(
                                             div { class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
                                                 textarea { class: "text-mono w-full content-center justify-center border-spacing-1 border rounded-lg py-2 px-2 bg-black text-white",
                                                     value: "{boon}",
-                                                    oninput: move |evt| character.write().quirks[i].boons[j] = evt.value().to_string()
+                                                    oninput: move |evt| CHARACTER.write().quirks[i].boons[j] = evt.value().to_string()
                                                 }
                                                 button { class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                                    onclick: move |_| { let _ = character.write().quirks[i].boons.remove(j); },
+                                                    onclick: move |_| { let _ = CHARACTER.write().quirks[i].boons.remove(j); },
                                                     Icon {
                                                         width: 20,
                                                         height: 20,
@@ -464,10 +466,10 @@ pub fn render_character(
                                             div { class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
                                                 textarea { class: "text-mono w-auto content-center justify-center border-spacing-1 border rounded-lg py-2 px-2 bg-black text-white",
                                                     value: "{flaw}",
-                                                    oninput: move |evt| character.write().quirks[i].flaws[j] = evt.value().to_string()
+                                                    oninput: move |evt| CHARACTER.write().quirks[i].flaws[j] = evt.value().to_string()
                                                 }
                                                 button { class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                                    onclick: move |_| { let _ = character.write().quirks[i].flaws.remove(j); },
+                                                    onclick: move |_| { let _ = CHARACTER.write().quirks[i].flaws.remove(j); },
                                                     Icon {
                                                         width: 20,
                                                         height: 20,
@@ -492,13 +494,13 @@ pub fn render_character(
                     }
                     button {
                         class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
-                        onclick: move |_| character.write().inventory.push(Item::default()),
+                        onclick: move |_| CHARACTER.write().inventory.push(Item::default()),
                         "+ Add Item"
                     }
                 }
                 div { class: "flex justify-center",
                     div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center max-w-2xl",
-                        for (i , item) in character.read().inventory.iter().enumerate() {
+                        for (i , item) in CHARACTER().inventory.iter().enumerate() {
                             div { class: "justify-center content-center items-center justify-items-center border border-spacing-2 px-3 py-3 top-2 bottom-2 left-2 right-2 rounded-lg",
                                 div { class: "inline-flex items-center content-center",
                                     div {
@@ -506,7 +508,7 @@ pub fn render_character(
                                             r#type:"text",
                                             value: "{item.name}",
                                             oninput: move |evt| {
-                                                character.write().inventory[i].name = evt.value().to_string();
+                                                CHARACTER.write().inventory[i].name = evt.value().to_string();
                                             }
                                         }
                                     }
@@ -515,7 +517,7 @@ pub fn render_character(
                                             r#type:"number",
                                             value: i64::try_from(item.quantity).unwrap_or_default(),
                                             oninput: move |evt| {
-                                                character.with_mut(|character| {
+                                                CHARACTER.with_mut(|character| {
                                                     character.inventory[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
                                                 });
                                             }
@@ -523,7 +525,7 @@ pub fn render_character(
                                     }
                                     div { class: "px-2 py-2",
                                         button { class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                            onclick: move |_| { let _ = character.write().inventory.remove(i); },
+                                            onclick: move |_| { let _ = CHARACTER.write().inventory.remove(i); },
                                             Icon {
                                                 width: 20,
                                                 height: 20,
@@ -544,14 +546,13 @@ pub fn render_character(
 
 /// The main application.
 pub fn app() -> Element {
-    let character = use_signal(Character::new);
-
     let dice_roll_state: Signal<(bool, Option<Stat>)> = use_signal(|| (false, None));
 
     let arrata_style = r"
     body { background-color: black; color: white; }
     input { background-color: black; color: white; }
     select { background-color: black; color: white; }
+    option { background-color: black; color: white; }
     ";
 
     let rat_path = if cfg!(target_family = "wasm") {
@@ -562,6 +563,7 @@ pub fn app() -> Element {
 
     rsx! {
         style { "{arrata_style}" }
+        link { rel: "stylesheet", href: "tailwind.css" }
 
         div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex",
             // Arrata logo
@@ -579,11 +581,11 @@ pub fn app() -> Element {
 
         br {}
 
-        character_io { character: character }
+        character_io {}
 
         br {}
 
-        render_character { character: character, dice_roll_state: dice_roll_state }
+        render_character { dice_roll_state: dice_roll_state }
 
         if dice_roll_state().0 {
             match &dice_roll_state().1 {
@@ -595,13 +597,13 @@ pub fn app() -> Element {
 }
 
 #[component(no_case_check)]
-fn character_io(character: Signal<Character>) -> Element {
-    rsx!{
+fn character_io() -> Element {
+    rsx! {
         div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
             if cfg!(feature = "desktop") {
                 button {
                     class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                    onclick: move |_| character().write_to_file().unwrap(),
+                    onclick: move |_| CHARACTER().write_to_file().unwrap(),
                     "Save Character"
                 }
                 button {
@@ -609,7 +611,7 @@ fn character_io(character: Signal<Character>) -> Element {
                     onclick: move |_| {
                         let new_character = Character::from_file();
                         match new_character {
-                            Ok(c) => character.set(c),
+                            Ok(c) => *CHARACTER.write() = c,
                             Err(e) => match e.kind() {
                                 std::io::ErrorKind::Other => (),
                                 _ => panic!("{e:?}"),

@@ -1,4 +1,4 @@
-﻿/// The result of rolling `quantity` dice with a `quality` threshold.
+/// The result of rolling `quantity` dice with a `quality` threshold.
 #[derive(Debug, Clone)]
 pub struct RollResult {
     /// The number of successes. Can be negative
@@ -24,7 +24,12 @@ pub struct RollResult {
 /// # Outputs
 ///
 /// `DiceResult` - The result of the roll.
-#[must_use] pub fn roll_stat(stat: &crate::character::Stat, advantage: usize, disadvantage: usize) -> RollResult {
+#[must_use]
+pub fn roll_stat(
+    stat: &crate::character::Stat,
+    advantage: usize,
+    disadvantage: usize,
+) -> RollResult {
     let mut quantity = stat.quantity;
     let quality = stat.quality as u8;
 
@@ -42,7 +47,7 @@ pub struct RollResult {
                 successes: 0,
                 failures: 0,
                 results: Vec::new(),
-                };
+            };
         }
         quantity -= disadvantage - 1;
     }

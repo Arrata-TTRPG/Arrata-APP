@@ -18,6 +18,7 @@ native-dialog = { version = "0.7.0", optional = true }
 
 # Web dependencies
 getrandom = { version = "0.2.14", optional = true }
+manganis = "0.2.2"
 
 [[bin]]
 name = "arrata_character_sheet_manager"

@@ -200,8 +200,11 @@ jobs:
         run: |
           npm install -D tailwindcss
           npx tailwindcss -i input.css -o public/tailwind.css --minify
-      - name: Modify Dioxus.toml
-        run: sed -i 's/#base_path/base_path/' Dioxus.toml
+      - name: Modify Dioxus.toml and enable cargo config.toml
+        run: |
+          sed -i 's/#base_path/base_path/' Dioxus.toml
+          sed -i 's/out_dir = "dist"/out_dir = "docs"/' Dioxus.toml
+          mv .cargo-disabled .cargo
       - name: Create WASM with Dioxus CLI
         run: dx build --release --platform web
       - name: Deploy to GH Pages
