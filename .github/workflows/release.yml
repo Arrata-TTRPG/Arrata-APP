@@ -86,14 +86,6 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
         run: cargo binstall dioxus-cli --no-confirm --force
-      - name: Build release
-        run: |
-          mv .cargo-disabled .cargo
-          dx build --release --platform desktop
-      - name: Prepare release
-        run: |
-          strip dist/${{ env.EXECUTABLE_NAME }}
-          chmod +x dist/${{ env.EXECUTABLE_NAME }}
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
@@ -107,6 +99,14 @@ jobs:
         run: |
           npm install -D tailwindcss
           npx tailwindcss -i input.css -o public/tailwind.css --minify
+      - name: Build release
+        run: |
+          mv .cargo-disabled .cargo
+          dx build --release --platform desktop
+      - name: Prepare release
+        run: |
+          strip dist/${{ env.EXECUTABLE_NAME }}
+          chmod +x dist/${{ env.EXECUTABLE_NAME }}
       - name: Bundle release
         run: tar -czf ${{ env.EXECUTABLE_NAME }}_linux.tar.gz dist
       - name: Upload release
@@ -136,10 +136,6 @@ jobs:
       uses: cargo-bins/cargo-binstall@main
     - name: Binstall Dioxus-CLI
       run: cargo binstall dioxus-cli --no-confirm --force
-    - name: Build release
-      run: |
-        mv .cargo-disabled .cargo
-        dx build --release --platform desktop
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
       with:
@@ -153,10 +149,14 @@ jobs:
       run: |
         npm install -D tailwindcss
         npx tailwindcss -i input.css -o public/tailwind.css --minify
+    - name: Build release
+      run: |
+        mv .cargo-disabled .cargo
+        dx build --release --platform desktop
     - name: Zip release
       uses: vimtor/action-zip@v1
       with:
-        files: dist
+        files: dist/*
         dest: ${{ env.EXECUTABLE_NAME }}_windows.zip
         recursive: false
     - name: Upload release
@@ -207,7 +207,6 @@ jobs:
       - name: Modify Dioxus.toml and enable cargo config.toml
         run: |
           sed -i 's/#base_path/base_path/' Dioxus.toml
-          sed -i 's/out_dir = "dist"/out_dir = "docs"/' Dioxus.toml
           mv .cargo-disabled .cargo
       - name: Create WASM with Dioxus CLI
         run: dx build --release --platform web
@@ -215,6 +214,6 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: web-deployment
-          folder: docs
+          folder: dist
           target-folder: docs
           commit-message: "chore(cd): Deploy to GH Pages for ${{ env.VERSION }}"
