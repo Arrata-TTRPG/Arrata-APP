@@ -220,6 +220,11 @@ jobs:
         run: |
           dx build --release --platform web
           mv dist docs
+      - name: wasm-opt pass
+        uses: NiklasEi/wasm-opt-action@v2
+        with:
+          file: docs/assets/dioxus/*.wasm
+          options: '-Oz -c'
       - name: Deploy to GH Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
