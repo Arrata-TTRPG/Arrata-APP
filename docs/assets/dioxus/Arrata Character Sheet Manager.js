@@ -133,18 +133,6 @@ function getFloat64Memory0() {
     return cachedFloat64Memory0;
 }
 
-function dropObject(idx) {
-    if (idx < 132) return;
-    heap[idx] = heap_next;
-    heap_next = idx;
-}
-
-function takeObject(idx) {
-    const ret = getObject(idx);
-    dropObject(idx);
-    return ret;
-}
-
 function _assertBigInt(n) {
     if (typeof(n) !== 'bigint') throw new Error(`expected a bigint argument, found ${typeof(n)}`);
 }
@@ -221,6 +209,18 @@ function debugString(val) {
     }
     // TODO we could test for more things here, like `Set`s and `Map`s.
     return className;
+}
+
+function dropObject(idx) {
+    if (idx < 132) return;
+    heap[idx] = heap_next;
+    heap_next = idx;
+}
+
+function takeObject(idx) {
+    const ret = getObject(idx);
+    dropObject(idx);
+    return ret;
 }
 
 const CLOSURE_DTORS = (typeof FinalizationRegistry === 'undefined')
@@ -1036,9 +1036,6 @@ function __wbg_get_imports() {
         const ret = getObject(arg0).getNode(arg1 >>> 0);
         return addHeapObject(ret);
     }, arguments) };
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
-    };
     imports.wbg.__wbg_crypto_566d7465cdbb6b7a = function() { return logError(function (arg0) {
         const ret = getObject(arg0).crypto;
         return addHeapObject(ret);
@@ -1201,6 +1198,9 @@ function __wbg_get_imports() {
     };
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
+    };
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
     };
     imports.wbg.__wbindgen_cb_drop = function(arg0) {
         const obj = takeObject(arg0).original;
@@ -1369,11 +1369,11 @@ function __wbg_get_imports() {
         const ret = makeMutClosure(arg0, arg1, 52, __wbg_adapter_48);
         return addHeapObject(ret);
     }, arguments) };
-    imports.wbg.__wbindgen_closure_wrapper1074 = function() { return logError(function (arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper1073 = function() { return logError(function (arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 25, __wbg_adapter_51);
         return addHeapObject(ret);
     }, arguments) };
-    imports.wbg.__wbindgen_closure_wrapper1116 = function() { return logError(function (arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper1115 = function() { return logError(function (arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 29, __wbg_adapter_54);
         return addHeapObject(ret);
     }, arguments) };
