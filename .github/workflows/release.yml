@@ -108,7 +108,9 @@ jobs:
           strip dist/${{ env.EXECUTABLE_NAME }}
           chmod +x dist/${{ env.EXECUTABLE_NAME }}
       - name: Bundle release
-        run: tar -czf ${{ env.EXECUTABLE_NAME }}_linux.tar.gz dist
+        run: |
+          cd dist
+          tar -czf ../${{ env.EXECUTABLE_NAME }}_linux.tar.gz *
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
         with:
