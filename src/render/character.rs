@@ -1,6 +1,10 @@
 use dioxus::prelude::*;
 
-use crate::{character::Character, render::{RenderInventory, RenderQuirks, RenderStats}, CHARACTER};
+use crate::{
+    character::Character,
+    render::{RenderInventory, RenderQuirks, RenderStats},
+    CHARACTER,
+};
 
 #[component]
 pub(crate) fn RenderCharacter() -> Element {
@@ -48,9 +52,11 @@ pub(crate) fn CharacterIO() -> Element {
                         let new_character = Character::from_file();
                         match new_character {
                             Ok(c) => *CHARACTER.write() = c,
-                            Err(e) => match e.kind() {
-                                std::io::ErrorKind::Other => (),
-                                _ => panic!("{e:?}"),
+                            Err(e) => {
+                                match e.kind() {
+                                    std::io::ErrorKind::Other => {}
+                                    _ => panic!("{e:?}"),
+                                }
                             }
                         }
                     },

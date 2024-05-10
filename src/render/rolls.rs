@@ -1,7 +1,10 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{icons::bs_icons::BsX, Icon};
 
-use crate::{dice::{roll_stat, RollResult}, DICE_ROLL_STATE};
+use crate::{
+    dice::{roll_stat, RollResult},
+    DICE_ROLL_STATE,
+};
 
 #[component]
 pub(crate) fn RenderRolls() -> Element {
@@ -48,9 +51,7 @@ pub(crate) fn RenderRolls() -> Element {
                                 onclick: move |_| {
                                     dice_results
                                         .with_mut(|results| {
-                                            *results = Some(
-                                                roll_stat(&stat, advantage(), disadvantage()),
-                                            );
+                                            *results = Some(roll_stat(&stat, advantage(), disadvantage()));
                                         });
                                 },
                                 "Roll!"
@@ -104,16 +105,20 @@ pub(crate) fn RenderRolls() -> Element {
                                 "Failures: {results.failures}"
                             }
                         }
-                        div { class: "px-2 py-2 text-lg text-center", "Results" },
+                        div { class: "px-2 py-2 text-lg text-center", "Results" }
                         // Results
                         div { class: "px-2 py-2",
                             div { class: "px-1 py-1 flex flex-wrap content-around justify-center text-center border bg-slate-900",
                                 for r in results.results.iter() {
                                     div { class: "px-1 py-1",
                                         if *r >= stat.quality as u8 {
-                                            div { class: "px-1 text-green-500 bg-slate-800 rounded", "{r}" }
+                                            div { class: "px-1 text-green-500 bg-slate-800 rounded",
+                                                "{r}"
+                                            }
                                         } else {
-                                            div { class: "px-1 text-red-600 bg-slate-950 rounded", "{r}" }
+                                            div { class: "px-1 text-red-600 bg-slate-950 rounded",
+                                                "{r}"
+                                            }
                                         }
                                     }
                                 }

@@ -1,6 +1,9 @@
 use dioxus::prelude::*;
 
-use crate::{render::{character::CharacterIO, RenderCharacter, RenderRolls}, DICE_ROLL_STATE};
+use crate::{
+    render::{character::CharacterIO, RenderCharacter, RenderRolls},
+    DICE_ROLL_STATE,
+};
 
 /// The main application.
 #[component]
