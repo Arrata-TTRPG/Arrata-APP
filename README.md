@@ -29,7 +29,7 @@ To install, go to the [latest release](https://github.com/kalebvonburris/Arrata-
 
 ### Compilation
 
-Clone the repo: `git clone https://github.com/kalebvonburris/Arrata-APP`
+Clone the repo: `git clone https://github.com/Arrata-TTRPG/Arrata-APP.git`
 
 `cd` into `Arrata-APP`
 
