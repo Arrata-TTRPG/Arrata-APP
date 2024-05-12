@@ -1,6 +1,6 @@
 # Arrata-APP
 
-Access the online version here: <https://kalebvonburris.github.io/Arrata-APP/>
+Access the online version here: [https://kalebvonburris.github.io/Arrata-APP/](https://arrata-ttrpg.github.io/Arrata-APP/)
 
 This repo contains the code for an [Arrata](https://github.com/kalebvonburris/Arrata-TTRPG) character sheet manager.
 
