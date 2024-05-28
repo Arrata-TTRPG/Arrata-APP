@@ -59,7 +59,7 @@ pub fn roll_stat(
         if advantage > 0 && result == 6 {
             quantity += 1;
         }
-        if disadvantage > 0 && result == 1 {
+        else if disadvantage > 0 && result == 1 {
             successes -= 1;
         }
         successes += isize::from(result >= quality);
