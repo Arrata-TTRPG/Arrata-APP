@@ -12,33 +12,31 @@ use crate::{
 #[component]
 pub(crate) fn RenderStats() -> Element {
     rsx! {
-        div { class: "w-[748px] flex-auto justify-items-center justify-center",
+        div { class: "w-[748px] flex-auto justify-items-center justify-center px-4",
             h2 { class: "pb-2 text-center text-4xl font-bold font-mono",
                 "Stats {CHARACTER().stats.iter().map(|stat| stat.quantity).sum::<usize>()}"
             }
             div { class: "flex justify-center justify-items-center content-center",
-                div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center content-center max-w-5xl",
+                div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center content-center w-full",
                     for (i , stat) in CHARACTER().stats.iter().enumerate() {
-                        div { class: "flex flex-col border border-spacing-2 items-center justify-center justify-items-center px-2 py-2 rounded-lg",
-                            div { class: "inline-flex items-center justify-center p-2 w-auto",
-                                div { class: "font-mono text-center text-2xl p-2", "{stat.name}" }
-                                div { class: "p-2",
-                                    button {
-                                        class: "bg-slate-900 hover:bg-slate-600",
-                                        onclick: move |_| {
-                                            DICE_ROLL_STATE
-                                                .with_mut(|state| {
-                                                    state.0 = true;
-                                                    state.1 = Some(CHARACTER().stats[i].clone());
-                                                });
-                                        },
-                                        Icon { width: 30, height: 30, fill: "white", icon: BsDice6 }
-                                    }
+                        div { class: "flex flex-col border space-y-2 justify-center p-2 rounded-lg w-full",
+                            div { class: "inline-flex items-center justify-center",
+                                div { class: "flex-grow font-mono text-center text-2xl", "{stat.name}" }
+                                button {
+                                    class: "bg-slate-900 hover:bg-slate-600",
+                                    onclick: move |_| {
+                                        DICE_ROLL_STATE
+                                            .with_mut(|state| {
+                                                state.0 = true;
+                                                state.1 = Some(CHARACTER().stats[i].clone());
+                                            });
+                                    },
+                                    Icon { width: 45, height: 45, fill: "white", icon: BsDice6 }
                                 }
                             }
                             div { class: "inline-flex w-full h-full justify-center items-center space-x-2",
                                 select {
-                                    class: "hover:bg-slate-700 font-mono text-center border rounded-lg p-2 appearance-none",
+                                    class: "hover:bg-slate-700 flex-grow font-mono text-center border rounded-lg p-2 appearance-none",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -86,57 +84,51 @@ pub(crate) fn RenderStats() -> Element {
                     }
                 }
             }
-            div { class: "flex justify-center content-center items-center",
-                h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
-                    "Skills"
+            div { class: "flex justify-center content-center items-center py-2",
+                h2 { class: "inline-flex px-4 text-center text-4xl font-bold font-mono",
+                    "Skills {CHARACTER().skills.iter().count()}"
                 }
                 button {
-                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| CHARACTER.write().skills.push(Stat::new("New Skill!".into())),
                     "+ Add Skill"
                 }
             }
             div { class: "flex justify-center",
-                div { class: "grid grid-cols-2 gap-4 justify-items-center max-w-5xl",
+                div { class: "grid grid-cols-2 gap-4 justify-items-center w-full",
                     for (i , skill) in CHARACTER().skills.iter().enumerate() {
-                        div { class: "flex flex-col border border-spacing-2 px-2 py-2 rounded-lg",
-                            div { class: "flex justify-center content-center items-center justify-items-center text-2xl p-2",
-                                div { class: "flex px-2 py-2",
-                                    input {
-                                        class: "w-40 font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
-                                        r#type: "text",
-                                        value: "{skill.name}",
-                                        oninput: move |evt| {
-                                            CHARACTER.write().skills[i].name = evt.value().to_string();
-                                        }
+                        div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
+                            div { class: "flex w-full justify-center items-center text-2xl space-x-2",
+                                input {
+                                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
+                                    r#type: "text",
+                                    value: "{skill.name}",
+                                    oninput: move |evt| {
+                                        CHARACTER.write().skills[i].name = evt.value().to_string();
                                     }
                                 }
-                                div { class: "px-2 py-2",
-                                    button {
-                                        class: "bg-slate-900 hover:bg-slate-600",
-                                        onclick: move |_| {
-                                            DICE_ROLL_STATE
-                                                .with_mut(|state| {
-                                                    state.0 = true;
-                                                    state.1 = Some(CHARACTER().skills[i].clone());
-                                                });
-                                        },
-                                        Icon { width: 30, height: 30, fill: "white", icon: BsDice6 }
-                                    }
+                                button {
+                                    class: "bg-slate-900 hover:bg-slate-600",
+                                    onclick: move |_| {
+                                        DICE_ROLL_STATE
+                                            .with_mut(|state| {
+                                                state.0 = true;
+                                                state.1 = Some(CHARACTER().skills[i].clone());
+                                            });
+                                    },
+                                    Icon { width: 45, height: 45, fill: "white", icon: BsDice6 }
                                 }
-                                div { class: "px-2 py-2 rounded-lg",
-                                    button {
-                                        class: "bg-slate-900 hover:bg-slate-600 p-2 space-x-5 rounded",
-                                        onclick: move |_| {
-                                            let _ = CHARACTER.write().skills.remove(i);
-                                        },
-                                        Icon { width: 20, height: 20, fill: "white", icon: BsTrash }
-                                    }
+                                button {
+                                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                                    onclick: move |_| {
+                                        let _ = CHARACTER.write().skills.remove(i);
+                                    },
+                                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
                                 }
                             }
-                            div { class: "inline-flex justify-center content-center items-center justify-items-center",
+                            div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
                                 select {
-                                    class: "font-mono border rounded-lg p-2",
+                                    class: "flex-grow hover:bg-slate-700 font-mono text-center border rounded-lg p-2 appearance-none",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -163,7 +155,7 @@ pub(crate) fn RenderStats() -> Element {
                                             });
                                     }
                                 }
-                                div { class: "font-mono text-lg p-2", "Checks:" }
+                                div { class: "font-mono text-lg", "Checks:" }
                                 input {
                                     class: "w-16 border rounded-lg p-2",
                                     r#type: "number",
