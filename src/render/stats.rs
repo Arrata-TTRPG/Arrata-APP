@@ -20,11 +20,9 @@ pub(crate) fn RenderStats() -> Element {
                 div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center content-center max-w-5xl",
                     for (i , stat) in CHARACTER().stats.iter().enumerate() {
                         div { class: "flex flex-col border border-spacing-2 items-center justify-center justify-items-center px-2 py-2 rounded-lg",
-                            div { class: "inline-flex items-center justify-center py-2 px-2 w-auto",
-                                div { class: "font-mono text-center text-2xl py-2 px-2",
-                                    "{stat.name}"
-                                }
-                                div { class: "py-2 px-2",
+                            div { class: "inline-flex items-center justify-center p-2 w-auto",
+                                div { class: "font-mono text-center text-2xl p-2", "{stat.name}" }
+                                div { class: "p-2",
                                     button {
                                         class: "bg-slate-900 hover:bg-slate-600",
                                         onclick: move |_| {
@@ -38,9 +36,9 @@ pub(crate) fn RenderStats() -> Element {
                                     }
                                 }
                             }
-                            div { class: "inline-flex w-full justify-center content-center items-center justify-items-center",
+                            div { class: "inline-flex w-full h-full justify-center items-center space-x-2",
                                 select {
-                                    class: "font-mono border rounded-lg py-2 px-2",
+                                    class: "hover:bg-slate-700 font-mono text-center border rounded-lg p-2 appearance-none",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -57,7 +55,7 @@ pub(crate) fn RenderStats() -> Element {
                                     option { value: 2, "Superb" }
                                 }
                                 input {
-                                    class: "w-16 border rounded-lg py-2 px-2",
+                                    class: "w-16 border rounded-lg p-2 appearance-none",
                                     r#type: "number",
                                     value: i64::try_from(stat.quantity).unwrap_or_default(),
                                     oninput: move |evt| {
@@ -67,9 +65,11 @@ pub(crate) fn RenderStats() -> Element {
                                             });
                                     }
                                 }
-                                div { class: "font-mono text-lg py-2 px-2", "Checks:" }
+                                div { class: "font-mono text-lg align-middle h-fit",
+                                    "Checks:"
+                                }
                                 input {
-                                    class: "w-16 border rounded-lg py-2 px-2",
+                                    class: "w-16 border rounded-lg p-2",
                                     r#type: "number",
                                     value: i64::try_from(stat.checks.unwrap_or_default()).unwrap_or_default(),
                                     oninput: move |evt| {
@@ -100,10 +100,10 @@ pub(crate) fn RenderStats() -> Element {
                 div { class: "grid grid-cols-2 gap-4 justify-items-center max-w-5xl",
                     for (i , skill) in CHARACTER().skills.iter().enumerate() {
                         div { class: "flex flex-col border border-spacing-2 px-2 py-2 rounded-lg",
-                            div { class: "flex justify-center content-center items-center justify-items-center text-2xl py-2 px-2",
+                            div { class: "flex justify-center content-center items-center justify-items-center text-2xl p-2",
                                 div { class: "flex px-2 py-2",
                                     input {
-                                        class: "w-40 font-mono text-lg text-center border-spacing-1 border rounded-lg py-2 px-2",
+                                        class: "w-40 font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
                                         r#type: "text",
                                         value: "{skill.name}",
                                         oninput: move |evt| {
@@ -126,7 +126,7 @@ pub(crate) fn RenderStats() -> Element {
                                 }
                                 div { class: "px-2 py-2 rounded-lg",
                                     button {
-                                        class: "bg-slate-900 hover:bg-slate-600 py-2 px-2 space-x-5 rounded",
+                                        class: "bg-slate-900 hover:bg-slate-600 p-2 space-x-5 rounded",
                                         onclick: move |_| {
                                             let _ = CHARACTER.write().skills.remove(i);
                                         },
@@ -136,7 +136,7 @@ pub(crate) fn RenderStats() -> Element {
                             }
                             div { class: "inline-flex justify-center content-center items-center justify-items-center",
                                 select {
-                                    class: "font-mono border rounded-lg py-2 px-2",
+                                    class: "font-mono border rounded-lg p-2",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -153,7 +153,7 @@ pub(crate) fn RenderStats() -> Element {
                                     option { value: 2, "Superb" }
                                 }
                                 input {
-                                    class: "w-16 border rounded-lg py-2 px-2",
+                                    class: "w-16 border rounded-lg p-2",
                                     r#type: "number",
                                     value: i64::try_from(skill.quantity).unwrap_or_default(),
                                     oninput: move |evt| {
@@ -163,9 +163,9 @@ pub(crate) fn RenderStats() -> Element {
                                             });
                                     }
                                 }
-                                div { class: "font-mono text-lg py-2 px-2", "Checks:" }
+                                div { class: "font-mono text-lg p-2", "Checks:" }
                                 input {
-                                    class: "w-16 border rounded-lg py-2 px-2",
+                                    class: "w-16 border rounded-lg p-2",
                                     r#type: "number",
                                     value: i64::try_from(skill.checks.unwrap_or(0)).unwrap_or_default(),
                                     oninput: move |evt| {

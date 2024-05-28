@@ -39,67 +39,6 @@ impl Character {
         }
     }
 
-    /// Write a character to their relevant `.arrata` file.
-    ///
-    /// # Inputs
-    /// `character` - The character to write to the file.
-    ///
-    /// # Errors
-    ///
-    /// `Err(std::io::Error)` - Returns the given IO
-    /// error if one is encountered.
-    ///
-    /// Characters written will be written as
-    /// "`{character.name}.arrata`"
-    ///
-    /// # Panics
-    ///
-    /// This method only writes if we have relevant permissions,
-    /// otherwise it will panic.
-    #[cfg(feature = "desktop")]
-    pub fn write_to_file(&self) -> Result<(), std::io::Error> {
-        use native_dialog::FileDialog;
-        use std::{
-            fs::File,
-            io::{BufWriter, Write},
-        };
-        // Grab the current file path; should never throw unless we don't have file permissions
-        let path: std::path::PathBuf = match FileDialog::new().show_open_single_dir() {
-            Ok(p) => match p {
-                Some(p) => p,
-                None => return Ok(()),
-            },
-            Err(_) => return Ok(()),
-        };
-
-        // {character.name}.arrata
-        let suffix = self.name.clone() + ".arrata";
-
-        let f = File::create(path.to_str().unwrap().to_owned() + "/" + &suffix).unwrap();
-
-        let mut writer = BufWriter::new(f);
-
-        // Serialize the character with serde and write to file
-        let character_serde = serde_json::to_string_pretty(self)?;
-        writer.write_all(character_serde.as_bytes())?;
-
-        Ok(())
-    }
-
-    #[cfg(not(feature = "desktop"))]
-    /// Write a character to their relevant `.arrata` file.
-    ///
-    /// # Errors
-    ///
-    /// Returns an `std::io::Error` if there is an error writing to the file.
-    ///
-    /// # Returns
-    ///
-    /// Returns `Ok(())` if the write operation is successful.
-    pub fn write_to_file(&self) -> Result<(), std::io::Error> {
-        todo!("This is not yet implemented!")
-    }
-
     #[cfg(feature = "desktop")]
     /// Read a character from a file.
     ///
