@@ -13,7 +13,7 @@ use crate::{
 pub(crate) fn RenderStats() -> Element {
     rsx! {
         div { class: "w-[748px] flex-auto justify-items-center justify-center",
-            h2 { class: "py-4 text-center text-4xl font-bold font-mono",
+            h2 { class: "pb-2 text-center text-4xl font-bold font-mono",
                 "Stats {CHARACTER().stats.iter().map(|stat| stat.quantity).sum::<usize>()}"
             }
             div { class: "flex justify-center justify-items-center content-center",

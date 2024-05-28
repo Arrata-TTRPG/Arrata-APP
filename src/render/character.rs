@@ -58,7 +58,7 @@ pub(crate) fn CharacterIO() -> Element {
                     let suffix = CHARACTER().name.clone() + ".arrata";
                     let f = File::create(path.to_str().unwrap().to_owned() + "/" + &suffix).unwrap();
                     let mut writer = BufWriter::new(f);
-                    let character_serde = serde_json::to_string_pretty(self).unwrap();
+                    let character_serde = serde_json::to_string_pretty(&CHARACTER()).unwrap();
                     writer.write_all(character_serde.as_bytes()).unwrap();
                 },
                 "Save Character"
@@ -84,6 +84,7 @@ pub(crate) fn CharacterIO() -> Element {
 }
 
 #[cfg(feature = "web")]
+#[component]
 pub(crate) fn CharacterIO() -> Element {
     rsx! {
         div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
