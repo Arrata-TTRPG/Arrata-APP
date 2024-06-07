@@ -4,8 +4,9 @@ use dioxus_free_icons::{
     Icon,
 };
 
+use arrata_lib::{Quality, Stat};
+
 use crate::{
-    character::{Quality, Stat},
     CHARACTER, DICE_ROLL_STATE,
 };
 

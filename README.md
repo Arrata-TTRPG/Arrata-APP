@@ -51,7 +51,7 @@ To compile and run the desktop version, `cd` into `Arrata-APP` and run `cargo ru
 
 - [x] Create a functioning application
 - [x] Establish character sheet paradigm - (`*.arrata`)
-- [ ] Implement the character sheet
+- [x] Implement the character sheet
   - [x] Name/Stock/Miscellaneous
   - [x] Stats
   - [x] Skills
@@ -62,6 +62,12 @@ To compile and run the desktop version, `cd` into `Arrata-APP` and run `cargo ru
 
 ### Miscellaneous QOL features
 
-- [ ] Add dice-rolling functionality
+- [x] Add dice-rolling functionality
   - [ ] Discord integration(?)
 - [ ] Allow exporting into a printable format
+
+
+## Troubleshooting
+
+If you're on Linux and encounter the app being blank and/or the message: `AcceleratedSurfaceDMABuf was unable to construct a complete framebuffer`,
+add `WEBKIT_DISABLE_DMABUF_RENDERER=1` to your environment variables. Usually this is under `/etc/environment` but it will differ based on your shell.

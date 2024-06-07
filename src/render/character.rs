@@ -1,7 +1,6 @@
 use dioxus::prelude::*;
 
 use crate::{
-    character::Character,
     render::{RenderInventory, RenderQuirks, RenderStats},
     CHARACTER,
 };
@@ -36,9 +35,18 @@ pub(crate) fn RenderCharacter() -> Element {
     }
 }
 
+#[cfg(not(any(feature = "desktop", feature = "web")))]
+#[component]
+pub(crate) fn CharacterIO() -> Element {
+    rsx! {
+        p {"How did you do this? You built the app without the Desktop or Web feature. Fool."}
+    }
+}
+
 #[cfg(feature = "desktop")]
 #[component]
 pub(crate) fn CharacterIO() -> Element {
+    use crate::character_from_file;
     rsx! {
         div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
             button {
@@ -66,7 +74,7 @@ pub(crate) fn CharacterIO() -> Element {
             button {
                 class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| {
-                    let new_character = Character::from_file();
+                    let new_character = character_from_file();
                     match new_character {
                         Ok(c) => *CHARACTER.write() = c,
                         Err(e) => {
@@ -86,6 +94,7 @@ pub(crate) fn CharacterIO() -> Element {
 #[cfg(feature = "web")]
 #[component]
 pub(crate) fn CharacterIO() -> Element {
+    use arrata_lib::Character;
     rsx! {
         div { class: "px-5 py-5 font-mono origin-center justify-center text-center self-center items-center content-center flex space-x-3",
             a {

@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::{
-    render::{character::CharacterIO, RenderCharacter, RenderRolls},
+    render::{CharacterIO, RenderCharacter, RenderRolls},
     DICE_ROLL_STATE,
 };
 

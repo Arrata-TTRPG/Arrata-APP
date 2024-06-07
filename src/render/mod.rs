@@ -2,7 +2,7 @@ pub mod entrypoint;
 pub use entrypoint::App;
 
 pub(crate) mod character;
-pub(crate) use character::RenderCharacter;
+pub(crate) use character::*;
 
 pub(crate) mod rolls;
 pub(crate) use rolls::RenderRolls;

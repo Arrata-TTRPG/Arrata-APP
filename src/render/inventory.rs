@@ -1,7 +1,9 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{icons::bs_icons::BsTrash, Icon};
 
-use crate::{character::Item, CHARACTER};
+use arrata_lib::Item;
+
+use crate::CHARACTER;
 
 #[component]
 pub(crate) fn RenderInventory() -> Element {

@@ -1,10 +1,9 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{icons::bs_icons::BsX, Icon};
 
-use crate::{
-    dice::{roll_stat, RollResult},
-    DICE_ROLL_STATE,
-};
+use arrata_lib::{roll_stat, RollResult};
+
+use crate::DICE_ROLL_STATE;
 
 #[component]
 pub(crate) fn RenderRolls() -> Element {

@@ -1,10 +1,9 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{icons::bs_icons::BsTrash, Icon};
 
-use crate::{
-    character::{Quirk, QuirkCategory},
-    CHARACTER,
-};
+use arrata_lib::{Quirk, QuirkCategory};
+
+use crate::CHARACTER;
 
 #[component]
 pub(crate) fn RenderQuirks() -> Element {
