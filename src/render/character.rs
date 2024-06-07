@@ -8,21 +8,25 @@ use crate::{
 #[component]
 pub(crate) fn RenderCharacter() -> Element {
     rsx! {
-        div { class: "flex content-center items-center justify-center",
-            div { class: "font-mono text-xl px-2 py-2", "Name:" }
-            input {
-                class: "border-spacing-1 border rounded-lg px-2 py-2",
-                value: "{CHARACTER().name}",
-                oninput: move |evt| {
-                    CHARACTER.write().name = evt.value();
+        div { class: "flex flex-wrap content-center items-center justify-center",
+            div { class: "flex",
+                h2 { class: "font-mono text-xl p-2", "Name:" }
+                input {
+                    class: "border-spacing-1 border rounded-lg p-2",
+                    value: "{CHARACTER().name}",
+                    oninput: move |evt| {
+                        CHARACTER.write().name = evt.value();
+                    }
                 }
             }
-            div { class: "font-mono text-xl px-2 py-2", "Stock:" }
-            input {
-                class: "border-spacing-1 border rounded-lg px-2 py-2",
-                value: "{CHARACTER().stock}",
-                oninput: move |evt| {
-                    CHARACTER.write().stock = evt.value();
+            div { class: "flex",
+                h2 { class: "font-mono text-xl p-2", "Stock:" }
+                input {
+                    class: "border-spacing-1 border rounded-lg p-2",
+                    value: "{CHARACTER().stock}",
+                    oninput: move |evt| {
+                        CHARACTER.write().stock = evt.value();
+                    }
                 }
             }
         }
@@ -39,7 +43,7 @@ pub(crate) fn RenderCharacter() -> Element {
 #[component]
 pub(crate) fn CharacterIO() -> Element {
     rsx! {
-        p {"How did you do this? You built the app without the Desktop or Web feature. Fool."}
+        p { "How did you do this? You built the app without the Desktop or Web feature. Fool." }
     }
 }
 
@@ -103,12 +107,10 @@ pub(crate) fn CharacterIO() -> Element {
                 download: "{CHARACTER().name}.arrata",
                 "Save Character"
             }
-            button {
-                label {
-                    class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
-                    r#for: "character-file-input",
-                    "Load Character"
-                }
+            label {
+                class: "flex cursor-pointer font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
+                r#for: "character-file-input",
+                "Load Character"
             }
             input {
                 r#type: "file",

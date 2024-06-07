@@ -17,7 +17,7 @@ pub(crate) fn RenderRolls() -> Element {
     rsx! {
         div { class: "z-10 fixed flex justify-center content-center max-w-[80%] w-96 h-fit border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
-            div { class: "z-20 absolute right-0 px-2 py-2",
+            div { class: "z-20 absolute right-0 p-2",
                 div {
                     class: "bg-slate-950 hover:bg-slate-700 rounded",
                     onclick: move |_| {
@@ -34,19 +34,19 @@ pub(crate) fn RenderRolls() -> Element {
                 // Stat
                 div { class: "content-center",
                     // Stat Name
-                    div { class: "flex justify-center px-2 py-2",
-                        h2 { class: "w-fit text-2xl text-center font-mono px-2 py-2 bg-slate-900 rounded border",
+                    div { class: "flex justify-center p-2",
+                        h2 { class: "w-fit text-2xl text-center font-mono p-2 bg-slate-900 rounded border",
                             "{stat.name}"
                         }
                     }
                     // Quality + Quantity
                     div { class: "inline-flex w-full justify-center justify-items-center content-center",
-                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quality}" }
-                        div { class: "text-xl justify-center font-mono px-2 py-2", "{stat.quantity}" }
+                        div { class: "text-xl justify-center font-mono p-2", "{stat.quality}" }
+                        div { class: "text-xl justify-center font-mono p-2", "{stat.quantity}" }
                         // Rolling
                         div { class: "justify-center",
                             button {
-                                class: "max-w-fit font-mono place-self-center bg-slate-900 hover:bg-slate-600 py-2 px-2 rounded",
+                                class: "max-w-fit font-mono place-self-center bg-slate-900 hover:bg-slate-600 p-2 rounded",
                                 onclick: move |_| {
                                     dice_results
                                         .with_mut(|results| {
@@ -59,7 +59,7 @@ pub(crate) fn RenderRolls() -> Element {
                     }
                     // Advantage + Disadvantage
                     div { class: "grid grid-cols-2 justify-center content-even",
-                        div { class: "grid grid-cols-1 px-2 py-2",
+                        div { class: "grid grid-cols-1 p-2",
                             div { class: "px-1 py-1 items-center justify-center bg-green-950 rounded border",
                                 div { class: "font-mono text-center", "Advantage" }
                                 div { class: "flex justify-center",
@@ -74,7 +74,7 @@ pub(crate) fn RenderRolls() -> Element {
                                 }
                             }
                         }
-                        div { class: "grid grid-cols-1 px-2 py-2",
+                        div { class: "grid grid-cols-1 p-2",
                             div { class: "px-1 py-1 items-center justify-center bg-red-950 rounded border",
                                 div { class: "font-mono text-center", "Disadvantage" }
                                 div { class: "flex justify-center",
@@ -96,17 +96,15 @@ pub(crate) fn RenderRolls() -> Element {
                     div { class: "font-mono justify-center",
                         div { class: "flex justify-center",
                             // Successes
-                            div { class: "text-center text-green-600 px-2 py-2",
+                            div { class: "text-center text-green-600 p-2",
                                 "Successes: {results.successes}"
                             }
                             // Failures
-                            div { class: "text-center text-red-600 px-2 py-2",
-                                "Failures: {results.failures}"
-                            }
+                            div { class: "text-center text-red-600 p-2", "Failures: {results.failures}" }
                         }
-                        div { class: "px-2 py-2 text-lg text-center", "Results" }
+                        div { class: "p-2 text-lg text-center", "Results" }
                         // Results
-                        div { class: "px-2 py-2",
+                        div { class: "p-2",
                             div { class: "px-1 py-1 flex flex-wrap content-around justify-center text-center border bg-slate-900",
                                 for r in results.results.iter() {
                                     div { class: "px-1 py-1",

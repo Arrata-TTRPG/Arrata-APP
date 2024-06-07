@@ -8,58 +8,50 @@ use crate::CHARACTER;
 #[component]
 pub(crate) fn RenderInventory() -> Element {
     rsx! {
-        div { class: "w-[704px] flex-auto justify-center",
-            div { class: "flex justify-center content-center items-center",
-                h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
+        div { class: "min-[1921px]:w-1/3 w-full flex-auto justify-center px-2",
+            div { class: "flex justify-center content-center items-center pb-2 space-x-4",
+                h2 { class: "inline-flex text-center text-4xl font-bold font-mono",
                     "Inventory"
                 }
                 button {
-                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-4 rounded",
                     onclick: move |_| CHARACTER.write().inventory.push(Item::default()),
                     "+ Add Item"
                 }
             }
-            div { class: "flex justify-center",
-                div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center max-w-2xl",
-                    for (i , item) in CHARACTER().inventory.iter().enumerate() {
-                        div { class: "justify-center content-center items-center justify-items-center border border-spacing-2 px-3 py-3 top-2 bottom-2 left-2 right-2 rounded-lg",
-                            div { class: "inline-flex items-center content-center",
-                                div {
-                                    input {
-                                        class: "w-44 font-mono text-lg text-center border-spacing-1 border rounded-lg py-2 px-2",
-                                        r#type: "text",
-                                        value: "{item.name}",
-                                        oninput: move |evt| {
-                                            CHARACTER.write().inventory[i].name = evt.value().to_string();
-                                        }
-                                    }
-                                }
-                                div {
-                                    input {
-                                        class: "w-16 border rounded-lg py-2 px-2",
-                                        r#type: "number",
-                                        value: i64::try_from(item.quantity).unwrap_or_default(),
-                                        oninput: move |evt| {
-                                            CHARACTER
-                                                .with_mut(|character| {
-                                                    character.inventory[i].quantity = evt
-                                                        .value()
-                                                        .parse::<usize>()
-                                                        .unwrap_or(0);
-                                                });
-                                        }
-                                    }
-                                }
-                                div { class: "px-2 py-2",
-                                    button {
-                                        class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                        onclick: move |_| {
-                                            let _ = CHARACTER.write().inventory.remove(i);
-                                        },
-                                        Icon { width: 20, height: 20, fill: "white", icon: BsTrash }
-                                    }
+            div { class: "grid grid-cols-2 gap-4 justify-center w-full",
+                for (i , item) in CHARACTER().inventory.iter().enumerate() {
+                    div { class: "flex justify-center items-center border border-spacing-2 space-x-2 p-2 rounded-lg",
+                        input {
+                            class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
+                            r#type: "text",
+                            value: "{item.name}",
+                            oninput: move |evt| {
+                                CHARACTER.write().inventory[i].name = evt.value().to_string();
+                            }
+                        }
+                        div {
+                            input {
+                                class: "w-16 border rounded-lg p-2",
+                                r#type: "number",
+                                value: i64::try_from(item.quantity).unwrap_or_default(),
+                                oninput: move |evt| {
+                                    CHARACTER
+                                        .with_mut(|character| {
+                                            character.inventory[i].quantity = evt
+                                                .value()
+                                                .parse::<usize>()
+                                                .unwrap_or(0);
+                                        });
                                 }
                             }
+                        }
+                        button {
+                            class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                            onclick: move |_| {
+                                std::mem::drop(CHARACTER.write().inventory.remove(i));
+                            },
+                            Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
                         }
                     }
                 }

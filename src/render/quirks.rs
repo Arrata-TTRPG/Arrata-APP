@@ -8,18 +8,17 @@ use crate::CHARACTER;
 #[component]
 pub(crate) fn RenderQuirks() -> Element {
     rsx! {
-        div { class: "w-[1108px] flex-auto justify-center",
+        div { class: "min-[1921px]:w-1/3 w-1/2 flex-auto justify-center px-2",
             div { class: "flex justify-center content-center items-center",
                 h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
                     "Argos"
                 }
             }
-            div { class: "flex justify-center content-center items-center py-2 px-2",
-                textarea {
-                    class: "rounded-lg w-2/3 py-2 px-2 bg-black text-white border border-white",
-                    value: "{CHARACTER().argos}",
-                    oninput: move |evt| CHARACTER.write().argos = evt.value().to_string()
-                }
+
+            textarea {
+                class: "rounded-lg w-full p-2 bg-black text-white border border-white",
+                value: "{CHARACTER().argos}",
+                oninput: move |evt| CHARACTER.write().argos = evt.value().to_string()
             }
 
             div { class: "flex justify-center content-center items-center",
@@ -27,73 +26,67 @@ pub(crate) fn RenderQuirks() -> Element {
                     "Quirks"
                 }
                 button {
-                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded",
+                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
                     onclick: move |_| CHARACTER.write().quirks.push(Quirk::default()),
                     "+ Add Quirk"
                 }
             }
 
             div { class: "flex justify-center",
-                div { class: "grid grid-cols-2 gap-4 justify-items-center max-w-5xl",
+                div { class: "w-full grid min-[1025px]:grid-cols-2 grid-cols-1 gap-4 justify-items-center",
                     for (i , quirk) in CHARACTER().quirks.iter().enumerate() {
-                        div { class: "w-[504px] border border-spacing-2 px-3 py-3 rounded-lg",
-                            div { class: "flex justify-center content-center items-center justify-items-center text-2xl py-2 px-2 w-full",
-                                div { class: "flex",
-                                    input {
-                                        class: "w-44 font-mono text-lg text-center border-spacing-1 border rounded-lg py-2 px-2",
-                                        r#type: "text",
-                                        value: "{quirk.name}",
-                                        oninput: move |evt| {
-                                            CHARACTER.write().quirks[i].name = evt.value().to_string();
-                                        }
+                        div { class: "flex flex-col w-full border border-spacing-2 px-3 py-3 rounded-lg",
+                            div { class: "flex justify-center content-center items-center justify-items-center text-2xl p-2 w-full space-x-2",
+                                input {
+                                    class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
+                                    r#type: "text",
+                                    value: "{quirk.name}",
+                                    oninput: move |evt| {
+                                        CHARACTER.write().quirks[i].name = evt.value().to_string();
                                     }
                                 }
-                                div { class: "inline-flex justify-center content-center items-center justify-items-center px-2 py-2",
-                                    select {
-                                        class: "font-mono text-lg border rounded-lg py-2 px-2",
-                                        onchange: move |evt| {
-                                            CHARACTER
-                                                .with_mut(|character| {
-                                                    character.quirks[i].category = match evt
-                                                        .value()
-                                                        .parse::<usize>()
-                                                        .unwrap()
-                                                    {
-                                                        0 => QuirkCategory::Ethos,
-                                                        1 => QuirkCategory::Pathos,
-                                                        _ => QuirkCategory::Logos,
-                                                    }
-                                                });
-                                        },
-                                        option { value: 0, "Ethos" }
-                                        option { value: 1, "Pathos" }
-                                        option { value: 2, "Logos" }
-                                    }
+                                select {
+                                    class: "flex font-mono text-lg border rounded-lg p-2",
+                                    onchange: move |evt| {
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.quirks[i].category = match evt
+                                                    .value()
+                                                    .parse::<usize>()
+                                                    .unwrap()
+                                                {
+                                                    0 => QuirkCategory::Ethos,
+                                                    1 => QuirkCategory::Pathos,
+                                                    _ => QuirkCategory::Logos,
+                                                }
+                                            });
+                                    },
+                                    option { value: 0, "Ethos" }
+                                    option { value: 1, "Pathos" }
+                                    option { value: 2, "Logos" }
                                 }
-                                div { class: "flex",
-                                    button {
-                                        class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                        onclick: move |_| {
-                                            let _ = CHARACTER.write().quirks.remove(i);
-                                        },
-                                        Icon { width: 20, height: 20, fill: "white", icon: BsTrash }
-                                    }
+                                button {
+                                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                                    onclick: move |_| {
+                                        std::mem::drop(CHARACTER.write().quirks.remove(i));
+                                    },
+                                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
                                 }
                             }
                             div { class: "flex border justify-center content-center items-center justify-items-center",
                                 textarea {
-                                    class: "rounded-lg w-full py-2 px-2 bg-black text-white border-white",
+                                    class: "rounded-lg w-full p-2 bg-black text-white border-white",
                                     value: "{quirk.description}",
                                     oninput: move |evt| {
                                         CHARACTER.write().quirks[i].description = evt.value().to_string();
                                     }
                                 }
                             }
-                            div { class: "grid grid-cols-2 py-2 px-2",
-                                div { class: "inline-flex font-mono text-xl justify-center content-center items-center",
-                                    div { class: "font-mono text-xl px-4", "Boons" }
+                            div { class: "grid grid-cols-2 p-2",
+                                div { class: "inline-flex font-mono text-xl space-x-3 justify-center items-center",
+                                    h3 { class: "font-mono text-xl", "Boons" }
                                     button {
-                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white font-bold py-1 px-4 rounded",
+                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-2",
                                         onclick: move |_| {
                                             CHARACTER
                                                 .with_mut(|character| character.quirks[i].boons.push("New Boon!".into()));
@@ -101,10 +94,10 @@ pub(crate) fn RenderQuirks() -> Element {
                                         "+ Boon"
                                     }
                                 }
-                                div { class: "inline-flex font-mono text-xl justify-center content-center items-center",
-                                    div { class: "font-mono text-xl px-4", "Flaws" }
+                                div { class: "inline-flex font-mono text-xl space-x-3 justify-center items-center",
+                                    h3 { class: "font-mono text-xl", "Flaws" }
                                     button {
-                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white font-bold py-1 px-4 rounded",
+                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-2",
                                         onclick: move |_| {
                                             CHARACTER
                                                 .with_mut(|character| character.quirks[i].flaws.push("New Flaw!".into()));
@@ -112,45 +105,54 @@ pub(crate) fn RenderQuirks() -> Element {
                                         "+ Flaw"
                                     }
                                 }
-                                div { class: "w-auto items-center justify-items-center",
-                                    for (j , boon) in quirk.boons.iter().enumerate() {
-                                        div { class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
-                                            textarea {
-                                                class: "text-mono w-full content-center justify-center border-spacing-1 border rounded-lg py-2 px-2 bg-black text-white",
-                                                value: "{boon}",
-                                                oninput: move |evt| CHARACTER.write().quirks[i].boons[j] = evt.value().to_string()
-                                            }
-                                            button {
-                                                class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                                onclick: move |_| {
-                                                    let _ = CHARACTER.write().quirks[i].boons.remove(j);
-                                                },
-                                                Icon { width: 20, height: 20, fill: "white", icon: BsTrash }
-                                            }
-                                        }
+                                div { class: "items-center justify-items-center",
+                                    for (j , _) in quirk.boons.iter().enumerate() {
+                                        RenderBF { boon: true, quirk: i, index: j }
                                     }
                                 }
-                                div { class: "w-auto items-center justify-items-center",
-                                    for (j , flaw) in quirk.flaws.iter().enumerate() {
-                                        div { class: "inline-flex w-full justify-center items-start justify-items-center px-2 py-2",
-                                            textarea {
-                                                class: "text-mono w-auto content-center justify-center border-spacing-1 border rounded-lg py-2 px-2 bg-black text-white",
-                                                value: "{flaw}",
-                                                oninput: move |evt| CHARACTER.write().quirks[i].flaws[j] = evt.value().to_string()
-                                            }
-                                            button {
-                                                class: "text-mono bg-slate-900 hover:bg-slate-600 text-white font-bold py-1 px-2 space-x-5 rounded",
-                                                onclick: move |_| {
-                                                    let _ = CHARACTER.write().quirks[i].flaws.remove(j);
-                                                },
-                                                Icon { width: 20, height: 20, fill: "white", icon: BsTrash }
-                                            }
-                                        }
+                                div { class: "items-center justify-items-center",
+                                    for (j , _) in quirk.flaws.iter().enumerate() {
+                                        RenderBF { boon: false, quirk: i, index: j }
                                     }
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
+    rsx! {
+        div { class: "flex w-full justify-center p-2",
+            if boon {
+                textarea {
+                    class: "w-full text-mono flex-shrink border-spacing-1 border rounded-lg p-2 bg-black text-white",
+                    value: "{CHARACTER().quirks[quirk].boons[index]}",
+                    oninput: move |evt| CHARACTER.write().quirks[quirk].boons[index] = evt.value().to_string()
+                }
+                button {
+                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().quirks[quirk].boons.remove(index));
+                    },
+                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                }
+            } else {
+                textarea {
+                    class: "w-full text-mono flex-shrink border-spacing-1 border rounded-lg p-2 bg-black text-white",
+                    value: "{CHARACTER().quirks[quirk].flaws[index]}",
+                    oninput: move |evt| CHARACTER.write().quirks[quirk].flaws[index] = evt.value().to_string()
+                }
+                button {
+                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().quirks[quirk].flaws.remove(index));
+                    },
+                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
                 }
             }
         }

@@ -6,23 +6,23 @@ use dioxus_free_icons::{
 
 use arrata_lib::{Quality, Stat};
 
-use crate::{
-    CHARACTER, DICE_ROLL_STATE,
-};
+use crate::{CHARACTER, DICE_ROLL_STATE};
 
 #[component]
 pub(crate) fn RenderStats() -> Element {
     rsx! {
-        div { class: "w-[748px] flex-auto justify-items-center justify-center px-4",
+        div { class: "min-[1921px]:w-1/3 min-[1860px]:w-1/2 w-full flex-auto justify-items-center justify-center px-2",
             h2 { class: "pb-2 text-center text-4xl font-bold font-mono",
                 "Stats {CHARACTER().stats.iter().map(|stat| stat.quantity).sum::<usize>()}"
             }
             div { class: "flex justify-center justify-items-center content-center",
-                div { class: "grid grid-cols-2 gap-4 justify-center justify-items-center content-center w-full",
+                div { class: "grid min-[1921px]:grid-cols-2 min-[1340px]:grid-cols-3 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
                     for (i , stat) in CHARACTER().stats.iter().enumerate() {
                         div { class: "flex flex-col border space-y-2 justify-center p-2 rounded-lg w-full",
                             div { class: "inline-flex items-center justify-center",
-                                div { class: "flex-grow font-mono text-center text-2xl", "{stat.name}" }
+                                div { class: "flex-grow font-mono text-center text-2xl",
+                                    "{stat.name}"
+                                }
                                 button {
                                     class: "bg-slate-900 hover:bg-slate-600",
                                     onclick: move |_| {
@@ -96,7 +96,7 @@ pub(crate) fn RenderStats() -> Element {
                 }
             }
             div { class: "flex justify-center",
-                div { class: "grid grid-cols-2 gap-4 justify-items-center w-full",
+                div { class: "grid min-[1860px]:grid-cols-2 min-[1340px]:grid-cols-3 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
                     for (i , skill) in CHARACTER().skills.iter().enumerate() {
                         div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
                             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
@@ -122,7 +122,7 @@ pub(crate) fn RenderStats() -> Element {
                                 button {
                                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
                                     onclick: move |_| {
-                                        let _ = CHARACTER.write().skills.remove(i);
+                                        std::mem::drop(CHARACTER.write().skills.remove(i));
                                     },
                                     Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
                                 }
