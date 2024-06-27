@@ -8,7 +8,7 @@ on:
         - closed
 
 env:
-  version: 'v0.0.0'
+  version: '0.0.0'
 
 jobs:
   version:
@@ -24,9 +24,9 @@ jobs:
 
       - name: Determine version type
         run: |
-          export major=$(echo ${{ env.version }} | cut -d '.' -f 1)
-          export minor=$(echo ${{ env.version }} | cut -d '.' -f 2)
-          export patch=$(echo ${{ env.version }} | cut -d '.' -f 3)
+          echo "major=$(echo ${{ env.version }} | cut -d '.' -f 1)" >> $GITHUB_ENV
+          echo "minor=$(echo ${{ env.version }} | cut -d '.' -f 2)" >> $GITHUB_ENV
+          echo "patch=$(echo ${{ env.version }} | cut -d '.' -f 3)" >> $GITHUB_ENV
 
           if [ -n "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" ]; then
             echo "version=${major+1}.0.0" >> $GITHUB_ENV
