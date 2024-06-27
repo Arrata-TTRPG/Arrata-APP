@@ -1,0 +1,46 @@
+name: Versioning
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+env:
+  version: 'v0.0.0'
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          repository: ${{ github.repository }}
+
+      - name: Get current version
+        id: get_version
+        run: echo "version=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
+
+      - name: Determine version type
+        id: bump_version
+        run: |
+          export major=$(echo ${{ env.version }} | cut -d '.' -f 1)
+          export minor=$(echo ${{ env.version }} | cut -d '.' -f 2)
+          export patch=$(echo ${{ env.version }} | cut -d '.' -f 3)
+
+          if [ -n "${{ github.event.pull_request.labels.find(x => x.name == 'major') == true }}" ]; then
+            echo "version=${major+1}.0.0" >> $GITHUB_ENV
+          elif [ -n "${{ github.event.pull_request.labels.find(x => x.name == 'minor') == true }}" ]; then
+            echo "version=${major}.${minor+1}.0" >> $GITHUB_ENV
+          else
+            echo "version=${major}.${minor}.${patch+1}" >> $GITHUB_ENV
+          fi
+      - name: Create new tag
+        uses: anothrNick/github-tag-action@v1.12.2
+        with:
+          tag: ${{ env.version }}
+          message: 'New version'
