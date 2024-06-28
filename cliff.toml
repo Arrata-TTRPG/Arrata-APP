@@ -19,10 +19,9 @@ body = """
 {% else %}\
     ## [unreleased]
 {% endif %}\
-{% for commit in commits | unique(attribute="message") %}
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | upper_first }}
-    {% for commit in commits %}
+    {% for commit in commits | unique(attribute="message") %}
         - {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message | upper_first }}\
     {% endfor %}
 {% endfor %}\n
