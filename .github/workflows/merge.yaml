@@ -8,7 +8,7 @@ on:
         - closed
 
 env:
-  version: '0.0.0'
+  bump: 'patch'
 
 jobs:
   version:
@@ -20,23 +20,29 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Bump Major
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'major') }}
-        uses: flatherskevin/semver-action@v1
-        with:
-          incrementLevel: major
-          source: tags
+      - name: Get latest tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
 
-      - name: Bump Minor
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'minor') }}
-        uses: flatherskevin/semver-action@v1
-        with:
-          incrementLevel: minor
-          source: tags
+      - name: Determine version type
+        run: |
+          if [ -n "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" ]; then
+            echo "bump=major" >> $GITHUB_ENV
+          elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'minor') }}" ]; then
+            echo "bump=minor" >> $GITHUB_ENV
+          elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" ]; then
+            echo "bump=patch" >> $GITHUB_ENV
+          fi
+      - name: Print version
+        run: echo ${{ env.bump }}
 
-      - name: Bump Patch
-        if: ${{ contains(github.event.pull_request.labels.*.name, 'patch') }}
-        uses: flatherskevin/semver-action@v1
+      - uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
         with:
-          incrementLevel: patch
-          source: tags
+          current_version: ${{ steps.get-latest-tag.outputs.tag }}
+          level: ${{ env.bump }}
+
+      - name: Push new tag
+        uses: actions-ecosystem/action-push-tag@v1
+        with:
+          tag: ${{ steps.bump-semver.outputs.new_version }}
