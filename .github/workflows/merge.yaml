@@ -38,11 +38,11 @@ jobs:
           echo "minor=$(echo ${{ env.version }} | cut -d '.' -f 2)" >> $GITHUB_ENV
           echo "patch=$(echo ${{ env.version }} | cut -d '.' -f 3)" >> $GITHUB_ENV
 
-          if [ -n "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" == true ]; then
+          if [ "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" == true ]; then
             echo "version=v$((major+1)).0.0" >> $GITHUB_ENV
-          elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'minor') }}" == true ]; then
+          elif [ "${{ contains(github.event.pull_request.labels.*.name, 'minor') }}" == true ]; then
             echo "version=v${major}.$((minor+1)).0" >> $GITHUB_ENV
-          elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" == true ]; then
+          elif [ "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" == true ]; then
             echo "version=v${major}.${minor}.$((patch+1))" >> $GITHUB_ENV
           else
             echo "version=v${major}.${minor}.${patch}" >> $GITHUB_ENV
