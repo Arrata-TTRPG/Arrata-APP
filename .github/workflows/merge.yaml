@@ -12,7 +12,7 @@ env:
 
 jobs:
   version:
-    # if: github.event.pull_request.merged
+    if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,7 +25,9 @@ jobs:
         id: get-latest-tag
         with:
             fallback: '0.0.0'
-
+      - name: Print labels
+        run: |
+            echo "${{ toJSON(github.event.pull_request.labels.*.name) }}"
       - name: Print version
         run: |
             echo "version=$(echo ${{ steps.get-latest-tag.outputs.tag }} | tr --delete v)" >> $GITHUB_ENV
