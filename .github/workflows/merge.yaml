@@ -37,8 +37,10 @@ jobs:
           elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'minor') }}" ]; then
             echo "bump=minor" >> $GITHUB_ENV
           elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" ]; then
+            echo "patching!"
             echo "bump=patch" >> $GITHUB_ENV
           fi
+
       - name: Print version
         run: echo ${{ env.bump }}
 
