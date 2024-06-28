@@ -7,9 +7,12 @@ on:
     types:
         - closed
 
+env:
+  version: '0.0.0'
+
 jobs:
   version:
-    if: github.event.pull_request.merged
+    # if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,14 +20,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Bump and Tag Version
-        uses: jefflinse/pr-semver-bump@v1.6.0
+      - name: Bump Major
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'major') }}
+        uses: flatherskevin/semver-action@v1
         with:
-          mode: bump
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          major-label: major
-          minor-label: minor
-          patch-label: patch
-          require-release-notes: false
-          with-v: true
-          base-branch: false
+          incrementLevel: major
+          source: tags
+
+      - name: Bump Minor
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'minor') }}
+        uses: flatherskevin/semver-action@v1
+        with:
+          incrementLevel: minor
+          source: tags
+
+      - name: Bump Patch
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'patch') }}
+        uses: flatherskevin/semver-action@v1
+        with:
+          incrementLevel: patch
+          source: tags
