@@ -84,8 +84,7 @@ jobs:
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: nightly
-          components: rust-src
+          toolchain: stable
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
@@ -104,9 +103,7 @@ jobs:
           npm install -D tailwindcss
           npx tailwindcss -i input.css -o public/tailwind.css --minify
       - name: Build release
-        run: |
-          mv .cargo-disabled .cargo
-          dx build --release --platform desktop
+        run: dx build --release --platform desktop
       - name: Prepare release
         run: |
           strip dist/${{ env.EXECUTABLE_NAME }}
@@ -157,9 +154,7 @@ jobs:
         npm install -D tailwindcss
         npx tailwindcss -i input.css -o public/tailwind.css --minify
     - name: Build release
-      run: |
-        mv .cargo-disabled .cargo
-        dx build --release --platform desktop --target x86_64-pc-windows-gnu
+      run: dx build --release --platform desktop --target x86_64-pc-windows-gnu
     - name: Zip release
       uses: vimtor/action-zip@v1
       with:
@@ -212,9 +207,7 @@ jobs:
           npm install -D tailwindcss
           npx tailwindcss -i input.css -o public/tailwind.css --minify
       - name: Modify Dioxus.toml and enable cargo config.toml
-        run: |
-          sed -i 's/#base_path/base_path/' Dioxus.toml
-          mv .cargo-disabled .cargo
+        run: sed -i 's/#base_path/base_path/' Dioxus.toml
       - name: Create WASM with Dioxus CLI
         run: |
           dx build --release --platform web

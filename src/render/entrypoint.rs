@@ -15,12 +15,6 @@ pub fn App() -> Element {
     option { background-color: black; color: white; }
     ";
 
-    let rat_path = if cfg!(target_family = "wasm") {
-        "rat.png"
-    } else {
-        "public/rat.png"
-    };
-
     rsx! {
         style { "{arrata_style}" }
         link { rel: "stylesheet", href: "tailwind.css" }
@@ -30,7 +24,7 @@ pub fn App() -> Element {
             img {
                 // Arrata logo
                 class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
-                src: rat_path,
+                src: "rat.png",
                 alt: "",
                 width: 300,
                 height: 300
