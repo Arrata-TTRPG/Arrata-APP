@@ -1,5 +1,9 @@
 ﻿# Thanks to https://github.com/NiklasEi/bevy_game_template/blob/main/.github/workflows/release.yaml for much of this code
 on:
+  workflow_run:
+    workflows: ["Versioning"]
+    types:
+      - completed
   push:
     # Sequence of patterns matched against refs/tags
     tags:
