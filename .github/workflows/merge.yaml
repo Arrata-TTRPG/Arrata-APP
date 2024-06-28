@@ -20,33 +20,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get latest tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1.4.0
-        id: get-latest-tag
+      - name: Bump Major
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'major') }}
+        uses: flatherskevin/semver-action@v1
         with:
-            fallback: 0.0.0
+          incrementLevel: major
+          source: tags
 
-      - name: Print version
-        run: |
-            echo "version=$(echo ${{ steps.get-latest-tag.outputs.tag }} | tr --delete v)" >> $GITHUB_ENV
-      - name: Determine version type
-        run: |
-          echo "major=$(echo ${{ env.version }} | cut -d '.' -f 1)" >> $GITHUB_ENV
-          echo "minor=$(echo ${{ env.version }} | cut -d '.' -f 2)" >> $GITHUB_ENV
-          echo "patch=$(echo ${{ env.version }} | cut -d '.' -f 3)" >> $GITHUB_ENV
-
-          if [ -n "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" ]; then
-            echo "version=$((major+1)).0.0" >> $GITHUB_ENV
-          elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" ]; then
-            echo "version=${major}.$((minor+1)).0" >> $GITHUB_ENV
-          elif [ -n "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" ]; then
-            echo "version=${major}.${minor}.$((patch+1))" >> $GITHUB_ENV
-          fi
-      - name: Print version
-        run: |
-            echo ${{ steps.get-latest-tag.outputs.tag }}
-            echo ${{ env.version }}
-      - name: Create new tag
-        uses: mathieudutour/github-tag-action@v6.2
+      - name: Bump Minor
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'minor') }}
+        uses: flatherskevin/semver-action@v1
         with:
-          tag: ${{ env.version }}
+          incrementLevel: minor
+          source: tags
+
+      - name: Bump Patch
+        if: ${{ contains(github.event.pull_request.labels.*.name, 'patch') }}
+        uses: flatherskevin/semver-action@v1
+        with:
+          incrementLevel: patch
+          source: tags
