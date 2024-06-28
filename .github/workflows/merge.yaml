@@ -12,13 +12,20 @@ env:
 
 jobs:
   version:
-    if: github.event.pull_request.merged
+    #if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+        # This is required to get the PR labels that exist
+        # otherwise we'd get all of the labels that have
+        # ever existed on the PR.
+      - name: Get PR labels
+        id: pr-labels
+        uses: joerick/pr-labels-action@v1.0.8
 
       - name: Get latest tag
         uses: WyriHaximus/github-action-get-previous-tag@v1.4.0
@@ -28,7 +35,7 @@ jobs:
 
       - name: Print labels
         run: |
-            echo "${{ toJSON(github.event.pull_request.labels.*.name) }}"
+            echo "${{ toJSON(steps.pr-labels.outputs.labels) }}"
 
       - name: Print version
         run: |
@@ -41,11 +48,11 @@ jobs:
           export minor=$(echo ${{ env.version }} | cut -d '.' -f 2)
           export patch=$(echo ${{ env.version }} | cut -d '.' -f 3)
 
-          if [ "${{ contains(github.event.pull_request.labels.*.name, 'major') }}" == true ]; then
+          if [ "${{ contains(steps.pr-labels.outputs.labels, 'major') }}" == true ]; then
             echo "version=v$((major+1)).0.0" >> $GITHUB_ENV
-          elif [ "${{ contains(github.event.pull_request.labels.*.name, 'minor') }}" == true ]; then
+          elif [ "${{ contains(steps.pr-labels.outputs.labels, 'minor') }}" == true ]; then
             echo "version=v${major}.$((minor+1)).0" >> $GITHUB_ENV
-          elif [ "${{ contains(github.event.pull_request.labels.*.name, 'patch') }}" == true ]; then
+          elif [ "${{ contains(steps.pr-labels.outputs.labels, 'patch') }}" == true ]; then
             echo "version=v${major}.${minor}.$((patch+1))" >> $GITHUB_ENV
           else
             echo "version=v${major}.${minor}.${patch}" >> $GITHUB_ENV
