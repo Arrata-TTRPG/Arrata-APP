@@ -1,8 +1,10 @@
+use arrata_lib::Character;
 use dioxus::prelude::*;
+use dioxus_sdk::storage::{use_synced_storage, LocalStorage};
 
 use crate::{
     render::{CharacterIO, RenderCharacter, RenderRolls},
-    DICE_ROLL_STATE,
+    CHARACTER, DICE_ROLL_STATE,
 };
 
 /// The main application.
@@ -14,6 +16,10 @@ pub fn App() -> Element {
     select { background-color: black; color: white; }
     option { background-color: black; color: white; }
     ";
+
+    let found_char =
+        use_synced_storage::<LocalStorage, Character>("character".to_string(), Character::default);
+    *CHARACTER.write() = found_char();
 
     rsx! {
         style { "{arrata_style}" }

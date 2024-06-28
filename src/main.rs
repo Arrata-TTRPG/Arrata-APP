@@ -9,5 +9,8 @@ fn main() {
     wasm_logger::init(wasm_logger::Config::default());
 
     #[cfg(any(feature = "web", feature = "desktop"))]
-    launch(arrata_app::render::App);
+    {
+        dioxus_sdk::storage::set_dir!();
+        launch(arrata_app::render::App);
+    }
 }

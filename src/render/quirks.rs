@@ -46,7 +46,7 @@ pub(crate) fn RenderQuirks() -> Element {
                                     }
                                 }
                                 select {
-                                    class: "flex font-mono text-lg border rounded-lg p-2",
+                                    class: "hover:bg-slate-700 flex-grow font-mono text-center text-lg border rounded-lg p-2 appearance-none",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
