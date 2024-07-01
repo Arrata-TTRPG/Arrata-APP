@@ -125,6 +125,11 @@ jobs:
       - name: Build release
         run: dx build --release --platform desktop
 
+      - name: Prepare release
+        run: |
+          strip dist/${{ env.EXECUTABLE_NAME }}
+          chmod +x dist/${{ env.EXECUTABLE_NAME }}
+
       - name: UPX compress
         uses: crazy-max/ghaction-upx@v3
         with:
@@ -132,10 +137,6 @@ jobs:
           files: |
             dist/${{ env.EXECUTABLE_NAME }}
           args: -fq9
-      - name: Prepare release
-        run: |
-          strip dist/${{ env.EXECUTABLE_NAME }}
-          chmod +x dist/${{ env.EXECUTABLE_NAME }}
 
       - name: Bundle release
         run: |
