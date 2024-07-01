@@ -20,10 +20,6 @@ env:
   EXECUTABLE_NAME: "arrata_character_sheet_manager"
   NODE_VERSION: 20
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions: write-all
 
 name: Create release
@@ -44,6 +40,11 @@ jobs:
     env:
       VERSION: ${{needs.get-version.outputs.version}}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Verify version or get latest
         if: ${{ needs.get-version.outputs.version != 'v*' }}
         uses: WyriHaximus/github-action-get-previous-tag@v1.4.0
@@ -55,11 +56,6 @@ jobs:
         if: ${{ needs.get-version.outputs.version != 'v*' }}
         run: |
           echo "VERSION=${{ steps.get-latest-tag.outputs.tag }}" >> $GITHUB_ENV
-
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Generate a changelog
         uses: orhun/git-cliff-action@v2
