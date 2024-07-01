@@ -42,9 +42,8 @@ pub fn App() -> Element {
         RenderCharacter {}
 
         if DICE_ROLL_STATE().0 {
-            match &DICE_ROLL_STATE().1 {
-                Some(_) => rsx!(RenderRolls {}),
-                None    => rsx!(""),
+            if let Some(_) = DICE_ROLL_STATE().1 {
+                RenderRolls {}
             }
         }
     }
