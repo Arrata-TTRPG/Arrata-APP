@@ -30,7 +30,9 @@ pub fn App() -> Element {
                 height: 100
             }
 
-            h1 { class: "text-center text-9xl font-mono font-extrabold align-bottom", "ARRATA" }
+            h1 { class: "text-center text-9xl font-mono font-extrabold align-bottom",
+                "ARRATA"
+            }
 
             p { class: "h-full font-mono align-bottom ml-5", "VERSION" }
         }
