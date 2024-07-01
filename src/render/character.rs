@@ -48,14 +48,17 @@ pub(crate) fn CharacterIO() -> Element {
             button {
                 class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| {
-                    use_future( || async move {
+                    use_future(|| async move {
                         let file = AsyncFileDialog::new()
                             .set_title("Save .arrata Character file")
                             .add_filter("type", &["arrata"])
                             .set_file_name(format!("{}.arrata", CHARACTER().name))
-                            .save_file().await;
+                            .save_file()
+                            .await;
                         if let Some(f) = file {
-                            let _ = f.write(serde_json::to_string(&CHARACTER()).unwrap().as_bytes()).await;
+                            let _ = f
+                                .write(serde_json::to_string(&CHARACTER()).unwrap().as_bytes())
+                                .await;
                         }
                     });
                 },
@@ -64,11 +67,12 @@ pub(crate) fn CharacterIO() -> Element {
             button {
                 class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded",
                 onclick: move |_| {
-                    use_future( || async move {
+                    use_future(|| async move {
                         let file = AsyncFileDialog::new()
                             .set_title("Load .arrata Character file")
                             .add_filter("type", &["arrata"])
-                            .pick_file().await;
+                            .pick_file()
+                            .await;
                         if let Some(f) = file {
                             if let Ok(c) = String::from_utf8(f.read().await) {
                                 let character: Character = serde_json::from_str(&c).unwrap();
