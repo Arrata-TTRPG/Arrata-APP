@@ -19,18 +19,20 @@ pub fn App() -> Element {
         style { "{arrata_style}" }
         link { rel: "stylesheet", href: "tailwind.css" }
 
-        div { class: "px-5 py-5 origin-center justify-center self-center items-center content-center flex",
+        div { class: "px-5 py-5 origin-center justify-center items-baseline flex",
             // Arrata logo
             img {
                 // Arrata logo
-                class: "w-24 h-24 md:w-28 md:h-auto md:rounded-none rounded-full mr-10",
+                class: "h-fit mr-10",
                 src: "rat.png",
                 alt: "",
-                width: 300,
-                height: 300
+                width: 100,
+                height: 100
             }
 
-            h1 { class: "text-center text-9xl font-mono font-extrabold", "ARRATA" }
+            h1 { class: "text-center text-9xl font-mono font-extrabold align-bottom", "ARRATA" }
+
+            p { class: "h-full font-mono align-bottom ml-5", "VERSION" }
         }
 
         br {}
