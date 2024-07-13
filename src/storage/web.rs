@@ -23,7 +23,8 @@ pub async fn write_character(name: &str) {
     ",
     );
 
-    eval.send(serde_json::Value::String(format!("{}-{}", name, VERSION())))
+    let version = format!("{}-{}", VERSION().major, VERSION().minor);
+    eval.send(serde_json::Value::String(format!("{name}-{version}")))
         .unwrap();
     eval.send(serde_json::Value::String(encoded)).unwrap();
 
