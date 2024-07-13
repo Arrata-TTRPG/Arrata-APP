@@ -10,7 +10,7 @@ pub(crate) fn RenderQuirks() -> Element {
     rsx! {
         div { class: "min-[1921px]:w-1/3 w-1/2 flex-auto justify-center px-2",
             div { class: "flex justify-center content-center items-center",
-                h2 { class: "inline-flex py-4 px-4 text-center text-4xl font-bold font-mono",
+                h2 { class: "inline-flex py-2 px-4 text-center text-4xl font-bold font-mono",
                     "Argos"
                 }
             }
@@ -38,7 +38,7 @@ pub(crate) fn RenderQuirks() -> Element {
                         div { class: "flex flex-col w-full border border-spacing-2 px-3 py-3 rounded-lg",
                             div { class: "flex justify-center content-center items-center justify-items-center text-2xl p-2 w-full space-x-2",
                                 input {
-                                    class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
+                                    class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                                     r#type: "text",
                                     value: "{quirk.name}",
                                     oninput: move |evt| {

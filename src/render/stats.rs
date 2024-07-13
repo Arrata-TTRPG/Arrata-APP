@@ -12,7 +12,7 @@ use crate::{CHARACTER, DICE_ROLL_STATE};
 pub(crate) fn RenderStats() -> Element {
     rsx! {
         div { class: "min-[1921px]:w-1/3 min-[1860px]:w-1/2 w-full flex-auto justify-items-center justify-center px-2",
-            h2 { class: "pb-2 text-center text-4xl font-bold font-mono",
+            h2 { class: "py-2 text-center text-4xl font-bold font-mono",
                 "Stats {CHARACTER().stats.iter().map(|stat| stat.quantity).sum::<usize>()}"
             }
             div { class: "flex justify-center justify-items-center content-center",
@@ -85,12 +85,12 @@ pub(crate) fn RenderStats() -> Element {
                     }
                 }
             }
-            div { class: "flex justify-center content-center items-center py-2",
-                h2 { class: "inline-flex px-4 text-center text-4xl font-bold font-mono",
+            div { class: "flex flex-row justify-center content-center items-center py-2",
+                h2 { class: "px-4 text-center text-4xl font-bold font-mono",
                     "Skills {CHARACTER().skills.iter().count()}"
                 }
                 button {
-                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| CHARACTER.write().skills.push(Stat::new("New Skill!".into())),
                     "+ Add Skill"
                 }
@@ -101,7 +101,7 @@ pub(crate) fn RenderStats() -> Element {
                         div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
                             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                                 input {
-                                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
+                                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                                     r#type: "text",
                                     value: "{skill.name}",
                                     oninput: move |evt| {
