@@ -62,14 +62,14 @@ pub fn App() -> Element {
 
     rsx! {
         style { "{arrata_style}" }
-        link { rel: "stylesheet", href: "tailwind.css"}
+        link { rel: "stylesheet", href: "tailwind.css" }
 
         div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full space-x-4",
             // Arrata logo
             img {
                 // Arrata logo
                 class: "object-scale-down med:w-[8rem] med:h-[8rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
-                src: "rat.png",
+                src: "rat.png"
             }
 
             // Title and version
@@ -78,7 +78,9 @@ pub fn App() -> Element {
                     "ARRATA"
                 }
 
-                p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs", "{VERSION()}" }
+                p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs",
+                    "{VERSION()}"
+                }
             }
         }
 
