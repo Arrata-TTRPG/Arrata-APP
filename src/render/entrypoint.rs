@@ -19,29 +19,25 @@ pub fn App() -> Element {
         style { "{arrata_style}" }
         link { rel: "stylesheet", href: "tailwind.css" }
 
-        div { class: "px-5 py-5 origin-center justify-center items-baseline flex",
+        div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full space-x-4",
             // Arrata logo
             img {
                 // Arrata logo
-                class: "h-fit mr-10",
+                class: "object-scale-down med:w-[8rem] med:h-[8rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
                 src: "rat.png",
-                alt: "",
-                width: 100,
-                height: 100
             }
 
-            h1 { class: "text-center text-9xl font-mono font-extrabold align-bottom",
-                "ARRATA"
-            }
+            // Title and version
+            div { class: "flex flex-row items-baseline",
+                h1 { class: "text-center md:text-9xl sm:text-8xl text-7xl font-mono font-extrabold align-bottom",
+                    "ARRATA"
+                }
 
-            p { class: "h-full font-mono align-bottom ml-5", "VERSION" }
+                p { class: "h-full font-mono align-bottom ml-5 lg:text-lg md:text-base text-sm", "VERSION" }
+            }
         }
 
-        br {}
-
         CharacterIO {}
-
-        br {}
 
         RenderCharacter {}
 
