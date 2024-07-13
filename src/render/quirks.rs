@@ -41,9 +41,7 @@ pub(crate) fn RenderQuirks() -> Element {
                                     class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                                     r#type: "text",
                                     value: "{quirk.name}",
-                                    oninput: move |evt| {
-                                        CHARACTER.write().quirks[i].name = evt.value().to_string();
-                                    }
+                                    oninput: move |evt| CHARACTER.write().quirks[i].name = evt.value().to_string()
                                 }
                                 select {
                                     class: "hover:bg-slate-700 flex-grow font-mono text-center text-lg border rounded-lg p-2 appearance-none",
@@ -67,9 +65,7 @@ pub(crate) fn RenderQuirks() -> Element {
                                 }
                                 button {
                                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
-                                    onclick: move |_| {
-                                        std::mem::drop(CHARACTER.write().quirks.remove(i));
-                                    },
+                                    onclick: move |_| std::mem::drop(CHARACTER.write().quirks.remove(i)),
                                     Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
                                 }
                             }
@@ -78,7 +74,10 @@ pub(crate) fn RenderQuirks() -> Element {
                                     class: "rounded-lg w-full p-2 bg-black text-white border-white",
                                     value: "{quirk.description}",
                                     oninput: move |evt| {
-                                        CHARACTER.write().quirks[i].description = evt.value().to_string();
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.quirks[i].description = evt.value().to_string();
+                                            });
                                     }
                                 }
                             }

@@ -60,7 +60,7 @@ pub(crate) fn RenderRolls() -> Element {
                     // Advantage + Disadvantage
                     div { class: "grid grid-cols-2 justify-center content-even",
                         div { class: "grid grid-cols-1 p-2",
-                            div { class: "px-1 py-1 items-center justify-center bg-green-950 rounded border",
+                            div { class: "p-1 items-center justify-center bg-green-950 rounded border",
                                 div { class: "font-mono text-center", "Advantage" }
                                 div { class: "flex justify-center",
                                     input {
@@ -75,16 +75,14 @@ pub(crate) fn RenderRolls() -> Element {
                             }
                         }
                         div { class: "grid grid-cols-1 p-2",
-                            div { class: "px-1 py-1 items-center justify-center bg-red-950 rounded border",
+                            div { class: "p-1 items-center justify-center bg-red-950 rounded border",
                                 div { class: "font-mono text-center", "Disadvantage" }
                                 div { class: "flex justify-center",
                                     input {
                                         class: "w-12 border rounded-lg py-1 px-1",
                                         r#type: "number",
                                         value: i64::try_from(disadvantage()).unwrap_or_default(),
-                                        oninput: move |evt| {
-                                            disadvantage.set(evt.value().parse::<usize>().unwrap_or(0));
-                                        }
+                                        oninput: move |evt| disadvantage.set(evt.value().parse::<usize>().unwrap_or(0))
                                     }
                                 }
                             }
@@ -93,7 +91,7 @@ pub(crate) fn RenderRolls() -> Element {
                 }
 
                 if let Some(results) = dice_results() {
-                    div { class: "font-mono justify-center",
+                    div { class: "font-mono justify-center pb-1",
                         div { class: "flex justify-center",
                             // Successes
                             div { class: "text-center text-green-600 p-2",
@@ -104,20 +102,10 @@ pub(crate) fn RenderRolls() -> Element {
                         }
                         div { class: "p-2 text-lg text-center", "Results" }
                         // Results
-                        div { class: "p-2",
-                            div { class: "px-1 py-1 flex flex-wrap content-around justify-center text-center border bg-slate-900",
-                                for r in results.results.iter() {
-                                    div { class: "px-1 py-1",
-                                        if *r >= stat.quality as u8 {
-                                            div { class: "px-1 text-green-500 bg-slate-800 rounded",
-                                                "{r}"
-                                            }
-                                        } else {
-                                            div { class: "px-1 text-red-600 bg-slate-950 rounded",
-                                                "{r}"
-                                            }
-                                        }
-                                    }
+                        div { class: "p-1 flex flex-wrap content-around gap-1 justify-center text-center border bg-slate-900",
+                            for r in results.results.iter() {
+                                div { class: format!("px-1 bg-slate-950 rounded {}", if *r >= stat.quality as u8 { "text-green-500" } else { "text-red-600" }),
+                                    "{r}"
                                 }
                             }
                         }
