@@ -30,7 +30,7 @@ pub fn App() -> Element {
 
             use_effect(move || {
                 log::info!("Effect moment");
-                let character = CHARACTER();
+                let _ = CHARACTER();
                 write_character("temp");
             });
         });
@@ -52,7 +52,7 @@ pub fn App() -> Element {
 
             use_effect(move || {
                 log::info!("Effect moment");
-                let character = CHARACTER();
+                let _ = CHARACTER();
                 spawn(async {
                     write_character("temp").await;
                 });
