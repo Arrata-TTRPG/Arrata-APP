@@ -56,9 +56,7 @@ pub(crate) fn CharacterIO() -> Element {
                             .save_file()
                             .await;
                         if let Some(f) = file {
-                            let _ = f
-                                .write(serde_json::to_string(&CHARACTER()).unwrap().as_bytes())
-                                .await;
+                            let _ = f.write(&bitcode::encode(&CHARACTER())).await;
                         }
                     });
                 },
@@ -74,10 +72,8 @@ pub(crate) fn CharacterIO() -> Element {
                             .pick_file()
                             .await;
                         if let Some(f) = file {
-                            if let Ok(c) = String::from_utf8(f.read().await) {
-                                let character: Character = serde_json::from_str(&c).unwrap();
-                                CHARACTER.write().clone_from(&character);
-                            }
+                            let character: Character = bitcode::decode(&f.read().await).unwrap();
+                            CHARACTER.write().clone_from(&character);
                         }
                     });
                 },

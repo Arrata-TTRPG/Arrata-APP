@@ -25,7 +25,7 @@ pub fn write_character(name: &str) {
         let version = format!("{}-{}", VERSION().major, VERSION().minor);
         let character_file = format!("{name}-{version}.arrata");
         let file_path = path.join(character_file);
-        if let Ok(file) = std::fs::write(file_path, serde_json::to_string(&CHARACTER()).unwrap()) {
+        if let Ok(file) = std::fs::write(file_path, bitcode::encode(&CHARACTER())) {
             println!("Character saved: {file:?}");
         }
     }
@@ -37,7 +37,7 @@ pub fn read_character(name: &str) -> Option<Character> {
         let character_file = format!("{name}-{version}.arrata");
         let file_path = path.join(character_file);
         if let Ok(file) = std::fs::read(file_path.clone()) {
-            if let Ok(character) = serde_json::from_slice(&file) {
+            if let Ok(character) = bitcode::decode(&file) {
                 return Some(character);
             }
         } else {
