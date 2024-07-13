@@ -35,8 +35,8 @@ pub(crate) fn RenderQuirks() -> Element {
             div { class: "flex justify-center",
                 div { class: "w-full grid min-[1025px]:grid-cols-2 grid-cols-1 gap-4 justify-items-center",
                     for (i , quirk) in CHARACTER().quirks.iter().enumerate() {
-                        div { class: "flex flex-col w-full border border-spacing-2 px-3 py-3 rounded-lg",
-                            div { class: "flex justify-center content-center items-center justify-items-center text-2xl p-2 w-full space-x-2",
+                        div { class: "flex flex-col w-full border border-spacing-2 p-1 rounded-lg gap-y-1",
+                            div { class: "flex justify-center content-center items-center justify-items-center text-2xl w-full gap-x-2",
                                 input {
                                     class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                                     r#type: "text",
@@ -82,35 +82,35 @@ pub(crate) fn RenderQuirks() -> Element {
                                     }
                                 }
                             }
-                            div { class: "grid grid-cols-2 p-2",
-                                div { class: "inline-flex font-mono text-xl space-x-3 justify-center items-center",
+                            div { class: "grid grid-cols-2 p-1 gap-1",
+                                div { class: "inline-flex font-mono text-xl gap-x-3 justify-center items-center",
                                     h3 { class: "font-mono text-xl", "Boons" }
                                     button {
-                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-2",
+                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-3",
                                         onclick: move |_| {
                                             CHARACTER
                                                 .with_mut(|character| character.quirks[i].boons.push("New Boon!".into()));
                                         },
-                                        "+ Boon"
+                                        "+"
                                     }
                                 }
-                                div { class: "inline-flex font-mono text-xl space-x-3 justify-center items-center",
+                                div { class: "inline-flex font-mono text-xl gap-x-3 justify-center items-center",
                                     h3 { class: "font-mono text-xl", "Flaws" }
                                     button {
-                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-2",
+                                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-3",
                                         onclick: move |_| {
                                             CHARACTER
                                                 .with_mut(|character| character.quirks[i].flaws.push("New Flaw!".into()));
                                         },
-                                        "+ Flaw"
+                                        "+"
                                     }
                                 }
-                                div { class: "items-center justify-items-center",
+                                div { class: "flex flex-col gap-y-1 items-center justify-items-center",
                                     for (j , _) in quirk.boons.iter().enumerate() {
                                         RenderBF { boon: true, quirk: i, index: j }
                                     }
                                 }
-                                div { class: "items-center justify-items-center",
+                                div { class: "flex flex-col gap-y-1 items-center justify-items-center",
                                     for (j , _) in quirk.flaws.iter().enumerate() {
                                         RenderBF { boon: false, quirk: i, index: j }
                                     }
@@ -127,10 +127,10 @@ pub(crate) fn RenderQuirks() -> Element {
 #[component]
 fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
     rsx! {
-        div { class: "flex w-full justify-center p-2",
+        div { class: "flex gap-x-1 w-full justify-center",
             if boon {
                 textarea {
-                    class: "w-full text-mono flex-shrink border-spacing-1 border rounded-lg p-2 bg-black text-white",
+                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white",
                     value: "{CHARACTER().quirks[quirk].boons[index]}",
                     oninput: move |evt| CHARACTER.write().quirks[quirk].boons[index] = evt.value().to_string()
                 }
@@ -143,7 +143,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                 }
             } else {
                 textarea {
-                    class: "w-full text-mono flex-shrink border-spacing-1 border rounded-lg p-2 bg-black text-white",
+                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white",
                     value: "{CHARACTER().quirks[quirk].flaws[index]}",
                     oninput: move |evt| CHARACTER.write().quirks[quirk].flaws[index] = evt.value().to_string()
                 }
