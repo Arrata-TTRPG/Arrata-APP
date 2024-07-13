@@ -79,7 +79,7 @@ pub fn App() -> Element {
                 }
 
                 p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs",
-                    "{VERSION()}"
+                    "v{VERSION()}"
                 }
             }
         }

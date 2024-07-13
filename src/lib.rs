@@ -15,4 +15,4 @@ pub(crate) static DICE_ROLL_STATE: GlobalSignal<(bool, Option<Stat>)> =
     GlobalSignal::new(|| (false, None));
 /// The `GlobalSignal` for the current version of the app.
 pub(crate) static VERSION: GlobalSignal<Version> =
-    GlobalSignal::new(|| Version::parse("v0.0.0").unwrap());
+    GlobalSignal::new(|| Version::parse("v0.0.0".strip_prefix("v").unwrap()).unwrap());
