@@ -115,12 +115,14 @@ name = "arrata_app"
 version = "0.0.0"
 dependencies = [
  "arrata-lib",
+ "base64 0.22.1",
  "dioxus",
  "dioxus-free-icons",
  "getrandom 0.2.15",
  "log",
  "rand 0.8.5",
  "rfd",
+ "semver",
  "serde",
  "serde_json",
  "urlencoding",
@@ -355,6 +357,12 @@ name = "base64"
 version = "0.21.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d297deb1925b89f2ccc13d7635fa0714f12c87adce1c75356b39ca9b7178567"
+
+[[package]]
+name = "base64"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "bincode"
@@ -1032,7 +1040,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db7fb1a22ff7af8756bc9506eebfbecf374b1c8c57f087c85c752ba8bd767fce"
 dependencies = [
  "async-trait",
- "base64",
+ "base64 0.21.7",
  "bytes",
  "ciborium",
  "dioxus-desktop",
@@ -4637,7 +4645,7 @@ version = "0.37.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b717040ba9771fd88eb428c6ea6b555f8e734ff8534f02c13e8f10d97f5935e"
 dependencies = [
- "base64",
+ "base64 0.21.7",
  "block",
  "cfg_aliases",
  "cocoa",

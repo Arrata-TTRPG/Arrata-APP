@@ -4,8 +4,24 @@
 use dioxus::prelude::*;
 
 fn main() {
+    // Desktop setup
+    #[cfg(feature = "desktop")]
+    {
+        if let Ok(mut path) = std::env::current_exe() {
+            println!("{:?}", path);
+            if path.pop() {
+                path.push("characters");
+                std::fs::create_dir_all(path.clone()).unwrap();
+                arrata_app::storage::desktop::set_directory(path);
+            }
+        }
+    }
+
+    // Web setup
     #[cfg(feature = "web")]
-    wasm_logger::init(wasm_logger::Config::default());
+    {
+        wasm_logger::init(wasm_logger::Config::default());
+    }
 
     launch(arrata_app::render::App);
 }

@@ -34,4 +34,4 @@ watch_path = ["src", "public"]
 publisher = "Kaleb Burris"
 
 # Bundle icon
-icon = ["public/rat.png"]
+icon = ["rat.png"]
