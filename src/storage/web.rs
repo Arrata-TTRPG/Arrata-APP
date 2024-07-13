@@ -44,7 +44,7 @@ pub async fn read_character(name: &str) -> Option<Character> {
     ",
     );
 
-    let version = format!("{}.{}", VERSION().major, VERSION().minor);
+    let version = format!("{}-{}", VERSION().major, VERSION().minor);
     eval.send(serde_json::Value::String(format!("{name}-{version}")))
         .unwrap();
 

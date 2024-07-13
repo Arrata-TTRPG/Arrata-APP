@@ -25,11 +25,13 @@ pub fn App() -> Element {
         use_future(|| async {
             if let Some(character) = read_character("temp") {
                 *CHARACTER.write() = character;
-                log::info!("Character loaded: {}", CHARACTER().name);
+                println!("Character loaded: {}", CHARACTER().name);
+            } else {
+                println!("No character found");
             }
 
             use_effect(move || {
-                log::info!("Effect moment");
+                println!("Effect moment");
                 let _ = CHARACTER();
                 write_character("temp");
             });
