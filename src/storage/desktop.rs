@@ -22,7 +22,8 @@ pub fn set_directory(path: std::path::PathBuf) {
 /// This function will panic if it fails to write the character data to the file.
 pub fn write_character(name: &str) {
     if let Some(path) = LOCATION.get() {
-        let character_file = format!("{name}-{VERSION}.arrata");
+        let version = format!("{}.{}", VERSION().major, VERSION().minor);
+        let character_file = format!("{name}-{version}.arrata");
         let file_path = path.join(character_file);
         if let Ok(file) = std::fs::write(file_path, serde_json::to_string(&CHARACTER()).unwrap()) {
             println!("Character saved: {file:?}");
