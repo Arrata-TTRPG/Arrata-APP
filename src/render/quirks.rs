@@ -16,7 +16,7 @@ pub(crate) fn RenderQuirks() -> Element {
             }
 
             textarea {
-                class: "rounded-lg w-full p-2 bg-black text-white border border-white",
+                class: "rounded-lg w-full p-2 bg-black resize-none h-10 text-white border border-white text-center",
                 value: "{CHARACTER().argos}",
                 oninput: move |evt| CHARACTER.write().argos = evt.value().to_string()
             }
