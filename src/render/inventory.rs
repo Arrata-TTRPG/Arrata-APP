@@ -19,11 +19,11 @@ pub(crate) fn RenderInventory() -> Element {
                     "+ Add Item"
                 }
             }
-            div { class: "grid grid-cols-2 gap-4 justify-center w-full",
+            div { class: "grid sm:grid-cols-2 grid-cols-1 gap-4 justify-center w-full",
                 for (i , item) in CHARACTER().inventory.iter().enumerate() {
                     div { class: "flex justify-center items-center border border-spacing-2 space-x-2 p-2 rounded-lg",
                         input {
-                            class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg p-2",
+                            class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                             r#type: "text",
                             value: "{item.name}",
                             oninput: move |evt| {
