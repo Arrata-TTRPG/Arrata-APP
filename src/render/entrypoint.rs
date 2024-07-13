@@ -33,7 +33,7 @@ pub fn App() -> Element {
                     "ARRATA"
                 }
 
-                p { class: "h-full font-mono align-bottom ml-5 lg:text-lg md:text-base text-sm", "VERSION" }
+                p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs", "VERSION" }
             }
         }
 
