@@ -14,20 +14,7 @@
                     this.e = null;
                     this.z = null;
                     this.metaflags = null;
-                    this.namespace = [];
-                    this.namespace_cache_hit = null;
-                    this.namespace_cache_idx;
-                    this.get_namespace = function() {
-                        this.namespace_cache_idx = this.u8buf[this.u8bufp++];
-                        if(this.namespace_cache_idx & 128){
-                            this.namespace_cache_hit=this.s.substring(this.sp,this.sp+=this.u8buf[this.u8bufp++]);
-                            this.namespace[this.namespace_cache_idx&4294967167]=this.namespace_cache_hit;
-                            return this.namespace_cache_hit;
-                        }
-                        else{
-                            return this.namespace[this.namespace_cache_idx&4294967167];
-                        }
-                    };this.u32buf=null;this.u32bufp=null;this.u8buf=null;this.u8bufp=null;this.el = [];
+                    this.el = [];
                     this.el_cache_hit = null;
                     this.el_cache_idx;
                     this.get_el = function() {
@@ -40,7 +27,7 @@
                         else{
                             return this.el[this.el_cache_idx&4294967167];
                         }
-                    };this.evt = [];
+                    };this.s = "";this.lsp = null;this.sp = null;this.sl = null;this.c = new TextDecoder();this.evt = [];
                     this.evt_cache_hit = null;
                     this.evt_cache_idx;
                     this.get_evt = function() {
@@ -53,7 +40,7 @@
                         else{
                             return this.evt[this.evt_cache_idx&4294967167];
                         }
-                    };this.s = "";this.lsp = null;this.sp = null;this.sl = null;this.c = new TextDecoder();this.u16buf=null;this.u16bufp=null;this.attr = [];
+                    };this.u16buf=null;this.u16bufp=null;this.attr = [];
                     this.attr_cache_hit = null;
                     this.attr_cache_idx;
                     this.get_attr = function() {
@@ -66,7 +53,7 @@
                         else{
                             return this.attr[this.attr_cache_idx&4294967167];
                         }
-                    };this.ns_cache = [];
+                    };this.u8buf=null;this.u8bufp=null;this.ns_cache = [];
                     this.ns_cache_cache_hit = null;
                     this.ns_cache_cache_idx;
                     this.get_ns_cache = function() {
@@ -79,7 +66,20 @@
                         else{
                             return this.ns_cache[this.ns_cache_cache_idx&4294967167];
                         }
-                    };
+                    };this.namespace = [];
+                    this.namespace_cache_hit = null;
+                    this.namespace_cache_idx;
+                    this.get_namespace = function() {
+                        this.namespace_cache_idx = this.u8buf[this.u8bufp++];
+                        if(this.namespace_cache_idx & 128){
+                            this.namespace_cache_hit=this.s.substring(this.sp,this.sp+=this.u8buf[this.u8bufp++]);
+                            this.namespace[this.namespace_cache_idx&4294967167]=this.namespace_cache_hit;
+                            return this.namespace_cache_hit;
+                        }
+                        else{
+                            return this.namespace[this.namespace_cache_idx&4294967167];
+                        }
+                    };this.u32buf=null;this.u32bufp=null;
                 }
 
                 update_memory(b){
@@ -92,15 +92,7 @@
                         this.ls=this.m.getUint32(this.d+6*4,true);
                     }
                     this.p=this.ls;
-                    if ((this.metaflags>>>3)&1){
-                this.t = this.m.getUint32(this.d+3*4,true);
-                this.u32buf=new Uint32Array(this.m.buffer,this.t,((this.m.buffer.byteLength-this.t)-(this.m.buffer.byteLength-this.t)%4)/4);
-            }
-            this.u32bufp=0;if ((this.metaflags>>>5)&1){
-                this.t = this.m.getUint32(this.d+5*4,true);
-                this.u8buf=new Uint8Array(this.m.buffer,this.t,((this.m.buffer.byteLength-this.t)-(this.m.buffer.byteLength-this.t)%1)/1);
-            }
-            this.u8bufp=0;if (this.metaflags&1){
+                    if (this.metaflags&1){
                 this.lsp = this.m.getUint32(this.d+1*4,true);
             }
             if ((this.metaflags>>>2)&1) {
@@ -138,7 +130,15 @@
                 this.t = this.m.getUint32(this.d+4*4,true);
                 this.u16buf=new Uint16Array(this.m.buffer,this.t,((this.m.buffer.byteLength-this.t)-(this.m.buffer.byteLength-this.t)%2)/2);
             }
-            this.u16bufp=0;
+            this.u16bufp=0;if ((this.metaflags>>>5)&1){
+                this.t = this.m.getUint32(this.d+5*4,true);
+                this.u8buf=new Uint8Array(this.m.buffer,this.t,((this.m.buffer.byteLength-this.t)-(this.m.buffer.byteLength-this.t)%1)/1);
+            }
+            this.u8bufp=0;if ((this.metaflags>>>3)&1){
+                this.t = this.m.getUint32(this.d+3*4,true);
+                this.u32buf=new Uint32Array(this.m.buffer,this.t,((this.m.buffer.byteLength-this.t)-(this.m.buffer.byteLength-this.t)%4)/4);
+            }
+            this.u32bufp=0;
                     for(;;){
                         this.op=this.m.getUint32(this.p,true);
                         this.p+=4;
