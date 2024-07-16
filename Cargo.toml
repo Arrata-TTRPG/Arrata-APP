@@ -14,7 +14,7 @@ dioxus = { default-features = false, version = "0.5.1" }
 log = "0.4.22"
 rfd = "0.14.1"
 semver = "1.0.23"
-bitcode = "0.6.0"
+bitcode = "0.6.3"
 
 # Web dependencies
 getrandom = { version = "0.2.15", optional = true }

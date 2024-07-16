@@ -41,7 +41,7 @@ pub(crate) fn RenderCharacter() -> Element {
 pub(crate) fn CharacterIO() -> Element {
     rsx! {
         div { class: "w-full flex justify-center",
-            div { class: "p-5 font-mono origin-center w-fit max-w-[668px] flex flex-wrap gap-2",
+            div { class: "px-5 pb-5 font-mono origin-center w-fit max-w-[668px] flex flex-wrap gap-2",
                 button {
                     class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded flex-grow",
                     onclick: move |_| {

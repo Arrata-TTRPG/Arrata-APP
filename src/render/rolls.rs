@@ -104,9 +104,10 @@ pub(crate) fn RenderRolls() -> Element {
                         // Results
                         div { class: "p-1 flex flex-wrap content-around gap-1 justify-center text-center border bg-slate-900",
                             for r in results.results.iter() {
-                                div { class: format!("px-1 bg-slate-950 rounded {}", if *r >= stat.quality as u8 { "text-green-500" } else { "text-red-600" }),
-                                    "{r}"
-                                }
+                                div { class: format!(
+                                        "px-1 bg-slate-950 rounded {}",
+                                        if *r >= stat.quality as u8 { "text-green-500" } else { "text-red-600" },
+                                    ), "{r}" }
                             }
                         }
                     }

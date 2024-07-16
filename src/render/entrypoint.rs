@@ -25,13 +25,9 @@ pub fn App() -> Element {
         use_future(|| async {
             if let Some(character) = read_character("temp") {
                 *CHARACTER.write() = character;
-                println!("Character loaded: {}", CHARACTER().name);
-            } else {
-                println!("No character found");
             }
 
             use_effect(move || {
-                println!("Effect moment");
                 let _ = CHARACTER();
                 write_character("temp");
             });
@@ -46,14 +42,11 @@ pub fn App() -> Element {
         };
 
         use_future(|| async {
-            log::info!("Future moment");
             if let Some(character) = read_character("temp").await {
                 *CHARACTER.write() = character;
-                log::info!("Character loaded: {}", CHARACTER().name);
             }
 
             use_effect(move || {
-                log::info!("Effect moment");
                 let _ = CHARACTER();
                 spawn(async {
                     write_character("temp").await;
@@ -66,12 +59,13 @@ pub fn App() -> Element {
         style { "{arrata_style}" }
         link { rel: "stylesheet", href: "tailwind.css" }
 
-        div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full space-x-4",
+        div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full gap-4",
             // Arrata logo
-            img {
-                // Arrata logo
-                class: "object-scale-down med:w-[8rem] med:h-[8rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
-                src: "rat.png"
+            object {
+                class: "object-fill med:w-[9rem] med:h-[9rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
+                data: "rat_release.svg",
+                r#type: "image/svg+xml",
+                img { class: "object-fit", src: "rat_release.svg" }
             }
 
             // Title and version
