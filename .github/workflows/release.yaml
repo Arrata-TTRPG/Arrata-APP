@@ -20,6 +20,10 @@ env:
   EXECUTABLE_NAME: "arrata_character_sheet_manager"
   NODE_VERSION: 20
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions: write-all
 
 name: Create release
@@ -173,7 +177,7 @@ jobs:
       with:
         toolchain: nightly
         components: rust-src
-        target: x86_64-pc-windows-gnu
+        target: x86_64-pc-windows-msvc
 
     - name: Install cargo-binstall
       uses: cargo-bins/cargo-binstall@main
@@ -198,7 +202,7 @@ jobs:
         npx tailwindcss -i input.css -o public/tailwind.css --minify
 
     - name: Build release
-      run: dx build --release --platform desktop --target x86_64-pc-windows-gnu
+      run: dx build --release --platform desktop --target x86_64-pc-windows-msvc
 
     - name: UPX compress
       uses: crazy-max/ghaction-upx@v3
