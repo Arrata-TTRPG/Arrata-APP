@@ -25,9 +25,7 @@ pub(crate) fn RenderStats() -> Element {
 
     rsx! {
         div { class: "min-[1921px]:w-1/3 min-[1860px]:w-1/2 w-full flex-auto justify-items-center justify-center px-2",
-            h2 { class: "py-2 text-center text-4xl font-bold font-mono",
-                "Stats {stats_total}"
-            }
+            h2 { class: "py-2 text-center text-4xl font-bold font-mono", "Stats {stats_total}" }
             div { class: "flex justify-center justify-items-center content-center",
                 div { class: "grid min-[1921px]:grid-cols-2 min-[1340px]:grid-cols-3 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
                     for (i , stat) in CHARACTER().stats.iter().enumerate() {
@@ -62,9 +60,21 @@ pub(crate) fn RenderStats() -> Element {
                                                 }
                                             });
                                     },
-                                    option { value: 0, selected: CHARACTER().stats[i].quality == Quality::Basic, "Basic" }
-                                    option { value: 1, selected: CHARACTER().stats[i].quality == Quality::Adept, "Adept" }
-                                    option { value: 2, selected: CHARACTER().stats[i].quality == Quality::Superb, "Superb" }
+                                    option {
+                                        value: 0,
+                                        selected: CHARACTER().stats[i].quality == Quality::Basic,
+                                        "Basic"
+                                    }
+                                    option {
+                                        value: 1,
+                                        selected: CHARACTER().stats[i].quality == Quality::Adept,
+                                        "Adept"
+                                    }
+                                    option {
+                                        value: 2,
+                                        selected: CHARACTER().stats[i].quality == Quality::Superb,
+                                        "Superb"
+                                    }
                                 }
                                 input {
                                     class: "w-16 border rounded-lg p-2 appearance-none",
@@ -158,9 +168,21 @@ pub(crate) fn RenderStats() -> Element {
                                                 }
                                             });
                                     },
-                                    option { value: 0, selected: CHARACTER().skills[i].quality == Quality::Basic, "Basic" }
-                                    option { value: 1, selected: CHARACTER().skills[i].quality == Quality::Adept, "Adept" }
-                                    option { value: 2, selected: CHARACTER().skills[i].quality == Quality::Superb, "Superb" }
+                                    option {
+                                        value: 0,
+                                        selected: CHARACTER().skills[i].quality == Quality::Basic,
+                                        "Basic"
+                                    }
+                                    option {
+                                        value: 1,
+                                        selected: CHARACTER().skills[i].quality == Quality::Adept,
+                                        "Adept"
+                                    }
+                                    option {
+                                        value: 2,
+                                        selected: CHARACTER().skills[i].quality == Quality::Superb,
+                                        "Superb"
+                                    }
                                 }
                                 input {
                                     class: "w-16 border rounded-lg p-2",
