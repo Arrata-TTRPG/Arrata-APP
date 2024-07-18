@@ -56,7 +56,9 @@ pub(crate) fn RenderStats() -> Element {
                                 input {
                                     class: "w-16 border rounded-lg p-2 appearance-none",
                                     r#type: "number",
-                                    value: i64::try_from(stat.quantity).unwrap_or_default(),
+                                    value: "{stat.quantity}",
+                                    min: 0,
+                                    max: i64::MAX,
                                     oninput: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -70,7 +72,9 @@ pub(crate) fn RenderStats() -> Element {
                                 input {
                                     class: "w-16 border rounded-lg p-2",
                                     r#type: "number",
-                                    value: i64::try_from(stat.checks.unwrap_or_default()).unwrap_or_default(),
+                                    value: "{stat.checks.unwrap_or_default()}",
+                                    min: 0,
+                                    max: i64::MAX,
                                     oninput: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -148,7 +152,9 @@ pub(crate) fn RenderStats() -> Element {
                                 input {
                                     class: "w-16 border rounded-lg p-2",
                                     r#type: "number",
-                                    value: i64::try_from(skill.quantity).unwrap_or_default(),
+                                    value: "{skill.quantity}",
+                                    min: 0,
+                                    max: i64::MAX,
                                     oninput: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -160,7 +166,9 @@ pub(crate) fn RenderStats() -> Element {
                                 input {
                                     class: "w-16 border rounded-lg p-2",
                                     r#type: "number",
-                                    value: i64::try_from(skill.checks.unwrap_or(0)).unwrap_or_default(),
+                                    value: "{skill.checks.unwrap_or(0)}",
+                                    min: 0,
+                                    max: i64::MAX,
                                     oninput: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {

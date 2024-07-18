@@ -59,29 +59,34 @@ pub(crate) fn RenderRolls() -> Element {
                     }
                     // Advantage + Disadvantage
                     div { class: "grid grid-cols-2 justify-center content-even",
-                        div { class: "grid grid-cols-1 p-2",
+                        div { class: "p-2",
                             div { class: "p-1 items-center justify-center bg-green-950 rounded border",
                                 div { class: "font-mono text-center", "Advantage" }
                                 div { class: "flex justify-center",
                                     input {
-                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        class: "w-12 border rounded-lg p-1 appearance-none",
                                         r#type: "number",
-                                        value: i64::try_from(advantage()).unwrap_or_default(),
+                                        value: "{advantage()}",
+                                        min: 0,
+                                        max: i64::MAX,
                                         oninput: move |evt| {
                                             advantage.set(evt.value().parse::<usize>().unwrap_or(0));
+                                            log::info!("Advantage: {}", advantage());
                                         }
                                     }
                                 }
                             }
                         }
-                        div { class: "grid grid-cols-1 p-2",
+                        div { class: "p-2",
                             div { class: "p-1 items-center justify-center bg-red-950 rounded border",
                                 div { class: "font-mono text-center", "Disadvantage" }
                                 div { class: "flex justify-center",
                                     input {
-                                        class: "w-12 border rounded-lg py-1 px-1",
+                                        class: "w-12 border rounded-lg p-1",
                                         r#type: "number",
-                                        value: i64::try_from(disadvantage()).unwrap_or_default(),
+                                        value: "{disadvantage()}",
+                                        min: 0,
+                                        max: i64::MAX,
                                         oninput: move |evt| disadvantage.set(evt.value().parse::<usize>().unwrap_or(0))
                                     }
                                 }
