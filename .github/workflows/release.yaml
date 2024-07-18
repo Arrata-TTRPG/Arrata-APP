@@ -129,8 +129,11 @@ jobs:
           npm install -D tailwindcss
           npx tailwindcss -i input.css -o public/tailwind.css --minify
 
+      - name: Enabled cargo config.toml
+        run: mv .cargo-disabled .cargo
+
       - name: Build release
-        run: dx build --release --platform desktop
+        run: dx build --release --platform desktop --target x86_64-unknown-linux-gnu
 
       - name: Prepare release
         run: |
@@ -200,6 +203,9 @@ jobs:
       run: |
         npm install -D tailwindcss
         npx tailwindcss -i input.css -o public/tailwind.css --minify
+
+    - name: Enabled cargo config.toml
+      run: mv .cargo-disabled .cargo
 
     - name: Build release
       run: dx build --release --platform desktop --target x86_64-pc-windows-msvc
@@ -278,16 +284,13 @@ jobs:
       - name: Modify Dioxus.toml and enable cargo config.toml
         run: sed -i 's/#base_path/base_path/' Dioxus.toml
 
+      - name: Enabled cargo config.toml
+        run: mv .cargo-disabled .cargo
+
       - name: Create WASM with Dioxus CLI
         run: |
           dx build --release --platform web
           mv dist docs
-
-      - name: wasm-opt pass
-        uses: NiklasEi/wasm-opt-action@v2
-        with:
-          file: docs/assets/dioxus/*.wasm
-          options: '-Oz -c'
 
       - name: Deploy to GH Pages
         uses: JamesIves/github-pages-deploy-action@v4

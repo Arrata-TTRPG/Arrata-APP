@@ -1,6 +1,7 @@
 [package]
 name = "arrata_app"
 edition = "2021"
+authors = ["Kaleb Burris <kaleb.r.burris@gmail.com>"]
 version = "0.0.0"
 description = "An application for handling Arrata character sheets."
 
@@ -10,7 +11,7 @@ description = "An application for handling Arrata character sheets."
 serde_json = { version = "1.0.120", default-features = false}
 dioxus-free-icons = { version = "0.8.6", features = ["bootstrap"] }
 rand = { version = "0.8.5" , default-features = false }
-dioxus = { default-features = false, version = "0.5.1" }
+dioxus = { version = "0.5.6" }
 log = "0.4.22"
 rfd = "0.14.1"
 semver = "1.0.23"
@@ -40,8 +41,6 @@ lto = true
 codegen-units = 1
 panic = "abort"
 strip = true
-
-[profile.release.package]
 
 [profile.release.build-override]
 codegen-units = 1
