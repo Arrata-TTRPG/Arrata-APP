@@ -23,22 +23,15 @@ pub fn App() -> Element {
         };
 
         use_future(|| async {
-            log::info!("Hook started!");
-
             let key = format!("temp-{}-{}", VERSION().major, VERSION().minor);
-
-            log::info!("Reading character!");
 
             if let Some(character) = read_character(key.as_str()) {
                 *CHARACTER.write() = character;
-                log::info!("Character read!");
             }
 
-            log::info!("Starting use_effect!");
             use_effect(move || {
                 let character = CHARACTER();
                 write_character(key.as_str(), &character);
-                log::info!("Wrote character!");
             });
         });
     }
