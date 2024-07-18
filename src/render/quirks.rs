@@ -59,9 +59,9 @@ pub(crate) fn RenderQuirks() -> Element {
                                                 }
                                             });
                                     },
-                                    option { value: 0, "Ethos" }
-                                    option { value: 1, "Pathos" }
-                                    option { value: 2, "Logos" }
+                                    option { value: 0, selected: CHARACTER().quirks[i].category == QuirkCategory::Ethos, "Ethos" }
+                                    option { value: 1, selected: CHARACTER().quirks[i].category == QuirkCategory::Pathos, "Pathos" }
+                                    option { value: 2, selected: CHARACTER().quirks[i].category == QuirkCategory::Logos, "Logos" }
                                 }
                                 button {
                                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",

@@ -49,9 +49,9 @@ pub(crate) fn RenderStats() -> Element {
                                                 }
                                             });
                                     },
-                                    option { value: 0, "Basic" }
-                                    option { value: 1, "Adept" }
-                                    option { value: 2, "Superb" }
+                                    option { value: 0, selected: CHARACTER().stats[i].quality == Quality::Basic, "Basic" }
+                                    option { value: 1, selected: CHARACTER().stats[i].quality == Quality::Adept, "Adept" }
+                                    option { value: 2, selected: CHARACTER().stats[i].quality == Quality::Superb, "Superb" }
                                 }
                                 input {
                                     class: "w-16 border rounded-lg p-2 appearance-none",
