@@ -12,7 +12,7 @@ fn main() {
             if path.pop() {
                 path.push("characters");
                 std::fs::create_dir_all(path.clone()).unwrap();
-                arrata_app::storage::desktop::set_directory(path);
+                arrata_app::storage::set_directory(path);
             }
         }
     }

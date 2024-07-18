@@ -15,42 +15,30 @@ pub fn App() -> Element {
     option { background-color: black; color: white; }
     ";
 
-    #[cfg(feature = "desktop")]
+    #[cfg(any(feature = "web", feature = "desktop"))]
     {
         use crate::{
-            storage::desktop::{read_character, write_character},
+            storage::{read_character, write_character},
             CHARACTER,
         };
 
         use_future(|| async {
-            if let Some(character) = read_character("temp") {
+            log::info!("Hook started!");
+
+            let key = format!("temp-{}-{}", VERSION().major, VERSION().minor);
+
+            log::info!("Reading character!");
+
+            if let Some(character) = read_character(key.as_str()) {
                 *CHARACTER.write() = character;
+                log::info!("Character read!");
             }
 
+            log::info!("Starting use_effect!");
             use_effect(move || {
-                let _ = CHARACTER();
-                write_character("temp");
-            });
-        });
-    }
-
-    #[cfg(feature = "web")]
-    {
-        use crate::{
-            storage::web::{read_character, write_character},
-            CHARACTER,
-        };
-
-        use_future(|| async {
-            if let Some(character) = read_character("temp").await {
-                *CHARACTER.write() = character;
-            }
-
-            use_effect(move || {
-                let _ = CHARACTER();
-                spawn(async {
-                    write_character("temp").await;
-                });
+                let character = CHARACTER();
+                write_character(key.as_str(), &character);
+                log::info!("Wrote character!");
             });
         });
     }

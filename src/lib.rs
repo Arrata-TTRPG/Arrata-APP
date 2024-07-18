@@ -1,6 +1,8 @@
 #![warn(clippy::all, clippy::pedantic)]
 
 pub mod render;
+
+#[cfg(any(feature = "desktop", feature = "web"))]
 pub mod storage;
 
 use arrata_lib::character::{Character, Stat};
