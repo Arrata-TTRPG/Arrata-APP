@@ -18,20 +18,32 @@ pub fn App() -> Element {
     #[cfg(any(feature = "web", feature = "desktop"))]
     {
         use crate::{
-            storage::{read_character, write_character},
-            CHARACTER,
+            storage::{read_character, read_quirks, write_character, write_quirks},
+            CHARACTER, PREMADE_QUIRKS,
         };
 
         use_future(|| async {
+            // The key used for storage naming
             let key = format!("temp-{}-{}", VERSION().major, VERSION().minor);
-
+            // Get the character from storage
             if let Some(character) = read_character(key.as_str()) {
                 *CHARACTER.write() = character;
             }
-
+            // Save the character on edit
             use_effect(move || {
                 let character = CHARACTER();
                 write_character(key.as_str(), &character);
+            });
+
+            let key = format!("quirks-{}-{}", VERSION().major, VERSION().minor);
+            // Get pre-made Quirks
+            if let Some(quirks) = read_quirks(key.as_str()) {
+                PREMADE_QUIRKS.write().extend(quirks);
+            }
+            // Save the pre-made Quirks on edit
+            use_effect(move || {
+                let quirks = PREMADE_QUIRKS();
+                write_quirks(quirks, key.as_str());
             });
         });
     }

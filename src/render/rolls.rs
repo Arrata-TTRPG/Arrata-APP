@@ -19,7 +19,7 @@ pub(crate) fn RenderRolls() -> Element {
             // Close button
             div { class: "z-20 absolute right-0 p-2",
                 div {
-                    class: "bg-slate-950 hover:bg-slate-700 rounded",
+                    class: "bg-slate-950 hover:bg-slate-700 rounded cursor-pointer",
                     onclick: move |_| {
                         DICE_ROLL_STATE
                             .with_mut(|state| {
@@ -69,10 +69,7 @@ pub(crate) fn RenderRolls() -> Element {
                                         value: "{advantage()}",
                                         min: 0,
                                         max: i64::MAX,
-                                        oninput: move |evt| {
-                                            advantage.set(evt.value().parse::<usize>().unwrap_or(0));
-                                            log::info!("Advantage: {}", advantage());
-                                        }
+                                        oninput: move |evt| advantage.set(evt.value().parse::<usize>().unwrap_or(0))
                                     }
                                 }
                             }
@@ -107,7 +104,7 @@ pub(crate) fn RenderRolls() -> Element {
                         }
                         div { class: "p-2 text-lg text-center", "Results" }
                         // Results
-                        div { class: "p-1 flex flex-wrap content-around gap-1 justify-center text-center border bg-slate-900",
+                        div { class: "p-1 flex flex-wrap w-full content-around gap-1 justify-center text-center border bg-slate-900",
                             for r in results.results.iter() {
                                 div {
                                     class: format!(

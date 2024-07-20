@@ -29,7 +29,7 @@ pub(crate) fn RenderCharacter() -> Element {
             }
         }
 
-        div { class: "flex flex-wrap",
+        div { class: "flex flex-wrap pt-4",
             RenderStats {}
             RenderQuirks {}
             RenderInventory {}

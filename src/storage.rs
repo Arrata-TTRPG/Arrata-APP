@@ -1,5 +1,7 @@
 use arrata_lib::Character;
 
+use arrata_lib::Quirk;
+
 #[cfg(feature = "desktop")]
 pub static LOCATION: std::sync::OnceLock<std::path::PathBuf> = std::sync::OnceLock::new();
 
@@ -39,6 +41,35 @@ pub fn read_character(name: &str) -> Option<Character> {
         if let Ok(file) = std::fs::read(file_path.clone()) {
             if let Ok(character) = bitcode::decode(&file) {
                 return Some(character);
+            }
+        } else {
+            println!("Failed to read file {}", file_path.clone().display());
+        }
+    }
+
+    None
+}
+
+#[cfg(feature = "desktop")]
+pub fn write_quirks(quirks: Vec<Quirk>, key: &str) {
+    if let Some(path) = LOCATION.get() {
+        let data = bitcode::encode(&quirks);
+        let quirk_file = format!("{key}.arrata");
+        let file_path = path.join(quirk_file);
+        if let Ok(file) = std::fs::write(file_path, data) {
+            println!("Quirks saved: {file:?}");
+        }
+    }
+}
+
+#[cfg(feature = "desktop")]
+pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
+    if let Some(path) = LOCATION.get() {
+        let quirk_file = format!("{key}.quirks");
+        let file_path = path.join(quirk_file);
+        if let Ok(file) = std::fs::read(file_path.clone()) {
+            if let Ok(quirks) = bitcode::decode(&file) {
+                return Some(quirks);
             }
         } else {
             println!("Failed to read file {}", file_path.clone().display());
@@ -94,4 +125,19 @@ pub fn read_character(key: &str) -> Option<Character> {
     } else {
         None
     }
+}
+
+#[cfg(feature = "web")]
+pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
+    if let Ok(data) = &LocalStorage::get::<String>(key) {
+        Some(serde_json::from_str(data).unwrap())
+    } else {
+        None
+    }
+}
+
+#[cfg(feature = "web")]
+pub fn write_quirks(quirks: Vec<Quirk>, key: &str) {
+    let quirks = serde_json::to_string(&quirks).unwrap();
+    LocalStorage::set(key, quirks).unwrap();
 }

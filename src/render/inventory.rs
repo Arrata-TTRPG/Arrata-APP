@@ -8,8 +8,8 @@ use crate::CHARACTER;
 #[component]
 pub(crate) fn RenderInventory() -> Element {
     rsx! {
-        div { class: "min-[1921px]:w-1/3 w-full flex-auto justify-center px-2",
-            div { class: "flex justify-center content-center items-center pb-2 space-x-4",
+        div { class: "min-[1921px]:w-1/3 w-full h-full flex flex-col justify-center px-2 gap-4",
+            div { class: "flex justify-center content-center items-center gap-4",
                 h2 { class: "inline-flex text-center text-4xl font-bold font-mono",
                     "Inventory"
                 }
