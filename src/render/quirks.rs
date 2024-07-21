@@ -11,7 +11,7 @@ use crate::{CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU};
 #[component]
 pub(crate) fn RenderQuirks() -> Element {
     rsx! {
-        div { class: "min-[1921px]:w-1/3 w-full flex flex-col gap-4 justify-center px-2 h-full",
+        div { class: "min-[1920px]:w-1/3 min-[1280px]:w-1/2 w-full flex flex-col gap-4 justify-center px-2 h-full",
             h2 { class: "text-center text-4xl font-bold font-mono", "Argos" }
 
             textarea {
@@ -39,7 +39,7 @@ pub(crate) fn RenderQuirks() -> Element {
             }
 
             div { class: "flex flex-col justify-center",
-                div { class: "w-full grid min-[1025px]:grid-cols-2 grid-cols-1 gap-4 justify-items-center",
+                div { class: "w-full grid md:grid-cols-2 grid-cols-1 gap-4 justify-items-center",
                     for (i , quirk) in CHARACTER().quirks.iter().enumerate() {
                         RenderQuirk { index: i, quirk: quirk.clone() }
                     }

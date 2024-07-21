@@ -24,10 +24,10 @@ pub(crate) fn RenderStats() -> Element {
         .sum();
 
     rsx! {
-        div { class: "min-[1921px]:w-1/3 min-[1860px]:w-1/2 w-full h-full flex flex-col justify-center px-2 gap-4",
+        div { class: "min-[1920px]:w-1/3 min-[1280px]:w-1/2 w-full h-full flex flex-col justify-center px-2 gap-4",
             h2 { class: "text-center text-4xl font-bold font-mono", "Stats {stats_total}" }
             div { class: "flex justify-center justify-items-center content-center",
-                div { class: "grid min-[1921px]:grid-cols-2 min-[1340px]:grid-cols-3 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
+                div { class: "grid min-[1340px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
                     for (i , stat) in CHARACTER().stats.iter().enumerate() {
                         div { class: "flex flex-col border gap-2 justify-center p-2 rounded-lg w-full",
                             div { class: "inline-flex items-center justify-center",
