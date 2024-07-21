@@ -1,8 +1,6 @@
 // If we're not in a prod compilation, allow a window for debug prints
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-const _TAILWIND_URL: &str = manganis::mg!(file("public/tailwind.css"));
-
 use dioxus::prelude::*;
 
 fn main() {
