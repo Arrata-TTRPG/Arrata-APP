@@ -204,7 +204,7 @@ fn RenderInspiration() -> Element {
     rsx! {
         h3 { class: "text-center p-2 text-3xl font-bold", "Inspiration" }
 
-        div { class: "flex justify-center gap-4",
+        div { class: "flex flex-wrap justify-center gap-4",
             div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
                 h4 { class: "text-center text-2xl font-bold", "Ethos" }
                 input {
