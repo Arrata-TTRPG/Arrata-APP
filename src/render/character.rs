@@ -62,7 +62,7 @@ pub(crate) fn CharacterIO() -> Element {
                 button {
                     class: "font-mono text-xl bg-slate-900 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded flex-grow",
                     onclick: move |_| {
-                        use_future(|| async move {
+                        spawn(async move {
                             let file = AsyncFileDialog::new()
                                 .set_title("Load .arrata Character file")
                                 .add_filter("type", &["arrata"])

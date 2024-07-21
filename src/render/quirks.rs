@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    icons::bs_icons::{BsSave, BsTrash, BsX},
+    icons::bs_icons::{BsSave, BsTrash},
     Icon,
 };
 
@@ -27,12 +27,12 @@ pub(crate) fn RenderQuirks() -> Element {
                     "Quirks"
                 }
                 button {
-                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
                     onclick: move |_| CHARACTER.write().quirks.push(Quirk::default()),
                     "+ Add Quirk"
                 }
                 button {
-                    class: "inline-flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
                     onclick: move |_| *PREMADE_QUIRKS_MENU.write() = true,
                     "+ Load Premade Quirk"
                 }
@@ -48,7 +48,7 @@ pub(crate) fn RenderQuirks() -> Element {
         }
 
         if PREMADE_QUIRKS_MENU() {
-            RenderPremadeQuirkList {}
+            crate::render::premade_quirks::RenderPremadeQuirkList {}
         }
     }
 }
@@ -230,78 +230,6 @@ fn RenderInspiration() -> Element {
                     r#type: "number",
                     min: 0,
                     max: i64::MAX
-                }
-            }
-        }
-    }
-}
-
-#[component]
-fn RenderPremadeQuirkList() -> Element {
-    rsx! {
-        div { class: "z-10 fixed flex flex-col justify-center content-center max-w-[80%] min-w-96 w-fit h-fit min-h-14 border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
-            // Close button
-            div { class: "z-20 absolute right-0 top-0 p-2",
-                div {
-                    class: "bg-slate-950 hover:bg-slate-700 rounded cursor-pointer",
-                    onclick: move |_| *PREMADE_QUIRKS_MENU.write() = false,
-                    Icon { width: 35, height: 35, fill: "red", icon: BsX }
-                }
-            }
-
-            h1 { class: "text-center py-2 text-2xl font-bold font-mono", "Premade Quirks" }
-
-            // Quirks
-            div { class: "flex flex-wrap gap-1 justify-center p-2",
-                if PREMADE_QUIRKS().is_empty() {
-                    div { class: "flex font-mono text-lg gap-2 place-items-center",
-                        p { "No premade quirks available. Save some here with the" }
-                        Icon { width: 18, height: 18, fill: "white", icon: BsSave }
-                        p { "button." }
-                    }
-                }
-
-                for (index , quirk) in PREMADE_QUIRKS().into_iter().enumerate() {
-                    div { class: "flex flex-col p-1 border rounded-lg gap-2",
-                        // Name, add, and remove buttons
-                        div { class: "flex flex-wrap gap-2 justify-center place-items-center",
-                            h3 { class: "text-lg font-bold", "{quirk.name}" }
-                            button {
-                                class: "flex bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-2 border rounded",
-                                onclick: move |_| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.quirks.push(quirk.clone());
-                                        });
-                                },
-                                "+ Add"
-                            }
-                            button {
-                                class: "bg-red-950 hover:bg-red-600 p-1 border rounded-lg",
-                                onclick: move |_| std::mem::drop(PREMADE_QUIRKS.write().remove(index)),
-                                Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
-                            }
-                        }
-
-                        // Description
-                        if !quirk.description.is_empty() {
-                            p { class: "font-mono text-base text-center p-1 border",
-                                "{quirk.description}"
-                            }
-                        }
-
-                        // Boons and flaws
-                        if !quirk.boons.is_empty() || !quirk.flaws.is_empty() {
-                            div { class: "grid grid-cols-2 gap-1",
-                                div { class: "flex flex-col gap-1",
-                                    h4 { class: "font-mono text-lg text-center", "Boons" }
-                                    for boon in quirk.boons.iter() {
-                                        p { class: "text-sm font-mono", "{boon}" }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

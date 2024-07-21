@@ -10,6 +10,8 @@ pub(crate) use rolls::RenderRolls;
 pub(crate) mod quirks;
 pub(crate) use quirks::RenderQuirks;
 
+pub(crate) mod premade_quirks;
+
 pub(crate) mod stats;
 pub(crate) use stats::RenderStats;
 
