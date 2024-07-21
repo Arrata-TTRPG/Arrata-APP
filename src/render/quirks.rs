@@ -211,7 +211,9 @@ fn RenderInspiration() -> Element {
                     class: "rounded-lg w-16 p-2 bg-black text-white border border-white text-center",
                     r#type: "number",
                     min: 0,
-                    max: i64::MAX
+                    max: i64::MAX,
+                    value: "{CHARACTER().inspiration.ethos}",
+                    onchange: move |evt| CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0)
                 }
             }
             div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
@@ -220,7 +222,9 @@ fn RenderInspiration() -> Element {
                     class: "rounded-lg w-16 p-2 bg-black text-white border border-white text-center",
                     r#type: "number",
                     min: 0,
-                    max: i64::MAX
+                    max: i64::MAX,
+                    value: "{CHARACTER().inspiration.pathos}",
+                    onchange: move |evt| CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0)
                 }
             }
             div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
@@ -229,7 +233,9 @@ fn RenderInspiration() -> Element {
                     class: "rounded-lg w-16 p-2 bg-black text-white border border-white text-center",
                     r#type: "number",
                     min: 0,
-                    max: i64::MAX
+                    max: i64::MAX,
+                    value: "{CHARACTER().inspiration.logos}",
+                    onchange: move |evt| CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0)
                 }
             }
         }

@@ -48,7 +48,7 @@ pub(crate) fn RenderStats() -> Element {
                             }
                             div { class: "inline-flex w-full h-full justify-center items-center space-x-2",
                                 select {
-                                    class: "hover:bg-slate-700 flex-grow font-mono text-center border rounded-lg p-2 appearance-none",
+                                    class: "hover:bg-slate-700 flex-grow font-mono text-center border rounded-lg p-2 appearance-none cursor-pointer",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -156,7 +156,7 @@ pub(crate) fn RenderStats() -> Element {
                             }
                             div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
                                 select {
-                                    class: "flex-grow hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none",
+                                    class: "flex-grow hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
