@@ -1,4 +1,11 @@
-#![warn(clippy::all, clippy::pedantic)]
+#![warn(
+    clippy::all,
+    clippy::pedantic,
+    clippy::perf,
+    clippy::correctness,
+    clippy::style,
+    clippy::suspicious
+)]
 
 pub mod render;
 

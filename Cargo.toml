@@ -4,6 +4,9 @@ edition = "2021"
 authors = ["Kaleb Burris <kaleb.r.burris@gmail.com>"]
 version = "0.0.0"
 description = "An application for handling Arrata character sheets."
+repository = "https://github.com/Arrata-TTRPG/Arrata-APP"
+keywords = ["character-sheet", "ttrpg", "dioxus", "app"]
+categories = ["game", "ttrpg", "dioxus"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
