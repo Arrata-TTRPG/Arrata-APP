@@ -21,10 +21,10 @@ pub fn RenderPremadeQuirkList() -> Element {
                 }
             }
 
-            div { class: "p-2 flex flex-row justify-center gap-4",
+            div { class: "p-2 flex flex-wrap justify-center gap-x-4 gap-y-2",
                 h1 { class: "text-center py-2 text-2xl font-bold font-mono", "Premade Quirks" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-mono font-bold px-2 border rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-mono font-bold flex px-2 h-12 items-center border rounded",
                     onclick: move |_| {
                         use_future(|| async move {
                             let file = AsyncFileDialog::new()
@@ -40,7 +40,7 @@ pub fn RenderPremadeQuirkList() -> Element {
                     "Download Quirks"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-mono font-bold px-2 border rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-mono font-bold flex px-2 h-12 items-center border rounded",
                     onclick: move |_| {
                         spawn(async move {
                             let file = AsyncFileDialog::new()
