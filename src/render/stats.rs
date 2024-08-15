@@ -123,7 +123,7 @@ pub(crate) fn RenderStats() -> Element {
                 }
             }
             div { class: "flex justify-center",
-                div { class: "grid min-[1860px]:grid-cols-2 min-[1340px]:grid-cols-3 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
+                div { class: "grid min-[1340px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
                     for (i , skill) in CHARACTER().skills.iter().enumerate() {
                         div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
                             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
