@@ -34,7 +34,14 @@ pub(crate) static PREMADE_QUIRKS_MENU: GlobalSignal<bool> = GlobalSignal::new(||
 /// The `GlobalSignal` for the stored pre-made Quirks
 pub(crate) static PREMADE_QUIRKS: GlobalSignal<Vec<Quirk>> = GlobalSignal::new(Vec::new);
 
+/// The `GlobalSignal` for which category of `Quirks` to display.
+/// The tuple is in the order of ethos, pathos, logos.
+pub(crate) static SHOWN_CATEGORIES: GlobalSignal<(bool, bool, bool)> =
+    GlobalSignal::new(|| (true, true, true));
+
 pub(crate) async fn load_initial_quirks() {
+    log::info!("Loading initial pre-made quirks");
+
     let url = "https://raw.githubusercontent.com/Arrata-TTRPG/Arrata-Quirks/main/";
 
     let categories = ["ethos", "pathos", "logos"];

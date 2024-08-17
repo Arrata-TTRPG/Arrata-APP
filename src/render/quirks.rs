@@ -6,7 +6,7 @@ use dioxus_free_icons::{
 
 use arrata_lib::{Quirk, QuirkCategory};
 
-use crate::{CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU};
+use crate::{CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU, SHOWN_CATEGORIES};
 
 #[component]
 pub(crate) fn RenderQuirks() -> Element {
@@ -28,22 +28,15 @@ pub(crate) fn RenderQuirks() -> Element {
                 }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
-                    onclick: move |_| CHARACTER.write().quirks.push(Quirk::default()),
-                    "+ Add Quirk"
-                }
-                button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
                     onclick: move |_| *PREMADE_QUIRKS_MENU.write() = true,
                     "+ Load Premade Quirk"
                 }
             }
 
-            div { class: "flex flex-col justify-center",
-                div { class: "w-full grid md:grid-cols-2 grid-cols-1 gap-4 justify-items-center",
-                    for (i , quirk) in CHARACTER().quirks.iter().enumerate() {
-                        RenderQuirk { index: i, quirk: quirk.clone() }
-                    }
-                }
+            div { class: "grid min-[1920px]:grid-cols-1 min-[1280px]:grid-cols-1 grid-cols-1 items-start gap-2",
+                RenderQuirkCategory { category: QuirkCategory::Ethos, show: SHOWN_CATEGORIES().0 }
+                RenderQuirkCategory { category: QuirkCategory::Pathos, show: SHOWN_CATEGORIES().1 }
+                RenderQuirkCategory { category: QuirkCategory::Logos, show: SHOWN_CATEGORIES().2 }
             }
         }
 
@@ -54,48 +47,78 @@ pub(crate) fn RenderQuirks() -> Element {
 }
 
 #[component]
+fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
+    let category = Signal::new(category);
+    let has_in_category = CHARACTER()
+        .quirks
+        .iter()
+        .any(|quirk| quirk.category == category());
+    rsx! {
+        div { class: "flex flex-col w-full justify-center items-center gap-2",
+            div { class: "flex justify-center items-center flex-row flex-wrap gap-2",
+                h1 { class: "text-center text-3xl font-bold font-mono", "{category}" }
+                button {
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    onclick: move |_| {
+                        CHARACTER
+                            .write()
+                            .quirks
+                            .push(Quirk {
+                                name: "New Quirk!".into(),
+                                description: String::new(),
+                                category: category(),
+                                boons: vec![],
+                                flaws: vec![],
+                            });
+                    },
+                    "+ Add Quirk"
+                }
+                button {
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    onclick: move |_| {
+                        match category() {
+                            QuirkCategory::Ethos => SHOWN_CATEGORIES.write().0 = !SHOWN_CATEGORIES().0,
+                            QuirkCategory::Pathos => SHOWN_CATEGORIES.write().1 = !SHOWN_CATEGORIES().1,
+                            QuirkCategory::Logos => SHOWN_CATEGORIES.write().2 = !SHOWN_CATEGORIES().2,
+                            QuirkCategory::Uncategorized => {}
+                        }
+                    },
+                    if !has_in_category {
+                        "No {category} Quirks"
+                    } else if show {
+                        "Hide Quirks"
+                    } else {
+                        "Show Quirks"
+                    }
+                }
+            }
+            if show && has_in_category {
+                div { class: "grid min-[1920px]:grid-cols-1 min-[1280px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 p-3 border rounded w-full max-h-96 overflow-y-scroll gap-3",
+                    for (index , quirk) in CHARACTER()
+                        .quirks
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, quirk)| quirk.category == category())
+                    {
+                        RenderQuirk { index, quirk: quirk.clone() }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[component]
 fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
     let quirk: Signal<Quirk> = Signal::new(quirk);
     rsx! {
-        div { class: "flex flex-col w-full border border-spacing-2 p-1 rounded-lg gap-y-1",
+        div { class: "flex flex-col w-full border border-spacing-2 p-2 rounded-lg gap-y-1",
             div { class: "flex justify-center content-center items-center justify-items-center text-2xl w-full gap-x-2",
                 input {
                     class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                     r#type: "text",
                     value: "{quirk().name}",
                     oninput: move |evt| CHARACTER.write().quirks[index].name = evt.value().to_string()
-                }
-                select {
-                    class: "hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 cursor-pointer appearance-none",
-                    onchange: move |evt| {
-                        CHARACTER
-                            .with_mut(|character| {
-                                character.quirks[index].category = match evt
-                                    .value()
-                                    .parse::<usize>()
-                                    .unwrap()
-                                {
-                                    0 => QuirkCategory::Ethos,
-                                    1 => QuirkCategory::Pathos,
-                                    _ => QuirkCategory::Logos,
-                                }
-                            });
-                    },
-                    option {
-                        value: 0,
-                        selected: CHARACTER().quirks[index].category == QuirkCategory::Ethos,
-                        "Ethos"
-                    }
-                    option {
-                        value: 1,
-                        selected: CHARACTER().quirks[index].category == QuirkCategory::Pathos,
-                        "Pathos"
-                    }
-                    option {
-                        value: 2,
-                        selected: CHARACTER().quirks[index].category == QuirkCategory::Logos,
-                        "Logos"
-                    }
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
@@ -167,7 +190,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
 #[component]
 fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
     rsx! {
-        div { class: "flex gap-x-1 w-full justify-center",
+        div { class: "flex gap-x-1 w-full justify-center h-24",
             if boon {
                 textarea {
                     class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white",
