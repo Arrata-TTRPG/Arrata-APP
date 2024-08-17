@@ -17,12 +17,12 @@ use arrata_lib::{
     Quirk,
 };
 
-use dioxus::{prelude::GlobalSignal, signals::Writable};
+use dioxus::prelude::GlobalSignal;
 use reqwest::Client;
 use semver::Version;
 
 /// The `GlobalSignal` for the `Character`.
-pub static CHARACTER: GlobalSignal<Character> = GlobalSignal::new(Character::new);
+pub static CHARACTER: GlobalSignal<Character> = GlobalSignal::new(Character::default);
 /// The `GlobalSignal` for rolling dice.
 pub(crate) static DICE_ROLL_STATE: GlobalSignal<(bool, Option<Stat>)> =
     GlobalSignal::new(|| (false, None));
@@ -39,6 +39,7 @@ pub(crate) static PREMADE_QUIRKS: GlobalSignal<Vec<Quirk>> = GlobalSignal::new(V
 pub(crate) static SHOWN_CATEGORIES: GlobalSignal<(bool, bool, bool)> =
     GlobalSignal::new(|| (true, true, true));
 
+/// Loads the initial pre-made quirks from the `Arrata-Quirks` GitHub repository.
 pub(crate) async fn load_initial_quirks() {
     log::info!("Loading initial pre-made quirks");
 

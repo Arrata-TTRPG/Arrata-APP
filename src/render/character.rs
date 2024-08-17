@@ -69,8 +69,11 @@ pub(crate) fn CharacterIO() -> Element {
                                 .pick_file()
                                 .await;
                             if let Some(f) = file {
-                                let character: Character = bitcode::decode(&f.read().await).unwrap();
-                                CHARACTER.write().clone_from(&character);
+                                if let Ok(character) = bitcode::decode(&f.read().await) {
+                                    CHARACTER.write().clone_from(&character);
+                                } else {
+                                    log::error!("Failed to load character file");
+                                }
                             }
                         });
                     },

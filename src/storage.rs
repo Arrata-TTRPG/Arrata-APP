@@ -121,7 +121,12 @@ pub fn write_character(key: &str, character: &Character) {
 #[must_use]
 pub fn read_character(key: &str) -> Option<Character> {
     if let Ok(data) = &LocalStorage::get::<String>(key) {
-        Some(serde_json::from_str(data).unwrap())
+        match serde_json::from_str(data) {
+            Ok(character) => Some(character),
+            Err(e) => {
+                panic!("Failed to read character: {:#?}", e);
+            }
+        }
     } else {
         None
     }
