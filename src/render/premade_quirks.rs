@@ -43,14 +43,18 @@ pub fn RenderPremadeQuirkList() -> Element {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-mono font-bold flex px-2 h-12 items-center border rounded",
                     onclick: move |_| {
                         spawn(async move {
-                            let file = AsyncFileDialog::new()
+                            let files = AsyncFileDialog::new()
                                 .set_title("Load .quirks Quirks file")
                                 .add_filter("type", &["quirks"])
-                                .pick_file()
+                                .pick_files()
                                 .await;
-                            if let Some(f) = file {
-                                let quirks: Vec<Quirk> = bitcode::decode(&f.read().await).unwrap();
-                                PREMADE_QUIRKS.write().extend(quirks);
+                            if let Some(files) = files {
+                                for f in files {
+                                    let quirks: Vec<Quirk> = bitcode::decode(&f.read().await).unwrap();
+                                    PREMADE_QUIRKS.write().extend(quirks);
+                                }
+                                PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
+                                PREMADE_QUIRKS.write().dedup();
                             }
                         });
                     },
