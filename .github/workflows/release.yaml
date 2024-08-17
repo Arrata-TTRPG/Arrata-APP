@@ -108,11 +108,8 @@ jobs:
           toolchain: nightly
           components: rust-src
 
-      - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@main
-
-      - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm --force
+      - name: Install Dioxus-CLI
+        run: cargo install dioxus-cli --force
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
