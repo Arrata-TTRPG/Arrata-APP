@@ -11,7 +11,7 @@ use crate::{CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU};
 #[component]
 pub fn RenderPremadeQuirkList() -> Element {
     rsx! {
-        div { class: "z-10 fixed flex flex-col max-w-[80%] min-w-96 w-fit h-fit min-h-14 max-h-[90%] overflow-clip border text-white border-white bg-slate-950 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
+        div { class: "z-10 fixed flex flex-col max-w-[80%] w-fit h-fit min-h-14 max-h-[90%] border text-white border-white bg-slate-950 m-auto pr-2 left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
             div { class: "z-20 absolute right-0 top-0 p-2",
                 div {
@@ -63,7 +63,7 @@ pub fn RenderPremadeQuirkList() -> Element {
             }
 
             // Quirks
-            div { class: "flex flex-col max-h-svh gap-1 justify-center p-2",
+            div { class: "max-h-full gap-1 justify-center p-2 overflow-scroll",
                 if PREMADE_QUIRKS().is_empty() {
                     p { class: "flex font-mono text-lg gap-2 place-items-center",
                         "No premade quirks available. Save some here with the"
@@ -73,11 +73,11 @@ pub fn RenderPremadeQuirkList() -> Element {
                 }
 
                 // Split quirks into categories
-                div { class: "flex flex-col lg:flex-row gap-2",
+                div { class: "flex flex-col max-h-full lg:flex-row gap-2 overflow-y-scroll",
                     // Ethos
                     div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
                         h2 { class: "text-xl font-mono font-bold text-center", "Ethos" }
-                        div { class: "flex flex-col gap-3 overflow-auto max-h-[70vh]",
+                        div { class: "flex flex-col max-w-full gap-3 overflow-y-scroll max-h-[70vh] pr-2",
                             for (index , quirk) in PREMADE_QUIRKS()
                                 .into_iter()
                                 .enumerate()
@@ -91,7 +91,7 @@ pub fn RenderPremadeQuirkList() -> Element {
                     // Pathos
                     div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
                         h2 { class: "text-xl font-mono font-bold text-center", "Pathos" }
-                        div { class: "flex flex-col gap-3 overflow-auto max-h-[70vh]",
+                        div { class: "flex flex-col max-w-full gap-3 overflow-y-scroll max-h-[70vh] pr-2",
                             for (index , quirk) in PREMADE_QUIRKS()
                                 .into_iter()
                                 .enumerate()
@@ -105,7 +105,7 @@ pub fn RenderPremadeQuirkList() -> Element {
                     // Logos
                     div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
                         h2 { class: "text-xl font-mono font-bold text-center", "Logos" }
-                        div { class: "flex flex-col gap-3 overflow-auto max-h-[70vh]",
+                        div { class: "flex flex-col max-w-fullgap-3 overflow-y-scroll max-h-[70vh] pr-2",
                             for (index , quirk) in PREMADE_QUIRKS()
                                 .into_iter()
                                 .enumerate()
