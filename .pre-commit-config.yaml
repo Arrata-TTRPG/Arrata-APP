@@ -17,5 +17,10 @@
   hooks:
     - id: fmt
     - id: cargo-check
+      args: ['--features', 'web']
+    - id: cargo-check
+      args: ['--features', 'desktop']
     - id: clippy
       args: ['--features', 'web']
+    - id: clippy
+      args: ['--features', 'desktop']
