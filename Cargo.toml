@@ -40,7 +40,7 @@ desktop = ["dioxus/desktop"]
 web = ["dioxus/web", "getrandom/js", "dep:wasm-logger", "dep:urlencoding"]
 
 [profile.release]
-opt-level = 'z'
+opt-level = 3
 lto = true
 codegen-units = 1
 panic = "abort"
@@ -49,5 +49,5 @@ strip = true
 [profile.release.build-override]
 codegen-units = 1
 debug = false
-opt-level = "z"
+opt-level = 3
 strip = "symbols"
