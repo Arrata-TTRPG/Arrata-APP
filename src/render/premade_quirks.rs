@@ -10,8 +10,14 @@ use crate::{CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU};
 
 #[component]
 pub fn RenderPremadeQuirkList() -> Element {
+    let shown_categories = (
+        use_signal(|| true),
+        use_signal(|| true),
+        use_signal(|| true),
+    );
+
     rsx! {
-        div { class: "z-10 fixed flex flex-col max-w-[80%] w-fit h-fit min-h-14 max-h-[90%] border text-white border-white bg-slate-950 m-auto pr-2 left-0 right-0 top-0 bottom-0 rounded-lg",
+        div { class: "z-10 fixed flex flex-col max-w-[90%] w-full h-full min-h-14 max-h-[90%] border text-white border-white bg-slate-950 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
             div { class: "z-20 absolute right-0 top-0 p-2",
                 div {
@@ -73,10 +79,10 @@ pub fn RenderPremadeQuirkList() -> Element {
                 }
 
                 // Split quirks into categories
-                div { class: "flex flex-col max-h-full lg:flex-row gap-2 overflow-y-scroll",
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Ethos }
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Pathos }
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Logos }
+                div { class: "flex flex-col max-h-full lg:flex-row gap-2 overflow-y-scroll lg:pr-0 pr-4",
+                    RenderPremadeQuirkCategory { category: QuirkCategory::Ethos, shown: shown_categories.0 }
+                    RenderPremadeQuirkCategory { category: QuirkCategory::Pathos, shown: shown_categories.1 }
+                    RenderPremadeQuirkCategory { category: QuirkCategory::Logos, shown: shown_categories.2 }
                 }
             }
         }
@@ -84,18 +90,33 @@ pub fn RenderPremadeQuirkList() -> Element {
 }
 
 #[component]
-fn RenderPremadeQuirkCategory(category: QuirkCategory) -> Element {
+fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> Element {
     rsx! {
         // Logos
         div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
-            h2 { class: "text-xl font-mono font-bold text-center", "{category}" }
-            div { class: "flex flex-col max-w-fullgap-3 overflow-y-scroll max-h-[70vh] pr-2",
-                for (index , quirk) in PREMADE_QUIRKS()
-                    .into_iter()
-                    .enumerate()
-                    .filter(|(_, quirk)| quirk.category == category)
-                {
-                    RenderPremadeQuirk { index, quirk }
+            div { class: "flex flex-wrap gap-2 justify-center items-center",
+                h2 { class: "text-xl font-mono font-bold text-center", "{category}" }
+                button {
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-2 border rounded",
+                    onclick: move |_| {
+                        shown.set(!shown());
+                    },
+                    if shown() {
+                        "Hide"
+                    } else {
+                        "Show"
+                    }
+                }
+            }
+            if shown() {
+                div { class: "flex flex-col w-full h-full gap-3 overflow-y-scroll max-h-[70vh] pr-3 scroll-",
+                    for (index , quirk) in PREMADE_QUIRKS()
+                        .into_iter()
+                        .enumerate()
+                        .filter(|(_, quirk)| quirk.category == category)
+                    {
+                        RenderPremadeQuirk { index, quirk }
+                    }
                 }
             }
         }
@@ -108,7 +129,7 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
         div { class: "flex flex-col bg-slate-900 w-full h-fit p-1 border gap-2",
             // Name, add, and remove buttons
             div { class: "flex flex-wrap gap-2 justify-center place-items-center",
-                h3 { class: "text-xl font-bold", "{quirk.name}" }
+                h3 { class: "text-xl font-extrabold", "{quirk.name}" }
                 button {
                     class: "flex bg-slate-900 hover:bg-slate-700 text-white font-bold py-1 px-2 border rounded",
                     onclick: move |_| {
@@ -128,23 +149,23 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
 
             // Description
             if !quirk.description.is_empty() {
-                p { class: "font-mono text-base text-center p-1 border", "{quirk.description}" }
+                p { class: "font-mono text-base text-center px-1", "{quirk.description}" }
             }
 
             // Boons and flaws
             if !quirk.boons.is_empty() || !quirk.flaws.is_empty() {
                 div { class: "grid grid-cols-2 h-full",
-                    div { class: "flex flex-col gap-1 h-full border",
+                    div { class: "flex flex-col gap-1 h-full",
                         h4 { class: "font-mono text-lg text-center", "Boons" }
-                        ul { class: "list-disc list-inside p-1",
+                        ul { class: "list-disc list-inside items-start px-2",
                             for boon in quirk.boons.iter() {
                                 li { class: "text-sm font-mono text-wrap", "{boon}" }
                             }
                         }
                     }
-                    div { class: "flex flex-col gap-1 h-full border",
+                    div { class: "flex flex-col gap-1 h-full",
                         h4 { class: "font-mono text-lg text-center", "Flaws" }
-                        ul { class: "list-disc list-inside p-1",
+                        ul { class: "list-disc list-inside items-start px-2",
                             for flaw in quirk.flaws.iter() {
                                 li { class: "text-sm font-mono text-wrap", "{flaw}" }
                             }

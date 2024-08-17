@@ -17,7 +17,7 @@ use arrata_lib::{
     Quirk,
 };
 
-use dioxus::prelude::GlobalSignal;
+use dioxus::{prelude::GlobalSignal, signals::Writable};
 use reqwest::Client;
 use semver::Version;
 
@@ -58,6 +58,9 @@ pub(crate) async fn load_initial_quirks() {
         if let Ok(response) = response {
             let quirks: Vec<Quirk> = bitcode::decode(&response.bytes().await.unwrap()).unwrap();
             PREMADE_QUIRKS.write().extend(quirks);
+            // Add a sort and dedup to the pre-made quirks
+            PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
+            PREMADE_QUIRKS.write().dedup();
         } else {
             log::error!("Failed to load pre-made quirks from {url}{file}");
         }

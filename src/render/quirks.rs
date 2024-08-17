@@ -129,6 +129,8 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     class: "flex p-2 hover:bg-slate-700 border text-lg rounded-lg cursor-pointer",
                     onclick: move |_| {
                         PREMADE_QUIRKS.write().push(quirk());
+                        PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
+                        PREMADE_QUIRKS.write().dedup();
                     },
                     Icon { width: 25, height: 25, fill: "white", icon: BsSave }
                 }
