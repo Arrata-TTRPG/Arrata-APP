@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::{
+    load_initial_quirks,
     render::{CharacterIO, RenderCharacter, RenderRolls},
     DICE_ROLL_STATE, VERSION,
 };
@@ -14,6 +15,10 @@ pub fn App() -> Element {
     select { background-color: black; color: white; }
     option { background-color: black; color: white; }
     ";
+
+    use_future(move || async {
+        load_initial_quirks().await;
+    });
 
     #[cfg(any(feature = "web", feature = "desktop"))]
     {

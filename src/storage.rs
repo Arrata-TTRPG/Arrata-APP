@@ -128,6 +128,7 @@ pub fn read_character(key: &str) -> Option<Character> {
 }
 
 #[cfg(feature = "web")]
+#[must_use]
 pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
     if let Ok(data) = &LocalStorage::get::<String>(key) {
         Some(serde_json::from_str(data).unwrap())
