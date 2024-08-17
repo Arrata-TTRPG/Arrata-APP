@@ -213,7 +213,9 @@ fn RenderInspiration() -> Element {
                     min: 0,
                     max: i64::MAX,
                     value: "{CHARACTER().inspiration.ethos}",
-                    onchange: move |evt| CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0)
+                    onchange: move |evt| {
+                        CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0);
+                    }
                 }
             }
             div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
@@ -224,7 +226,9 @@ fn RenderInspiration() -> Element {
                     min: 0,
                     max: i64::MAX,
                     value: "{CHARACTER().inspiration.pathos}",
-                    onchange: move |evt| CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0)
+                    onchange: move |evt| {
+                        CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0);
+                    }
                 }
             }
             div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
@@ -235,7 +239,9 @@ fn RenderInspiration() -> Element {
                     min: 0,
                     max: i64::MAX,
                     value: "{CHARACTER().inspiration.logos}",
-                    onchange: move |evt| CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0)
+                    onchange: move |evt| {
+                        CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0);
+                    }
                 }
             }
         }

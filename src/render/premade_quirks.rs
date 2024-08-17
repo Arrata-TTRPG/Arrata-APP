@@ -74,47 +74,28 @@ pub fn RenderPremadeQuirkList() -> Element {
 
                 // Split quirks into categories
                 div { class: "flex flex-col max-h-full lg:flex-row gap-2 overflow-y-scroll",
-                    // Ethos
-                    div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
-                        h2 { class: "text-xl font-mono font-bold text-center", "Ethos" }
-                        div { class: "flex flex-col max-w-full gap-3 overflow-y-scroll max-h-[70vh] pr-2",
-                            for (index , quirk) in PREMADE_QUIRKS()
-                                .into_iter()
-                                .enumerate()
-                                .filter(|(_, quirk)| quirk.category == QuirkCategory::Ethos)
-                            {
-                                RenderPremadeQuirk { index, quirk }
-                            }
-                        }
-                    }
+                    RenderPremadeQuirkCategory { category: QuirkCategory::Ethos }
+                    RenderPremadeQuirkCategory { category: QuirkCategory::Pathos }
+                    RenderPremadeQuirkCategory { category: QuirkCategory::Logos }
+                }
+            }
+        }
+    }
+}
 
-                    // Pathos
-                    div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
-                        h2 { class: "text-xl font-mono font-bold text-center", "Pathos" }
-                        div { class: "flex flex-col max-w-full gap-3 overflow-y-scroll max-h-[70vh] pr-2",
-                            for (index , quirk) in PREMADE_QUIRKS()
-                                .into_iter()
-                                .enumerate()
-                                .filter(|(_, quirk)| quirk.category == QuirkCategory::Pathos)
-                            {
-                                RenderPremadeQuirk { index, quirk }
-                            }
-                        }
-                    }
-
-                    // Logos
-                    div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
-                        h2 { class: "text-xl font-mono font-bold text-center", "Logos" }
-                        div { class: "flex flex-col max-w-fullgap-3 overflow-y-scroll max-h-[70vh] pr-2",
-                            for (index , quirk) in PREMADE_QUIRKS()
-                                .into_iter()
-                                .enumerate()
-                                .filter(|(_, quirk)| quirk.category == QuirkCategory::Logos)
-                            {
-                                RenderPremadeQuirk { index, quirk }
-                            }
-                        }
-                    }
+#[component]
+fn RenderPremadeQuirkCategory(category: QuirkCategory) -> Element {
+    rsx! {
+        // Logos
+        div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
+            h2 { class: "text-xl font-mono font-bold text-center", "{category}" }
+            div { class: "flex flex-col max-w-fullgap-3 overflow-y-scroll max-h-[70vh] pr-2",
+                for (index , quirk) in PREMADE_QUIRKS()
+                    .into_iter()
+                    .enumerate()
+                    .filter(|(_, quirk)| quirk.category == category)
+                {
+                    RenderPremadeQuirk { index, quirk }
                 }
             }
         }
