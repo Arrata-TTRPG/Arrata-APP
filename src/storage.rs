@@ -51,9 +51,9 @@ pub fn read_character(name: &str) -> Option<Character> {
 }
 
 #[cfg(feature = "desktop")]
-pub fn write_quirks(quirks: Vec<Quirk>, key: &str) {
+pub fn write_quirks(quirks: &[Quirk], key: &str) {
     if let Some(path) = LOCATION.get() {
-        let data = bitcode::encode(&quirks);
+        let data = bitcode::encode(quirks);
         let quirk_file = format!("{key}.arrata");
         let file_path = path.join(quirk_file);
         if let Ok(file) = std::fs::write(file_path, data) {
@@ -124,7 +124,8 @@ pub fn read_character(key: &str) -> Option<Character> {
         match serde_json::from_str(data) {
             Ok(character) => Some(character),
             Err(e) => {
-                panic!("Failed to read character: {:#?}", e);
+                log::error!("Failed to read character: {:#?}", e);
+                None
             }
         }
     } else {
@@ -132,6 +133,19 @@ pub fn read_character(key: &str) -> Option<Character> {
     }
 }
 
+/// Reads the pre-made quirks from the persistent storage.
+///
+/// # Arguments
+///
+/// * `key` - The key to read the pre-made quirks from.
+///
+/// # Returns
+///
+/// * `Option<Vec<Quirk>>` - The pre-made quirks. `None` if an error occured.
+///
+/// # Panics
+///
+/// This function will panic if the pre-made quirks could not be read from the persistent storage.
 #[cfg(feature = "web")]
 #[must_use]
 pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
@@ -142,8 +156,17 @@ pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
     }
 }
 
+/// Writes the pre-made quirks to the persistent storage.
+///
+/// # Arguments
+///
+/// * `quirks` - The pre-made quirks to write.
+///
+/// # Panics
+///
+/// Panics if the pre-made quirks cannot be written to a `String` by `serde_json`.
 #[cfg(feature = "web")]
-pub fn write_quirks(quirks: Vec<Quirk>, key: &str) {
+pub fn write_quirks(quirks: &[Quirk], key: &str) {
     let quirks = serde_json::to_string(&quirks).unwrap();
     LocalStorage::set(key, quirks).unwrap();
 }

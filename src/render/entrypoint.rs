@@ -48,7 +48,7 @@ pub fn App() -> Element {
             // Save the pre-made Quirks on edit
             use_effect(move || {
                 let quirks = PREMADE_QUIRKS();
-                write_quirks(quirks, key.as_str());
+                write_quirks(&quirks, key.as_str());
             });
         });
     }
