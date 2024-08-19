@@ -33,7 +33,7 @@ pub(crate) fn RenderQuirks() -> Element {
                 }
             }
 
-            div { class: "grid min-[1920px]:grid-cols-1 min-[1280px]:grid-cols-1 grid-cols-1 items-start gap-2",
+            div { class: "grid min-[1280px]:grid-cols-1 min-[1200px]:grid-cols-3 grid-cols-1 items-start gap-2",
                 RenderQuirkCategory { category: QuirkCategory::Ethos, show: SHOWN_CATEGORIES().0 }
                 RenderQuirkCategory { category: QuirkCategory::Pathos, show: SHOWN_CATEGORIES().1 }
                 RenderQuirkCategory { category: QuirkCategory::Logos, show: SHOWN_CATEGORIES().2 }
@@ -93,7 +93,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                 }
             }
             if show && has_in_category {
-                div { class: "grid min-[1920px]:grid-cols-1 min-[1280px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 p-3 border rounded w-full max-h-96 overflow-y-scroll gap-3",
+                div { class: "flex flex-wrap p-3 border rounded w-full max-h-96 overflow-y-scroll gap-3",
                     for (index , quirk) in CHARACTER()
                         .quirks
                         .iter()
@@ -112,7 +112,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
 fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
     let quirk: Signal<Quirk> = Signal::new(quirk);
     rsx! {
-        div { class: "flex flex-col w-full border border-spacing-2 p-2 rounded-lg gap-y-1",
+        div { class: "flex flex-1 flex-col w-full md:w-1/2 border border-spacing-2 p-2 rounded-lg gap-1",
             div { class: "flex justify-center content-center items-center justify-items-center text-2xl w-full gap-x-2",
                 input {
                     class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
