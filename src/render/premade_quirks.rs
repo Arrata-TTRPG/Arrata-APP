@@ -17,7 +17,7 @@ pub fn RenderPremadeQuirkList() -> Element {
     );
 
     rsx! {
-        div { class: "z-10 fixed flex flex-col max-w-[90%] w-full h-full min-h-14 max-h-[90%] border text-white border-white bg-slate-950 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
+        div { class: "z-10 fixed flex flex-col max-w-[90%] w-full min-h-14 h-[90%] border text-white border-white bg-slate-950 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
             div { class: "z-20 absolute right-0 top-0 p-2",
                 div {
@@ -69,7 +69,7 @@ pub fn RenderPremadeQuirkList() -> Element {
             }
 
             // Quirks
-            div { class: "max-h-full gap-1 justify-center p-2 overflow-scroll",
+            div { class: "h-full gap-1 justify-center p-2 overflow-scroll",
                 if PREMADE_QUIRKS().is_empty() {
                     p { class: "flex font-mono text-lg gap-2 place-items-center",
                         "No premade quirks available. Save some here with the"
@@ -79,7 +79,7 @@ pub fn RenderPremadeQuirkList() -> Element {
                 }
 
                 // Split quirks into categories
-                div { class: "flex flex-col max-h-full lg:flex-row gap-2 overflow-y-scroll lg:pr-0 pr-4",
+                div { class: "flex flex-col h-full lg:flex-row gap-2 overflow-y-scroll lg:pr-0 pr-4",
                     RenderPremadeQuirkCategory { category: QuirkCategory::Ethos, shown: shown_categories.0 }
                     RenderPremadeQuirkCategory { category: QuirkCategory::Pathos, shown: shown_categories.1 }
                     RenderPremadeQuirkCategory { category: QuirkCategory::Logos, shown: shown_categories.2 }
@@ -93,7 +93,7 @@ pub fn RenderPremadeQuirkList() -> Element {
 fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> Element {
     rsx! {
         // Logos
-        div { class: "flex flex-col gap-2 border rounded-lg p-1 w-full",
+        div { class: "flex flex-col lg:h-full h-4/6 gap-2 border rounded-lg p-1 w-full",
             div { class: "flex flex-wrap gap-2 justify-center items-center",
                 h2 { class: "text-xl font-mono font-bold text-center", "{category}" }
                 button {
@@ -109,7 +109,7 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
                 }
             }
             if shown() {
-                div { class: "flex flex-col w-full h-full gap-3 overflow-y-scroll max-h-[70vh] pr-3 scroll-",
+                div { class: "flex flex-col w-full max-h-full gap-3 overflow-y-scroll pr-3",
                     for (index , quirk) in PREMADE_QUIRKS()
                         .into_iter()
                         .enumerate()
