@@ -93,7 +93,7 @@ pub fn RenderPremadeQuirkList() -> Element {
 fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> Element {
     rsx! {
         // Logos
-        div { class: "flex flex-col lg:h-full h-4/6 gap-2 border rounded-lg p-1 w-full",
+        div { class: "flex flex-col lg:h-full h-2/3 gap-2 border rounded-lg p-1 w-full",
             div { class: "flex flex-wrap gap-2 justify-center items-center",
                 h2 { class: "text-xl font-mono font-bold text-center", "{category}" }
                 button {

@@ -15,7 +15,7 @@ pub(crate) fn RenderRolls() -> Element {
     let mut advantage = use_signal(|| 0);
     let mut disadvantage = use_signal(|| 0);
     rsx! {
-        div { class: "z-10 fixed flex justify-center content-center max-w-[80%] w-96 h-fit border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
+        div { class: "z-10 fixed flex justify-center content-center max-w-[80%] max-h-[80%] h-fit w-96 border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
             // Close button
             div { class: "z-20 absolute right-0 p-2",
                 div {
@@ -30,7 +30,7 @@ pub(crate) fn RenderRolls() -> Element {
                     Icon { width: 35, height: 35, fill: "red", icon: BsX }
                 }
             }
-            div { class: "content-center justify-items-center",
+            div { class: "flex flex-col max-h-full content-center justify-items-center",
                 // Stat
                 div { class: "content-center",
                     // Stat Name
@@ -93,7 +93,7 @@ pub(crate) fn RenderRolls() -> Element {
                 }
 
                 if let Some(results) = dice_results() {
-                    div { class: "font-mono justify-center pb-1",
+                    div { class: "flex flex-col font-mono justify-center max-h-full overflow-y-hidden",
                         div { class: "flex justify-center",
                             // Successes
                             div { class: "text-center text-green-600 p-2",
@@ -104,7 +104,7 @@ pub(crate) fn RenderRolls() -> Element {
                         }
                         div { class: "p-2 text-lg text-center", "Results" }
                         // Results
-                        div { class: "p-1 flex flex-wrap w-full content-around gap-1 justify-center text-center border bg-slate-900",
+                        div { class: "p-1 overflow-y-scroll max-h-full flex flex-wrap w-full content-around gap-1 justify-center items-start text-center border rounded bg-slate-900",
                             for r in results.results.iter() {
                                 div {
                                     class: format!(
