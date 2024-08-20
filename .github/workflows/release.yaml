@@ -112,7 +112,7 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
 
       - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm --force
+        run: cargo binstall dioxus-cli --no-confirm
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
@@ -187,7 +187,7 @@ jobs:
       uses: cargo-bins/cargo-binstall@main
 
     - name: Binstall Dioxus-CLI
-      run: cargo binstall dioxus-cli --no-confirm --force
+      run: cargo binstall dioxus-cli --no-confirm
 
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3

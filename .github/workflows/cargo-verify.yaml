@@ -45,7 +45,7 @@ jobs:
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Install Dioxus-CLI
-        run: cargo install dioxus-cli --force
+        run: cargo install dioxus-cli
       - name: dx build
         run: dx build --platform desktop
       - name: Cargo Check
@@ -68,10 +68,8 @@ jobs:
         toolchain: nightly
         components: rustfmt, clippy
         target: x86_64-pc-windows-msvc
-    - name: Install cargo-binstall
-      uses: cargo-bins/cargo-binstall@main
-    - name: Binstall Dioxus-CLI
-      run: cargo binstall dioxus-cli --no-confirm --force
+    - name: Install Dioxus-CLI
+      run: cargo install dioxus-cli
     - name: dx build
       run: dx build --platform desktop
     - name: Cargo Check
@@ -94,7 +92,7 @@ jobs:
           toolchain: nightly
           components: rustfmt, clippy
           target: wasm32-unknown-unknown
-      - name: Binstall Dioxus-CLI
+      - name: Install Dioxus-CLI
         run: cargo install dioxus-cli
       - name: dx build
         run: dx build --platform web
