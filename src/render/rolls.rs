@@ -27,7 +27,12 @@ pub(crate) fn RenderRolls() -> Element {
                                 state.1 = None;
                             });
                     },
-                    Icon { width: 35, height: 35, fill: "red", icon: BsX }
+                    Icon {
+                        width: 35,
+                        height: 35,
+                        fill: "red",
+                        icon: BsX,
+                    }
                 }
             }
             // Stat Name
@@ -61,7 +66,7 @@ pub(crate) fn RenderRolls() -> Element {
                             value: "{advantage()}",
                             min: 0,
                             max: i64::MAX,
-                            oninput: move |evt| advantage.set(evt.value().parse::<usize>().unwrap_or(0))
+                            oninput: move |evt| advantage.set(evt.value().parse::<usize>().unwrap_or(0)),
                         }
                     }
                 }
@@ -74,7 +79,7 @@ pub(crate) fn RenderRolls() -> Element {
                             value: "{disadvantage()}",
                             min: 0,
                             max: i64::MAX,
-                            oninput: move |evt| disadvantage.set(evt.value().parse::<usize>().unwrap_or(0))
+                            oninput: move |evt| disadvantage.set(evt.value().parse::<usize>().unwrap_or(0)),
                         }
                     }
                 }
@@ -84,9 +89,7 @@ pub(crate) fn RenderRolls() -> Element {
                 div { class: "flex flex-col font-mono justify-center max-h-full overflow-y-hidden pt-2",
                     div { class: "flex justify-center",
                         // Successes
-                        div { class: "text-center text-green-600 p-2",
-                            "Successes: {results.successes}"
-                        }
+                        div { class: "text-center text-green-600 p-2", "Successes: {results.successes}" }
                         // Failures
                         div { class: "text-center text-red-600 p-2", "Failures: {results.failures}" }
                     }

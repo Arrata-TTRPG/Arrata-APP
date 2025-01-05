@@ -6,6 +6,9 @@ use crate::{
     DICE_ROLL_STATE, VERSION,
 };
 
+const TAILWIND_CSS: Asset = asset!("public/tailwind.css");
+const RAT_RELEASE: Asset = asset!("public/rat_release.svg");
+
 /// The main application.
 #[component]
 pub fn App() -> Element {
@@ -55,36 +58,36 @@ pub fn App() -> Element {
 
     rsx! {
         style { "{arrata_style}" }
-        link { rel: "stylesheet", href: "tailwind.css" }
-
-        div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full gap-4",
-            // Arrata logo
-            object {
-                class: "object-fill med:w-[9rem] med:h-[9rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
-                data: "rat_release.svg",
-                r#type: "image/svg+xml",
-                img { class: "object-fit", src: "rat_release.svg" }
-            }
-
-            // Title and version
-            div { class: "flex flex-row items-baseline",
-                h1 { class: "text-center md:text-9xl sm:text-8xl text-7xl font-mono font-extrabold align-bottom",
-                    "ARRATA"
+        link { rel: "stylesheet", href: TAILWIND_CSS }
+        div { class: "w-screen h-screen",
+            div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full gap-4",
+                // Arrata logo
+                object {
+                    class: "object-fill med:w-[9rem] med:h-[9rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
+                    r#type: "image/svg+xml",
+                    img { class: "object-fit", src: RAT_RELEASE }
                 }
 
-                p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs",
-                    "v{VERSION()}"
+                // Title and version
+                div { class: "flex flex-row items-baseline",
+                    h1 { class: "text-center md:text-9xl sm:text-8xl text-7xl font-mono font-extrabold align-bottom",
+                        "ARRATA"
+                    }
+
+                    p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs",
+                        "v{VERSION()}"
+                    }
                 }
             }
-        }
 
-        CharacterIO {}
+            CharacterIO {}
 
-        RenderCharacter {}
+            RenderCharacter {}
 
-        if DICE_ROLL_STATE().0 {
-            if let Some(_) = DICE_ROLL_STATE().1 {
-                RenderRolls {}
+            if DICE_ROLL_STATE().0 {
+                if let Some(_) = DICE_ROLL_STATE().1 {
+                    RenderRolls {}
+                }
             }
         }
     }

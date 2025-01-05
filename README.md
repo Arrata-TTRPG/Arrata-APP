@@ -66,7 +66,6 @@ To compile and run the desktop version, `cd` into `Arrata-APP` and run `cargo ru
   - [ ] Discord integration(?)
 - [ ] Allow exporting into a printable format
 
-
 ## Troubleshooting
 
 If you're on Linux and encounter the app being blank and/or the message: `AcceleratedSurfaceDMABuf was unable to construct a complete framebuffer`,

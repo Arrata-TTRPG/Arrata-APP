@@ -16,7 +16,7 @@ pub(crate) fn RenderCharacter() -> Element {
                 input {
                     class: "border-spacing-1 border rounded-lg p-2 text-center sm:flex-grow-0 flex-grow",
                     value: "{CHARACTER().name}",
-                    oninput: move |evt| CHARACTER.write().name = evt.value()
+                    oninput: move |evt| CHARACTER.write().name = evt.value(),
                 }
             }
             div { class: "flex sm:w-fit w-full",
@@ -24,12 +24,12 @@ pub(crate) fn RenderCharacter() -> Element {
                 input {
                     class: "border-spacing-1 border rounded-lg p-2 text-center sm:flex-grow-0 flex-grow",
                     value: "{CHARACTER().stock}",
-                    oninput: move |evt| CHARACTER.write().stock = evt.value()
+                    oninput: move |evt| CHARACTER.write().stock = evt.value(),
                 }
             }
         }
 
-        div { class: "flex flex-wrap pt-4",
+        div { class: "flex flex-grow flex-wrap pt-4 pb-4",
             RenderStats {}
             RenderQuirks {}
             RenderInventory {}

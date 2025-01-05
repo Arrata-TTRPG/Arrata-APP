@@ -26,7 +26,7 @@ pub(crate) fn RenderInventory() -> Element {
                             class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                             r#type: "text",
                             value: "{item.name}",
-                            oninput: move |evt| CHARACTER.write().inventory[i].name = evt.value().to_string()
+                            oninput: move |evt| CHARACTER.write().inventory[i].name = evt.value().to_string(),
                         }
                         div {
                             input {
@@ -41,13 +41,18 @@ pub(crate) fn RenderInventory() -> Element {
                                                 .parse::<usize>()
                                                 .unwrap_or(0);
                                         });
-                                }
+                                },
                             }
                         }
                         button {
                             class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
                             onclick: move |_| std::mem::drop(CHARACTER.write().inventory.remove(i)),
-                            Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                            Icon {
+                                width: 25,
+                                height: 25,
+                                fill: "white",
+                                icon: BsTrash,
+                            }
                         }
                     }
                 }

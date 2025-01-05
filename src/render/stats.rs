@@ -53,7 +53,12 @@ fn RenderCoreStats() -> Element {
                                             state.1 = Some(CHARACTER().stats[i].clone());
                                         });
                                 },
-                                Icon { width: 45, height: 45, fill: "white", icon: BsDice6 }
+                                Icon {
+                                    width: 45,
+                                    height: 45,
+                                    fill: "white",
+                                    icon: BsDice6,
+                                }
                             }
                         }
                         div { class: "inline-flex w-full h-full justify-center items-center space-x-2",
@@ -97,7 +102,7 @@ fn RenderCoreStats() -> Element {
                                         .with_mut(|character| {
                                             character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
                                         });
-                                }
+                                },
                             }
                             div { class: "font-mono text-lg align-middle h-fit", "Checks:" }
                             input {
@@ -113,7 +118,7 @@ fn RenderCoreStats() -> Element {
                                                 evt.value().parse::<usize>().unwrap_or(0),
                                             );
                                         });
-                                }
+                                },
                             }
                         }
                     }
@@ -147,7 +152,7 @@ fn RenderSkills() -> Element {
                                 value: "{skill.name}",
                                 oninput: move |evt| {
                                     CHARACTER.write().skills[i].name = evt.value().to_string();
-                                }
+                                },
                             }
                             button {
                                 class: "bg-slate-900 hover:bg-slate-600",
@@ -158,14 +163,24 @@ fn RenderSkills() -> Element {
                                             state.1 = Some(CHARACTER().skills[i].clone());
                                         });
                                 },
-                                Icon { width: 45, height: 45, fill: "white", icon: BsDice6 }
+                                Icon {
+                                    width: 45,
+                                    height: 45,
+                                    fill: "white",
+                                    icon: BsDice6,
+                                }
                             }
                             button {
                                 class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
                                 onclick: move |_| {
                                     std::mem::drop(CHARACTER.write().skills.remove(i));
                                 },
-                                Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                                Icon {
+                                    width: 25,
+                                    height: 25,
+                                    fill: "white",
+                                    icon: BsTrash,
+                                }
                             }
                         }
                         div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
@@ -209,7 +224,7 @@ fn RenderSkills() -> Element {
                                         .with_mut(|character| {
                                             character.skills[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
                                         });
-                                }
+                                },
                             }
                             div { class: "font-mono text-lg", "Checks:" }
                             input {
@@ -225,7 +240,7 @@ fn RenderSkills() -> Element {
                                                 evt.value().parse::<usize>().unwrap_or(0),
                                             );
                                         });
-                                }
+                                },
                             }
                         }
                     }
@@ -315,8 +330,8 @@ fn RenderResources() -> Element {
 
 #[component]
 fn RenderResource(index: usize) -> Element {
-    if let Some(r) = CHARACTER().resources.get(index) {
-        rsx! {
+    rsx! {
+        if let Some(r) = CHARACTER().resources.get(index) {
             div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
                 div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                     input {
@@ -325,7 +340,7 @@ fn RenderResource(index: usize) -> Element {
                         value: "{r.stat.name}",
                         oninput: move |evt| {
                             CHARACTER.write().resources[index].stat.name = evt.value().to_string();
-                        }
+                        },
                     }
                     button {
                         class: "bg-slate-900 hover:bg-slate-600",
@@ -336,14 +351,24 @@ fn RenderResource(index: usize) -> Element {
                                     state.1 = Some(CHARACTER().resources[index].stat.clone());
                                 });
                         },
-                        Icon { width: 45, height: 45, fill: "white", icon: BsDice6 }
+                        Icon {
+                            width: 45,
+                            height: 45,
+                            fill: "white",
+                            icon: BsDice6,
+                        }
                     }
                     button {
                         class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
                         onclick: move |_| {
                             std::mem::drop(CHARACTER.write().resources.remove(index));
                         },
-                        Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                        Icon {
+                            width: 25,
+                            height: 25,
+                            fill: "white",
+                            icon: BsTrash,
+                        }
                     }
                 }
                 div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
@@ -393,7 +418,7 @@ fn RenderResource(index: usize) -> Element {
                                         .parse::<usize>()
                                         .unwrap_or(0);
                                 });
-                        }
+                        },
                     }
                     div { class: "font-mono text-lg", "Checks:" }
                     input {
@@ -409,12 +434,10 @@ fn RenderResource(index: usize) -> Element {
                                         evt.value().parse::<usize>().unwrap_or(0),
                                     );
                                 });
-                        }
+                        },
                     }
                 }
             }
         }
-    } else {
-        None
     }
 }

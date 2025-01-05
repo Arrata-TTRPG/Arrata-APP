@@ -23,7 +23,12 @@ pub fn RenderPremadeQuirkList() -> Element {
                 div {
                     class: "bg-slate-950 hover:bg-slate-700 rounded cursor-pointer",
                     onclick: move |_| *PREMADE_QUIRKS_MENU.write() = false,
-                    Icon { width: 35, height: 35, fill: "red", icon: BsX }
+                    Icon {
+                        width: 35,
+                        height: 35,
+                        fill: "red",
+                        icon: BsX,
+                    }
                 }
             }
 
@@ -73,16 +78,31 @@ pub fn RenderPremadeQuirkList() -> Element {
                 if PREMADE_QUIRKS().is_empty() {
                     p { class: "flex font-mono text-lg gap-2 place-items-center",
                         "No premade quirks available. Save some here with the"
-                        Icon { width: 18, height: 18, fill: "white", icon: BsSave }
+                        Icon {
+                            width: 18,
+                            height: 18,
+                            fill: "white",
+                            icon: BsSave,
+                        }
+                        "save"
                         "button."
                     }
                 }
 
                 // Split quirks into categories
                 div { class: "flex flex-col h-full lg:flex-row gap-2 overflow-y-scroll lg:pr-0 pr-4",
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Ethos, shown: shown_categories.0 }
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Pathos, shown: shown_categories.1 }
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Logos, shown: shown_categories.2 }
+                    RenderPremadeQuirkCategory {
+                        category: QuirkCategory::Ethos,
+                        shown: shown_categories.0,
+                    }
+                    RenderPremadeQuirkCategory {
+                        category: QuirkCategory::Pathos,
+                        shown: shown_categories.1,
+                    }
+                    RenderPremadeQuirkCategory {
+                        category: QuirkCategory::Logos,
+                        shown: shown_categories.2,
+                    }
                 }
             }
         }
@@ -126,7 +146,9 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
 #[component]
 fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
     rsx! {
-        div { class: "flex flex-col bg-slate-900 w-full h-fit p-1 border gap-2",
+        div {
+            class: "flex flex-col bg-slate-900 w-full h-fit p-1 border gap-2",
+            key: index,
             // Name, add, and remove buttons
             div { class: "flex flex-wrap gap-2 justify-center place-items-center",
                 h3 { class: "text-xl font-extrabold", "{quirk.name}" }
@@ -143,7 +165,12 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-1 border rounded-lg",
                     onclick: move |_| std::mem::drop(PREMADE_QUIRKS.write().remove(index)),
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
             }
 
@@ -158,16 +185,24 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                     div { class: "flex flex-col gap-1 h-full",
                         h4 { class: "font-mono text-lg text-center", "Boons" }
                         ul { class: "list-disc list-inside items-start px-2",
-                            for boon in quirk.boons.iter() {
-                                li { class: "text-sm font-mono text-wrap", "{boon}" }
+                            for (index , boon) in quirk.boons.iter().enumerate() {
+                                li {
+                                    key: "{index}",
+                                    class: "text-sm font-mono text-wrap",
+                                    "{boon}"
+                                }
                             }
                         }
                     }
                     div { class: "flex flex-col gap-1 h-full",
                         h4 { class: "font-mono text-lg text-center", "Flaws" }
                         ul { class: "list-disc list-inside items-start px-2",
-                            for flaw in quirk.flaws.iter() {
-                                li { class: "text-sm font-mono text-wrap", "{flaw}" }
+                            for (index , flaw) in quirk.flaws.iter().enumerate() {
+                                li {
+                                    key: "{index}",
+                                    class: "text-sm font-mono text-wrap",
+                                    "{flaw}"
+                                }
                             }
                         }
                     }

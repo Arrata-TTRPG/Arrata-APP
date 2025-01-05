@@ -1,11 +1,7 @@
-﻿[application]
+[application]
 
 # App (Project) Name
-name = "Arrata Character Sheet Manager"
-
-# Dioxus App Default Platform
-# desktop, web, mobile, ssr
-default_platform = "desktop"
+name = "arrata-app"
 
 # `build` & `serve` dist path
 out_dir = "dist"

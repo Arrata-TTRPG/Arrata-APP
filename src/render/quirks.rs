@@ -17,7 +17,7 @@ pub(crate) fn RenderQuirks() -> Element {
             textarea {
                 class: "rounded-lg w-full p-2 bg-black resize-none h-fit text-slate-600 font-mono border border-white text-center",
                 value: "{CHARACTER().argos}",
-                oninput: move |evt| CHARACTER.write().argos = evt.value().to_string()
+                oninput: move |evt| CHARACTER.write().argos = evt.value().to_string(),
             }
 
             RenderInspiration {}
@@ -34,9 +34,18 @@ pub(crate) fn RenderQuirks() -> Element {
             }
 
             div { class: "grid min-[1280px]:grid-cols-1 min-[1200px]:grid-cols-3 grid-cols-1 items-start gap-2",
-                RenderQuirkCategory { category: QuirkCategory::Ethos, show: SHOWN_CATEGORIES().0 }
-                RenderQuirkCategory { category: QuirkCategory::Pathos, show: SHOWN_CATEGORIES().1 }
-                RenderQuirkCategory { category: QuirkCategory::Logos, show: SHOWN_CATEGORIES().2 }
+                RenderQuirkCategory {
+                    category: QuirkCategory::Ethos,
+                    show: SHOWN_CATEGORIES().0,
+                }
+                RenderQuirkCategory {
+                    category: QuirkCategory::Pathos,
+                    show: SHOWN_CATEGORIES().1,
+                }
+                RenderQuirkCategory {
+                    category: QuirkCategory::Logos,
+                    show: SHOWN_CATEGORIES().2,
+                }
             }
         }
 
@@ -118,12 +127,17 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                     r#type: "text",
                     value: "{quirk().name}",
-                    oninput: move |evt| CHARACTER.write().quirks[index].name = evt.value().to_string()
+                    oninput: move |evt| CHARACTER.write().quirks[index].name = evt.value().to_string(),
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
                     onclick: move |_| std::mem::drop(CHARACTER.write().quirks.remove(index)),
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
                 button {
                     class: "flex p-2 hover:bg-slate-700 border text-lg rounded-lg cursor-pointer",
@@ -132,7 +146,12 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                         PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
                         PREMADE_QUIRKS.write().dedup();
                     },
-                    Icon { width: 25, height: 25, fill: "white", icon: BsSave }
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsSave,
+                    }
                 }
             }
             div { class: "flex border justify-center content-center items-center justify-items-center",
@@ -144,7 +163,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                             .with_mut(|character| {
                                 character.quirks[index].description = evt.value().to_string();
                             });
-                    }
+                    },
                 }
             }
             div { class: "grid grid-cols-2 p-1 gap-1",
@@ -197,27 +216,37 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                 textarea {
                     class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white",
                     value: "{CHARACTER().quirks[quirk].boons[index]}",
-                    oninput: move |evt| CHARACTER.write().quirks[quirk].boons[index] = evt.value().to_string()
+                    oninput: move |evt| CHARACTER.write().quirks[quirk].boons[index] = evt.value().to_string(),
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().quirks[quirk].boons.remove(index));
                     },
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
             } else {
                 textarea {
                     class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white",
                     value: "{CHARACTER().quirks[quirk].flaws[index]}",
-                    oninput: move |evt| CHARACTER.write().quirks[quirk].flaws[index] = evt.value().to_string()
+                    oninput: move |evt| CHARACTER.write().quirks[quirk].flaws[index] = evt.value().to_string(),
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().quirks[quirk].flaws.remove(index));
                     },
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
             }
         }
@@ -240,7 +269,7 @@ fn RenderInspiration() -> Element {
                     value: "{CHARACTER().inspiration.ethos}",
                     onchange: move |evt| {
                         CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0);
-                    }
+                    },
                 }
             }
             div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
@@ -253,7 +282,7 @@ fn RenderInspiration() -> Element {
                     value: "{CHARACTER().inspiration.pathos}",
                     onchange: move |evt| {
                         CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0);
-                    }
+                    },
                 }
             }
             div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
@@ -266,7 +295,7 @@ fn RenderInspiration() -> Element {
                     value: "{CHARACTER().inspiration.logos}",
                     onchange: move |evt| {
                         CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0);
-                    }
+                    },
                 }
             }
         }
