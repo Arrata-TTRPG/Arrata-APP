@@ -138,20 +138,20 @@ jobs:
 
       - name: Prepare release
         run: |
-          strip dist/${{ env.EXECUTABLE_NAME }}
-          chmod +x dist/${{ env.EXECUTABLE_NAME }}
+          strip target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
+          chmod +x target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
 
       - name: UPX compress
         uses: crazy-max/ghaction-upx@v3
         with:
           version: latest
           files: |
-            dist/${{ env.EXECUTABLE_NAME }}
-          args: -fq9
+            target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
+          args: --best --lzma
 
       - name: Bundle release
         run: |
-          cd dist
+          cd target/dx/arrata_app
           tar -czf ../${{ env.EXECUTABLE_NAME }}_linux.tar.gz *
 
       - name: Upload release
@@ -216,13 +216,13 @@ jobs:
       with:
         version: latest
         files: |
-          dist/${{ env.EXECUTABLE_NAME }}
+          target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
         args: -fq9
 
     - name: Zip release
       uses: vimtor/action-zip@v1
       with:
-        files: dist
+        files: target/dx/arrata_app
         dest: ${{ env.EXECUTABLE_NAME }}_windows.zip
         recursive: true
 
@@ -292,7 +292,7 @@ jobs:
       - name: Create WASM with Dioxus CLI
         run: |
           dx build --release --platform web
-          mv dist docs
+          mv target/dx/arrata_app docs
 
       - name: Deploy to GH Pages
         uses: JamesIves/github-pages-deploy-action@v4
