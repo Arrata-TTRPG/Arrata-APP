@@ -60,7 +60,7 @@ jobs:
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm
+        run: cargo binstall dioxus-cli --no-confirm --force
       - name: dx build
         run: dx build --platform desktop
       - name: Cargo Check
@@ -102,7 +102,7 @@ jobs:
     - name: Install cargo-binstall
       uses: cargo-bins/cargo-binstall@main
     - name: Binstall Dioxus-CLI
-      run: cargo binstall dioxus-cli --no-confirm
+      run: cargo binstall dioxus-cli --no-confirm --force
     - name: dx build
       run: dx build --platform desktop
     - name: Cargo Check
@@ -119,6 +119,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libsoup2.4 javascriptcoregtk-4.0 -y
+          sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev -y
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
@@ -129,7 +134,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -142,12 +146,7 @@ jobs:
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libsoup2.4 javascriptcoregtk-4.0 -y
-          sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev -y
+        run: cargo binstall dioxus-cli --no-confirm --force
       - name: dx build
         run: dx build --platform web
       - name: Cargo Check
