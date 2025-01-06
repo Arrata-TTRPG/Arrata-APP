@@ -151,7 +151,7 @@ jobs:
 
       - name: Bundle release
         run: |
-          cd target/dx/arrata_app
+          cd target/dx/arrata_app/release/linux
           tar -czf ../${{ env.EXECUTABLE_NAME }}_linux.tar.gz *
 
       - name: Upload release
@@ -217,12 +217,12 @@ jobs:
         version: latest
         files: |
           target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
-        args: -fq9
+        args: --best --lzma
 
     - name: Zip release
       uses: vimtor/action-zip@v1
       with:
-        files: target/dx/arrata_app
+        files: target/dx/arrata_app/release/windows
         dest: ${{ env.EXECUTABLE_NAME }}_windows.zip
         recursive: true
 
@@ -292,7 +292,7 @@ jobs:
       - name: Create WASM with Dioxus CLI
         run: |
           dx build --release --platform web
-          mv target/dx/arrata_app docs
+          mv target/dx/arrata_app/release/web/public docs
 
       - name: Deploy to GH Pages
         uses: JamesIves/github-pages-deploy-action@v4
