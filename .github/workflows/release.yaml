@@ -138,21 +138,21 @@ jobs:
 
       - name: Prepare release
         run: |
-          strip target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
-          chmod +x target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
+          strip target/dx/arrata_app/release/linux/${{ env.EXECUTABLE_NAME }}
+          chmod +x target/dx/arrata_app/release/linux/${{ env.EXECUTABLE_NAME }}
 
       - name: UPX compress
         uses: crazy-max/ghaction-upx@v3
         with:
           version: latest
           files: |
-            target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
+            target/dx/arrata_app/release/linux/${{ env.EXECUTABLE_NAME }}
           args: --best --lzma
 
       - name: Bundle release
         run: |
           cd target/dx/arrata_app/release/linux
-          tar -czf ../${{ env.EXECUTABLE_NAME }}_linux.tar.gz *
+          tar -czf ../../../../../${{ env.EXECUTABLE_NAME }}_linux.tar.gz *
 
       - name: Upload release
         uses: svenstaro/upload-release-action@v2
@@ -170,6 +170,9 @@ jobs:
     env:
       VERSION: ${{ needs.create-release.outputs.tag }}
     steps:
+    - name: Set git core.longpaths flag
+      run: git config --system core.longpaths true
+
     - name: Checkout repository
       uses: actions/checkout@v3
 
@@ -216,7 +219,7 @@ jobs:
       with:
         version: latest
         files: |
-          target/dx/arrata_app/${{ env.EXECUTABLE_NAME }}
+          target/dx/arrata_app/release/windows/${{ env.EXECUTABLE_NAME }}
         args: --best --lzma
 
     - name: Zip release
