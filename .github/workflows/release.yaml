@@ -17,7 +17,7 @@ on:
         type: string
 
 env:
-  EXECUTABLE_NAME: "arrata_character_sheet_manager"
+  EXECUTABLE_NAME: "arrata_app"
   NODE_VERSION: 20
 
 concurrency:
@@ -112,7 +112,7 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
 
       - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm
+        run: cargo binstall dioxus-cli --no-confirm --force
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
@@ -190,7 +190,7 @@ jobs:
       uses: cargo-bins/cargo-binstall@main
 
     - name: Binstall Dioxus-CLI
-      run: cargo binstall dioxus-cli --no-confirm
+      run: cargo binstall dioxus-cli --no-confirm --force
 
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v3
@@ -267,7 +267,7 @@ jobs:
         uses: cargo-bins/cargo-binstall@main
 
       - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm
+        run: cargo binstall dioxus-cli --no-confirm --force
 
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
