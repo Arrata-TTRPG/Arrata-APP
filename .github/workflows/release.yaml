@@ -1,9 +1,5 @@
 ﻿# Thanks to https://github.com/NiklasEi/bevy_game_template/blob/main/.github/workflows/release.yaml for much of this code
 on:
-  workflow_run:
-    workflows: ["Versioning"]
-    types:
-      - completed
   push:
     # Sequence of patterns matched against refs/tags
     tags:
@@ -18,7 +14,6 @@ on:
 
 env:
   EXECUTABLE_NAME: "arrata_app"
-  NODE_VERSION: 20
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
