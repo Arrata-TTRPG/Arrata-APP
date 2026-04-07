@@ -1,0 +1,432 @@
+use dioxus::prelude::*;
+use dioxus_free_icons::{Icon, icons::bs_icons::BsTrash};
+
+use arrata_lib::{Armor, Talent, Weapon, combat};
+
+use crate::CHARACTER;
+
+// ── Stat indices for derived combat values ────────────────────────────────────
+const WILL_IDX: usize = 0;
+const SPEED_IDX: usize = 4;
+const FORTE_IDX: usize = 5;
+
+/// Top-level combat section: derived stats, then weapon/armor/talent lists.
+#[component]
+pub(crate) fn RenderCombat() -> Element {
+    rsx! {
+        div { class: "min-[1920px]:w-1/3 w-full h-full flex flex-col justify-center px-2 gap-6",
+            RenderCombatStats {}
+            RenderWeapons {}
+            RenderArmor {}
+            RenderTalents {}
+        }
+    }
+}
+
+// ── Derived combat stats ──────────────────────────────────────────────────────
+
+#[component]
+fn RenderCombatStats() -> Element {
+    let will_qty = CHARACTER().stats.get(WILL_IDX).map_or(1, |s| s.quantity);
+    let forte_qty = CHARACTER().stats.get(FORTE_IDX).map_or(1, |s| s.quantity);
+    let speed_qty = CHARACTER().stats.get(SPEED_IDX).map_or(1, |s| s.quantity);
+
+    let max_hp = combat::max_health(will_qty, forte_qty);
+    let max_ap = combat::ap_cap(speed_qty);
+    let mut current_ap = use_signal(|| 0);
+    let current_hp = CHARACTER().current_health;
+    let injury = CHARACTER().injury;
+
+    rsx! {
+        div { class: "flex flex-col gap-3",
+            h2 { class: "text-center text-4xl font-bold font-mono", "Combat" }
+
+            // Health row
+            div { class: "flex flex-wrap justify-center items-center gap-4",
+                div { class: "flex flex-col items-center border rounded-lg p-3 gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "Health" }
+                    div { class: "inline-flex items-center gap-2",
+                        input {
+                            class: "w-16 border rounded-lg p-2 text-center",
+                            r#type: "number",
+                            value: i64::try_from(current_hp).unwrap_or_default(),
+                            min: i64::MIN,
+                            max: i64::MAX,
+                            oninput: move |evt| {
+                                CHARACTER
+                                    .with_mut(|c| {
+                                        c.current_health = evt
+                                            .value()
+                                            .parse::<usize>()
+                                            .unwrap_or(0)
+                                    });
+                            },
+                        }
+                        span { class: "font-mono text-lg", "/ {max_hp}" }
+                    }
+                }
+
+                // Injury
+                div { class: "flex flex-col items-center border rounded-lg p-3 gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "Injury" }
+                    div { class: "inline-flex items-center gap-2",
+                        button {
+                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-2 py-1 font-mono text-lg",
+                            onclick: move |_| {
+                                CHARACTER.with_mut(|c| { c.injury = c.injury.saturating_sub(1); });
+                            },
+                            "−"
+                        }
+                        span { class: "font-mono text-2xl w-8 text-center", "{injury}" }
+                        button {
+                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-2 py-1 font-mono text-lg",
+                            onclick: move |_| {
+                                CHARACTER.with_mut(|c| { c.injury += 1; });
+                            },
+                            "+"
+                        }
+                    }
+                }
+
+                // AP cap (read-only derived)
+                div { class: "flex flex-col items-center border rounded-lg p-3 gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "Action Points" }
+                    div { class: "inline-flex items-center gap-2",
+                        input {
+                            class: "w-16 border rounded-lg p-2 text-center",
+                            r#type: "number",
+                            value: "{current_ap()}",
+                            min: i64::MIN,
+                            max: i64::MAX,
+                            oninput: move |evt| {
+                                current_ap.set(evt.value().parse::<isize>().unwrap_or(0));
+                            },
+                        }
+                        span { class: "font-mono text-lg", "/ {max_ap}" }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ── Weapons ───────────────────────────────────────────────────────────────────
+
+#[component]
+fn RenderWeapons() -> Element {
+    rsx! {
+        div { class: "flex flex-col gap-2",
+            div { class: "flex justify-center items-center gap-4",
+                h2 { class: "text-center text-3xl font-bold font-mono", "Weapons" }
+                button {
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-4 rounded",
+                    onclick: move |_| CHARACTER.write().weapons.push(Weapon::default()),
+                    "+ Add"
+                }
+            }
+            div { class: "flex flex-col gap-3",
+                for (i , _) in CHARACTER().weapons.iter().enumerate() {
+                    RenderWeapon { index: i }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn RenderWeapon(index: usize) -> Element {
+    let Some(w) = CHARACTER().weapons.get(index).cloned() else {
+        return rsx! {};
+    };
+
+    rsx! {
+        div { class: "flex flex-col border rounded-lg p-3 gap-2",
+            // Name row + delete
+            div { class: "flex items-center gap-2",
+                input {
+                    class: "flex-grow font-mono text-lg text-center border rounded-lg p-2",
+                    r#type: "text",
+                    placeholder: "Name",
+                    value: "{w.name}",
+                    oninput: move |evt| {
+                        CHARACTER.write().weapons[index].name = evt.value();
+                    },
+                }
+                button {
+                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().weapons.remove(index));
+                    },
+                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                }
+            }
+
+            // Skill + requirement
+            div { class: "flex flex-wrap gap-2",
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "Skill:" }
+                    input {
+                        class: "w-28 border rounded-lg p-1 font-mono text-sm text-center",
+                        r#type: "text",
+                        placeholder: "e.g. Blade",
+                        value: "{w.skill}",
+                        oninput: move |evt| {
+                            CHARACTER.write().weapons[index].skill = evt.value();
+                        },
+                    }
+                }
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "Req:" }
+                    input {
+                        class: "w-16 border rounded-lg p-1 font-mono text-sm text-center",
+                        r#type: "text",
+                        placeholder: "e.g. B3",
+                        value: "{w.skill_requirement.clone().unwrap_or_default()}",
+                        oninput: move |evt| {
+                            let v = evt.value();
+                            CHARACTER.write().weapons[index].skill_requirement =
+                                if v.is_empty() { None } else { Some(v) };
+                        },
+                    }
+                }
+            }
+
+            // Damage row
+            div { class: "flex flex-wrap gap-2 items-center",
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "Base dmg:" }
+                    input {
+                        class: "w-16 border rounded-lg p-1 text-center",
+                        r#type: "number",
+                        value: i64::from(w.base_damage),
+                        oninput: move |evt| {
+                            CHARACTER.write().weapons[index].base_damage =
+                                evt.value().parse::<i32>().unwrap_or(1);
+                        },
+                    }
+                }
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "+ Stat:" }
+                    input {
+                        class: "w-24 border rounded-lg p-1 font-mono text-sm text-center",
+                        r#type: "text",
+                        placeholder: "Power",
+                        value: "{w.stat_modifier}",
+                        oninput: move |evt| {
+                            CHARACTER.write().weapons[index].stat_modifier = evt.value();
+                        },
+                    }
+                }
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "+%/success:" }
+                    input {
+                        class: "w-16 border rounded-lg p-1 text-center",
+                        r#type: "number",
+                        value: i64::from(w.per_success_bonus_pct),
+                        oninput: move |evt| {
+                            CHARACTER.write().weapons[index].per_success_bonus_pct =
+                                evt.value().parse::<i32>().unwrap_or(0);
+                        },
+                    }
+                    span { class: "font-mono text-sm text-slate-400", "%" }
+                }
+            }
+
+            // Notes
+            input {
+                class: "w-full border rounded-lg p-1 font-mono text-sm",
+                r#type: "text",
+                placeholder: "Notes (e.g. may be used one-handed at −1 damage)",
+                value: "{w.notes}",
+                oninput: move |evt| {
+                    CHARACTER.write().weapons[index].notes = evt.value();
+                },
+            }
+        }
+    }
+}
+
+// ── Armor ─────────────────────────────────────────────────────────────────────
+
+#[component]
+fn RenderArmor() -> Element {
+    rsx! {
+        div { class: "flex flex-col gap-2",
+            div { class: "flex justify-center items-center gap-4",
+                h2 { class: "text-center text-3xl font-bold font-mono", "Armor" }
+                button {
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-4 rounded",
+                    onclick: move |_| CHARACTER.write().armor.push(Armor::default()),
+                    "+ Add"
+                }
+            }
+            div { class: "flex flex-col gap-3",
+                for (i , _) in CHARACTER().armor.iter().enumerate() {
+                    RenderArmorPiece { index: i }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn RenderArmorPiece(index: usize) -> Element {
+    let Some(a) = CHARACTER().armor.get(index).cloned() else {
+        return rsx! {};
+    };
+
+    rsx! {
+        div { class: "flex flex-col border rounded-lg p-3 gap-2",
+            div { class: "flex items-center gap-2",
+                input {
+                    class: "flex-grow font-mono text-lg text-center border rounded-lg p-2",
+                    r#type: "text",
+                    placeholder: "Name",
+                    value: "{a.name}",
+                    oninput: move |evt| {
+                        CHARACTER.write().armor[index].name = evt.value();
+                    },
+                }
+                button {
+                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().armor.remove(index));
+                    },
+                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                }
+            }
+
+            div { class: "flex flex-wrap gap-2 items-center",
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "Flat reduction:" }
+                    input {
+                        class: "w-16 border rounded-lg p-1 text-center",
+                        r#type: "number",
+                        value: i64::from(a.flat_reduction),
+                        oninput: move |evt| {
+                            CHARACTER.write().armor[index].flat_reduction =
+                                evt.value().parse::<i32>().unwrap_or(0);
+                        },
+                    }
+                }
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "% reduction:" }
+                    input {
+                        class: "w-16 border rounded-lg p-1 text-center",
+                        r#type: "number",
+                        value: i64::from(a.pct_reduction),
+                        min: 0,
+                        max: 100,
+                        oninput: move |evt| {
+                            CHARACTER.write().armor[index].pct_reduction =
+                                evt.value().parse::<i32>().unwrap_or(0).clamp(0, 100);
+                        },
+                    }
+                    span { class: "font-mono text-sm text-slate-400", "%" }
+                }
+            }
+
+            input {
+                class: "w-full border rounded-lg p-1 font-mono text-sm",
+                r#type: "text",
+                placeholder: "Notes (e.g. −1 Evasion)",
+                value: "{a.notes}",
+                oninput: move |evt| {
+                    CHARACTER.write().armor[index].notes = evt.value();
+                },
+            }
+        }
+    }
+}
+
+// ── Talents ───────────────────────────────────────────────────────────────────
+
+#[component]
+fn RenderTalents() -> Element {
+    rsx! {
+        div { class: "flex flex-col gap-2",
+            div { class: "flex justify-center items-center gap-4",
+                h2 { class: "text-center text-3xl font-bold font-mono", "Talents" }
+                button {
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-4 rounded",
+                    onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
+                    "+ Add"
+                }
+            }
+            div { class: "flex flex-col gap-3",
+                for (i , _) in CHARACTER().talents.iter().enumerate() {
+                    RenderTalent { index: i }
+                }
+            }
+        }
+    }
+}
+
+#[component]
+fn RenderTalent(index: usize) -> Element {
+    let Some(t) = CHARACTER().talents.get(index).cloned() else {
+        return rsx! {};
+    };
+
+    rsx! {
+        div { class: "flex flex-col border rounded-lg p-3 gap-2",
+            // Name + AP cost + delete
+            div { class: "flex items-center gap-2",
+                input {
+                    class: "flex-grow font-mono text-lg text-center border rounded-lg p-2",
+                    r#type: "text",
+                    placeholder: "Name",
+                    value: "{t.name}",
+                    oninput: move |evt| {
+                        CHARACTER.write().talents[index].name = evt.value();
+                    },
+                }
+                div { class: "flex items-center gap-1",
+                    span { class: "font-mono text-sm text-slate-400", "AP:" }
+                    input {
+                        class: "w-14 border rounded-lg p-1 text-center",
+                        r#type: "number",
+                        value: i64::try_from(t.ap_cost).unwrap_or_default(),
+                        min: 0,
+                        oninput: move |evt| {
+                            CHARACTER.write().talents[index].ap_cost =
+                                evt.value().parse::<usize>().unwrap_or(1);
+                        },
+                    }
+                }
+                button {
+                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().talents.remove(index));
+                    },
+                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                }
+            }
+
+            // Required skill
+            div { class: "flex items-center gap-1",
+                span { class: "font-mono text-sm text-slate-400", "Req. skill:" }
+                input {
+                    class: "w-32 border rounded-lg p-1 font-mono text-sm text-center",
+                    r#type: "text",
+                    placeholder: "e.g. Blade",
+                    value: "{t.required_skill}",
+                    oninput: move |evt| {
+                        CHARACTER.write().talents[index].required_skill = evt.value();
+                    },
+                }
+            }
+
+            // Description
+            input {
+                class: "w-full border rounded-lg p-1 font-mono text-sm",
+                r#type: "text",
+                placeholder: "Effect (e.g. Perform 2 attacks at 50% weapon damage each)",
+                value: "{t.description}",
+                oninput: move |evt| {
+                    CHARACTER.write().talents[index].description = evt.value();
+                },
+            }
+        }
+    }
+}

@@ -3,8 +3,8 @@ use dioxus::prelude::*;
 use rfd::AsyncFileDialog;
 
 use crate::{
-    render::{RenderInventory, RenderQuirks, RenderStats},
     CHARACTER,
+    render::{RenderCombat, RenderInventory, RenderQuirks, RenderStats},
 };
 
 #[component]
@@ -32,6 +32,7 @@ pub(crate) fn RenderCharacter() -> Element {
         div { class: "flex flex-grow flex-wrap pt-4 pb-4",
             RenderStats {}
             RenderQuirks {}
+            RenderCombat {}
             RenderInventory {}
         }
     }
@@ -88,3 +89,4 @@ pub(crate) fn CharacterIO() -> Element {
         }
     }
 }
+

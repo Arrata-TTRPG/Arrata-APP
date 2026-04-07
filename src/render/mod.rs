@@ -17,3 +17,6 @@ pub(crate) use stats::RenderStats;
 
 pub(crate) mod inventory;
 pub(crate) use inventory::RenderInventory;
+
+pub(crate) mod combat;
+pub(crate) use combat::RenderCombat;

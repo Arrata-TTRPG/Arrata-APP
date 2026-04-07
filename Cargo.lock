@@ -76,7 +76,7 @@ checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
 [[package]]
 name = "arrata-lib"
 version = "0.3.2"
-source = "git+https://github.com/Arrata-TTRPG/Arrata-LIB?branch=main#6f46dd0cdc5b53c1823137e847517b29ab8810d4"
+source = "git+https://github.com/Arrata-TTRPG/Arrata-LIB?branch=main#2c0b82e1de3c375422512cde0845a429c48ebb22"
 dependencies = [
  "bitcode",
  "clap",
@@ -4878,7 +4878,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.3.4",
+ "getrandom 0.4.2",
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
