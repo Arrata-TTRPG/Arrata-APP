@@ -15,7 +15,6 @@ serde_json = { version = "1.0.149", default-features = false }
 rand = { version = "0.10", default-features = false }
 dioxus = { version = "0.7.4", features = [] }
 log = "0.4.29"
-rfd = "0.17.2"
 semver = "1.0.28"
 bitcode = "0.6.9"
 base64 = "0.22"
