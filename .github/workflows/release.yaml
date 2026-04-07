@@ -105,10 +105,9 @@ jobs:
         run: |
           nix develop -c tailwindcss -i input.css -o public/tailwind.css --minify
 
-      - name: Modify Dioxus.toml and enable cargo config.toml
+      - name: Modify Dioxus.toml
         run: |
           sed -i 's/#base_path/base_path/' Dioxus.toml
-          mv .cargo-disabled .cargo
 
       - name: Create WASM with Dioxus CLI
         run: |
