@@ -90,6 +90,7 @@ name = "arrata_app"
 version = "0.0.0"
 dependencies = [
  "arrata-lib",
+ "base64",
  "bitcode",
  "dioxus",
  "dioxus-free-icons",
