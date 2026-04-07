@@ -207,10 +207,6 @@ fn RenderWeapon(index: usize) -> Element {
                         let v = evt.value();
                         CHARACTER.write().weapons[index].skill_requirement =
                             if v.is_empty() { None } else { Some(v) };
-                            None
-                        } else {
-                            Some(v)
-                        };
                     },
                 }
             }
@@ -225,9 +221,6 @@ fn RenderWeapon(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().weapons[index].base_damage =
                             evt.value().parse::<i32>().unwrap_or(1);
-                            .value()
-                            .parse::<i32>()
-                            .unwrap_or(1);
                     },
                 }
                 span { class: "font-mono text-lg", "+ Stat:" }
@@ -256,9 +249,6 @@ fn RenderWeapon(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().weapons[index].per_success_bonus_pct =
                             evt.value().parse::<i32>().unwrap_or(0);
-                            .value()
-                            .parse::<i32>()
-                            .unwrap_or(0);
                     },
                 }
                 span { class: "font-mono text-lg", "%" }
@@ -364,9 +354,6 @@ fn RenderArmorPiece(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().armor[index].flat_reduction =
                             evt.value().parse::<i32>().unwrap_or(0);
-                            .value()
-                            .parse::<i32>()
-                            .unwrap_or(0);
                     },
                 }
                 span { class: "font-mono text-lg", "% reduction:" }
@@ -379,10 +366,6 @@ fn RenderArmorPiece(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().armor[index].pct_reduction =
                             evt.value().parse::<i32>().unwrap_or(0).clamp(0, 100);
-                            .value()
-                            .parse::<i32>()
-                            .unwrap_or(0)
-                            .clamp(0, 100);
                     },
                 }
                 span { class: "font-mono text-lg", "%" }
@@ -473,9 +456,6 @@ fn RenderTalent(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().talents[index].ap_cost =
                             evt.value().parse::<usize>().unwrap_or(1);
-                            .value()
-                            .parse::<usize>()
-                            .unwrap_or(1);
                     },
                 }
                 button {
