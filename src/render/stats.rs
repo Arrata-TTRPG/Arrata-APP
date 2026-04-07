@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    icons::bs_icons::{BsDice6, BsTrash},
     Icon,
+    icons::bs_icons::{BsDice6, BsTrash},
 };
 
 use arrata_lib::{Quality, Resource, Stat};
@@ -142,9 +142,9 @@ fn RenderSkills() -> Element {
             }
         }
         div { class: "flex justify-center",
-            div { class: "grid min-[1340px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
+            div { class: "flex flex-wrap gap-4 justify-center content-center items-start w-full",
                 for (i, skill) in CHARACTER().skills.iter().enumerate() {
-                    div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
+                    div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
                         div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                             input {
                                 class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
@@ -441,3 +441,4 @@ fn RenderResource(index: usize) -> Element {
         }
     }
 }
+

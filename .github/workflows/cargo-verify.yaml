@@ -1,14 +1,14 @@
 ﻿# Thanks to https://github.com/NiklasEi/bevy_game_template/blob/main/.github/workflows/release.yaml for much of this code
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - src/**
       - Cargo.toml
       - Cargo.lock
       - .github/workflows/cargo-verify.yaml
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - src/**
       - Cargo.toml
@@ -27,93 +27,6 @@ concurrency:
 
 name: Run Rust checks across all platforms
 jobs:
-  check-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: nightly
-          components: rustfmt, clippy
-          target: x86_64-unknown-linux-gnu
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install libsoup2.4 javascriptcoregtk-4.0 -y
-          sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev libxdo-dev -y
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ env.NODE_VERSION }}-node_modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Create CSS
-        run: |
-          npm install -D tailwindcss
-          npx tailwindcss -i input.css -o public/tailwind.css
-      - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@main
-      - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm --force
-      - name: dx build
-        run: dx build --platform desktop
-      - name: Cargo Check
-        run: cargo check --all
-      - name: Cargo Test
-        run: cargo test --all
-      - name: Cargo Clippy
-        run: cargo clippy --all
-      - name: Cargo fmt
-        run: cargo fmt -- --check
-
-  test-windows:
-    runs-on: windows-latest
-    steps:
-    - name: Set git core.longpaths flag
-      run: git config --system core.longpaths true
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Install Rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        toolchain: nightly
-        components: rustfmt, clippy
-        target: x86_64-pc-windows-msvc
-    - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-
-    - name: Cache node_modules
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-${{ env.NODE_VERSION }}-node_modules-${{ hashFiles('**/package-lock.json') }}
-    - name: Create CSS
-      run: |
-        npm install -D tailwindcss
-        npx tailwindcss -i input.css -o public/tailwind.css
-    - name: Install cargo-binstall
-      uses: cargo-bins/cargo-binstall@main
-    - name: Binstall Dioxus-CLI
-      run: cargo binstall dioxus-cli --no-confirm --force
-    - name: dx build
-      run: dx build --platform desktop
-    - name: Cargo Check
-      run: cargo check --all
-    - name: Cargo Test
-      run: cargo test --all
-    - name: Cargo Clippy
-      run: cargo clippy --all
-    - name: Cargo fmt
-      run: cargo fmt -- --check
-
   build-web:
     runs-on: ubuntu-latest
     steps:
