@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
 
 use crate::{
-    DICE_ROLL_STATE, VERSION, load_initial_quirks,
-    render::{CharacterIO, RenderCharacter, RenderRolls},
+    ACTIVE_IDX, CHARACTER, CHARACTERS, DICE_ROLL_STATE, VERSION, load_initial_quirks,
+    render::{CharacterIO, CharacterSidebar, RenderCharacter, RenderRolls, SidebarToggle},
 };
 
 const TAILWIND_CSS: Asset = asset!("public/tailwind.css");
@@ -26,32 +26,40 @@ pub fn App() -> Element {
     #[cfg(any(feature = "web", feature = "desktop"))]
     {
         use crate::{
-            CHARACTER, PREMADE_QUIRKS,
-            storage::{read_character, read_quirks, write_character, write_quirks},
+            PREMADE_QUIRKS,
+            storage::{read_characters, read_quirks, write_characters, write_quirks},
         };
 
         use_future(|| async {
-            // The key used for storage naming
-            let key = format!("temp-{}-{}", VERSION().major, VERSION().minor);
-            // Get the character from storage
-            if let Some(character) = read_character(key.as_str()) {
-                *CHARACTER.write() = character;
+            let version_key = format!("{}-{}", VERSION().major, VERSION().minor);
+
+            // Load roster; fall back to a single default character
+            if let Some(characters) = read_characters() {
+                *CHARACTERS.write() = characters;
             }
-            // Save the character on edit
+            let first = CHARACTERS().into_iter().next().unwrap_or_default();
+            *CHARACTER.write() = first;
+            *ACTIVE_IDX.write() = 0;
+
+            // Persist roster whenever CHARACTER changes (syncs active slot then saves all)
             use_effect(move || {
                 let character = CHARACTER();
-                write_character(key.as_str(), &character);
+                let idx = ACTIVE_IDX();
+                let mut chars = CHARACTERS.write();
+                if let Some(slot) = chars.get_mut(idx) {
+                    *slot = character;
+                }
+                write_characters(&chars);
             });
 
-            let key = format!("quirks-{}-{}", VERSION().major, VERSION().minor);
-            // Get pre-made Quirks
-            if let Some(quirks) = read_quirks(key.as_str()) {
+            // Pre-made quirks
+            let quirks_key = format!("quirks-{}-{}", VERSION().major, VERSION().minor);
+            if let Some(quirks) = read_quirks(&quirks_key) {
                 PREMADE_QUIRKS.write().extend(quirks);
             }
-            // Save the pre-made Quirks on edit
             use_effect(move || {
                 let quirks = PREMADE_QUIRKS();
-                write_quirks(&quirks, key.as_str());
+                write_quirks(&quirks, &quirks_key);
             });
         });
     }
@@ -59,36 +67,43 @@ pub fn App() -> Element {
     rsx! {
         Stylesheet { href: TAILWIND_CSS }
         style { "{arrata_style}" }
-        div { class: "w-screen h-screen",
-            div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full gap-4",
-                // Arrata logo
-                object {
-                    class: "object-fill med:w-[9rem] med:h-[9rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
-                    r#type: "image/svg+xml",
-                    img { class: "object-fit", src: RAT_RELEASE }
+
+        // Full-screen flex row: sidebar + main content
+        div { class: "w-screen h-screen flex flex-row overflow-hidden",
+
+            CharacterSidebar {}
+            SidebarToggle {}
+
+            // Main content — scrollable column
+            div { class: "flex flex-col flex-grow overflow-y-auto",
+
+                // Header
+                div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full gap-4",
+                    object {
+                        class: "object-fill med:w-[9rem] med:h-[9rem] sm:w-[6rem] sm:h-[6rem] w-[4.5rem] h-[4.5rem]",
+                        r#type: "image/svg+xml",
+                        img { class: "object-fit", src: RAT_RELEASE }
+                    }
+                    div { class: "flex flex-row items-baseline",
+                        h1 { class: "text-center md:text-9xl sm:text-8xl text-7xl font-mono font-extrabold align-bottom",
+                            "ARRATA"
+                        }
+                        p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs",
+                            "v{VERSION()}"
+                        }
+                    }
                 }
 
-                // Title and version
-                div { class: "flex flex-row items-baseline",
-                    h1 { class: "text-center md:text-9xl sm:text-8xl text-7xl font-mono font-extrabold align-bottom",
-                        "ARRATA"
+                CharacterIO {}
+                RenderCharacter {}
+
+                if DICE_ROLL_STATE().0 {
+                    if let Some(_) = DICE_ROLL_STATE().1 {
+                        RenderRolls {}
                     }
-
-                    p { class: "h-full font-mono align-bottom ml-5 lg:text-base md:text-sm text-xs",
-                        "v{VERSION()}"
-                    }
-                }
-            }
-
-            CharacterIO {}
-
-            RenderCharacter {}
-
-            if DICE_ROLL_STATE().0 {
-                if let Some(_) = DICE_ROLL_STATE().1 {
-                    RenderRolls {}
                 }
             }
         }
     }
 }
+

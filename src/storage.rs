@@ -1,172 +1,116 @@
-use arrata_lib::Character;
+use arrata_lib::{Character, Quirk};
 
-use arrata_lib::Quirk;
+// ── Desktop ───────────────────────────────────────────────────────────────────
 
 #[cfg(feature = "desktop")]
 pub static LOCATION: std::sync::OnceLock<std::path::PathBuf> = std::sync::OnceLock::new();
 
-/// Sets the directory path.
+/// Sets the app data directory used for all reads and writes.
 ///
 /// # Panics
 ///
-/// This function will panic if the provided path is invalid.
+/// Panics if called more than once.
 #[cfg(feature = "desktop")]
 pub fn set_directory(path: std::path::PathBuf) {
     LOCATION.set(path).unwrap();
 }
 
-/// Writes the character data to a file.
+/// Writes every character in the roster to its own `character-N.arrata` file,
+/// plus a `character-count` file so reads know how many to expect.
 ///
 /// # Panics
 ///
-/// This function will panic if it fails to write the character data to the file.
+/// Panics if any character cannot be encoded.
 #[cfg(feature = "desktop")]
-pub fn write_character(name: &str, character: &Character) {
-    if let Some(path) = LOCATION.get() {
+pub fn write_characters(characters: &[Character]) {
+    let Some(path) = LOCATION.get() else { return };
+    for (i, character) in characters.iter().enumerate() {
         let data = bitcode::encode(character);
-        let character_file = format!("{name}.arrata");
-        let file_path = path.join(character_file);
-        if let Ok(file) = std::fs::write(file_path, data) {
-            println!("Character saved: {file:?}");
-        }
+        let _ = std::fs::write(path.join(format!("character-{i}.arrata")), data);
     }
+    let _ = std::fs::write(path.join("character-count"), characters.len().to_string());
 }
 
-/// Reads the character data from a file.
+/// Reads all characters from disk. Returns `None` if no roster has been saved yet.
 #[cfg(feature = "desktop")]
-pub fn read_character(name: &str) -> Option<Character> {
-    if let Some(path) = LOCATION.get() {
-        let character_file = format!("{name}.arrata");
-        let file_path = path.join(character_file);
-        if let Ok(file) = std::fs::read(file_path.clone()) {
-            if let Ok(character) = bitcode::decode(&file) {
-                return Some(character);
-            }
-        } else {
-            println!("Failed to read file {}", file_path.clone().display());
-        }
+#[must_use]
+pub fn read_characters() -> Option<Vec<Character>> {
+    let path = LOCATION.get()?;
+    let count: usize = std::fs::read_to_string(path.join("character-count"))
+        .ok()?
+        .trim()
+        .parse()
+        .ok()?;
+    let characters: Vec<Character> = (0..count)
+        .filter_map(|i| {
+            let bytes = std::fs::read(path.join(format!("character-{i}.arrata"))).ok()?;
+            bitcode::decode(&bytes).ok()
+        })
+        .collect();
+    if characters.is_empty() {
+        None
+    } else {
+        Some(characters)
     }
-
-    None
 }
 
+/// Writes pre-made quirks to `<key>.quirks`.
+///
+/// # Panics
+///
+/// Panics if encoding fails.
 #[cfg(feature = "desktop")]
 pub fn write_quirks(quirks: &[Quirk], key: &str) {
-    if let Some(path) = LOCATION.get() {
-        let data = bitcode::encode(quirks);
-        let quirk_file = format!("{key}.arrata");
-        let file_path = path.join(quirk_file);
-        if let Ok(file) = std::fs::write(file_path, data) {
-            println!("Quirks saved: {file:?}");
-        }
-    }
+    let Some(path) = LOCATION.get() else { return };
+    let data = bitcode::encode(quirks);
+    let _ = std::fs::write(path.join(format!("{key}.quirks")), data);
 }
 
+/// Reads pre-made quirks from `<key>.quirks`. Returns `None` if not found.
 #[cfg(feature = "desktop")]
+#[must_use]
 pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
-    if let Some(path) = LOCATION.get() {
-        let quirk_file = format!("{key}.quirks");
-        let file_path = path.join(quirk_file);
-        if let Ok(file) = std::fs::read(file_path.clone()) {
-            if let Ok(quirks) = bitcode::decode(&file) {
-                return Some(quirks);
-            }
-        } else {
-            println!("Failed to read file {}", file_path.clone().display());
-        }
-    }
-
-    None
+    let path = LOCATION.get()?;
+    let bytes = std::fs::read(path.join(format!("{key}.quirks"))).ok()?;
+    bitcode::decode(&bytes).ok()
 }
+
+// ── Web ───────────────────────────────────────────────────────────────────────
 
 #[cfg(feature = "web")]
 use gloo_storage::{LocalStorage, Storage};
 
-/// Writes a key-value pair to the persistent storage.
-///
-/// # Arguments
-///
-/// * `key` - The key of the pair.
-/// * `value` - The value of the pair.
-///
-/// # Errors
-///
-/// Returns an error if the key-value pair could not be written to the persistent storage.
-///
-/// This error is the stringified form of the one given by `gloo_storage`.
+/// Writes the full character roster to `localStorage` as JSON.
 ///
 /// # Panics
 ///
-/// Panics if the character cannot be written to a `String` by `serde_json`.
+/// Panics if serialization fails.
 #[cfg(feature = "web")]
-pub fn write_character(key: &str, character: &Character) {
-    let character = serde_json::to_string(character).unwrap();
-    LocalStorage::set(key, character).unwrap();
+pub fn write_characters(characters: &[Character]) {
+    LocalStorage::set("characters", serde_json::to_string(characters).unwrap()).unwrap();
 }
 
-/// Reads the value associated with the given key from the persistent storage.
-///
-/// # Arguments
-///
-/// * `key` - The key of the pair.
-///
-/// # Returns
-///
-/// * `Option<String>` - The value associated with the key. `None` if an error occured.
-///
-/// # Panics
-///
-/// This function will panic if the value associated with the key could not be read from the persistent storage.
+/// Reads the character roster from `localStorage`. Returns `None` if not found.
 #[cfg(feature = "web")]
 #[must_use]
-pub fn read_character(key: &str) -> Option<Character> {
-    if let Ok(data) = &LocalStorage::get::<String>(key) {
-        match serde_json::from_str(data) {
-            Ok(character) => Some(character),
-            Err(e) => {
-                log::error!("Failed to read character: {:#?}", e);
-                None
-            }
-        }
-    } else {
-        None
-    }
+pub fn read_characters() -> Option<Vec<Character>> {
+    serde_json::from_str(&LocalStorage::get::<String>("characters").ok()?).ok()
 }
 
-/// Reads the pre-made quirks from the persistent storage.
-///
-/// # Arguments
-///
-/// * `key` - The key to read the pre-made quirks from.
-///
-/// # Returns
-///
-/// * `Option<Vec<Quirk>>` - The pre-made quirks. `None` if an error occured.
+/// Writes pre-made quirks to `localStorage` under `key`.
 ///
 /// # Panics
 ///
-/// This function will panic if the pre-made quirks could not be read from the persistent storage.
+/// Panics if serialization fails.
+#[cfg(feature = "web")]
+pub fn write_quirks(quirks: &[Quirk], key: &str) {
+    LocalStorage::set(key, serde_json::to_string(quirks).unwrap()).unwrap();
+}
+
+/// Reads pre-made quirks from `localStorage` under `key`. Returns `None` if not found.
 #[cfg(feature = "web")]
 #[must_use]
 pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
-    if let Ok(data) = &LocalStorage::get::<String>(key) {
-        Some(serde_json::from_str(data).unwrap())
-    } else {
-        None
-    }
+    serde_json::from_str(&LocalStorage::get::<String>(key).ok()?).ok()
 }
 
-/// Writes the pre-made quirks to the persistent storage.
-///
-/// # Arguments
-///
-/// * `quirks` - The pre-made quirks to write.
-///
-/// # Panics
-///
-/// Panics if the pre-made quirks cannot be written to a `String` by `serde_json`.
-#[cfg(feature = "web")]
-pub fn write_quirks(quirks: &[Quirk], key: &str) {
-    let quirks = serde_json::to_string(&quirks).unwrap();
-    LocalStorage::set(key, quirks).unwrap();
-}

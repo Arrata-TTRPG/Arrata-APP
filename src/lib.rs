@@ -13,16 +13,24 @@ pub mod render;
 pub mod storage;
 
 use arrata_lib::{
-    character::{Character, Stat},
     Quirk,
+    character::{Character, Stat},
 };
 
 use dioxus::prelude::GlobalSignal;
 use reqwest::Client;
 use semver::Version;
 
-/// The `GlobalSignal` for the `Character`.
+/// The active character, kept in sync with `CHARACTERS[ACTIVE_IDX]`.
+/// All render components read/write this; switching characters updates it from the vec.
 pub static CHARACTER: GlobalSignal<Character> = GlobalSignal::new(Character::default);
+/// All characters in the roster.
+pub static CHARACTERS: GlobalSignal<Vec<Character>> =
+    GlobalSignal::new(|| vec![Character::default()]);
+/// Index of the currently displayed character in `CHARACTERS`.
+pub static ACTIVE_IDX: GlobalSignal<usize> = GlobalSignal::new(|| 0);
+/// Whether the character sidebar is open.
+pub(crate) static SIDEBAR_OPEN: GlobalSignal<bool> = GlobalSignal::new(|| true);
 /// The `GlobalSignal` for rolling dice.
 pub(crate) static DICE_ROLL_STATE: GlobalSignal<(bool, Option<Stat>)> =
     GlobalSignal::new(|| (false, None));
@@ -67,3 +75,4 @@ pub(crate) async fn load_initial_quirks() {
         }
     }
 }
+
