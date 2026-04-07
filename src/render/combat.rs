@@ -3,7 +3,7 @@ use dioxus_free_icons::{Icon, icons::bs_icons::BsTrash};
 
 use arrata_lib::{Armor, Talent, Weapon, combat};
 
-use crate::CHARACTER;
+use crate::{CHARACTER, render::auto_resize_js};
 
 // ── Stat indices for derived combat values ────────────────────────────────────
 const WILL_IDX: usize = 0;
@@ -16,7 +16,7 @@ const STAT_NAMES: [&str; 6] = ["Will", "Perception", "Conscious", "Power", "Spee
 #[component]
 pub(crate) fn RenderCombat() -> Element {
     rsx! {
-        div { class: "min-[1920px]:w-1/3 w-full flex flex-col justify-center px-2 gap-6",
+        div { class: "min-[2560px]:w-1/4 min-[1920px]:w-1/3 min-[1280px]:w-1/2 w-full flex flex-col justify-center px-2 gap-6",
             RenderCombatStats {}
             RenderWeapons {}
             RenderArmor {}
@@ -55,9 +55,10 @@ fn RenderCombatStats() -> Element {
                             min: i64::MIN,
                             max: i64::MAX,
                             oninput: move |evt| {
-                                CHARACTER.with_mut(|c| {
-                                    c.current_health = evt.value().parse::<usize>().unwrap_or(0);
-                                });
+                                CHARACTER
+                                    .with_mut(|c| {
+                                        c.current_health = evt.value().parse::<usize>().unwrap_or(0);
+                                    });
                             },
                         }
                         span { class: "font-mono text-lg", "/ {max_hp}" }
@@ -71,7 +72,10 @@ fn RenderCombatStats() -> Element {
                         button {
                             class: "bg-slate-900 hover:bg-slate-600 border rounded px-2 py-1 font-mono text-lg",
                             onclick: move |_| {
-                                CHARACTER.with_mut(|c| { c.injury = c.injury.saturating_sub(1); });
+                                CHARACTER
+                                    .with_mut(|c| {
+                                        c.injury = c.injury.saturating_sub(1);
+                                    });
                             },
                             "−"
                         }
@@ -79,7 +83,10 @@ fn RenderCombatStats() -> Element {
                         button {
                             class: "bg-slate-900 hover:bg-slate-600 border rounded px-2 py-1 font-mono text-lg",
                             onclick: move |_| {
-                                CHARACTER.with_mut(|c| { c.injury += 1; });
+                                CHARACTER
+                                    .with_mut(|c| {
+                                        c.injury += 1;
+                                    });
                             },
                             "+"
                         }
@@ -127,7 +134,11 @@ fn RenderWeapons() -> Element {
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| show.set(!show()),
-                    if show() { "Hide" } else { "Show" }
+                    if show() {
+                        "Hide"
+                    } else {
+                        "Show"
+                    }
                 }
             }
             if show() {
@@ -148,7 +159,7 @@ fn RenderWeapon(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
+        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[280px] space-y-2",
             // Name + delete
             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                 input {
@@ -156,12 +167,21 @@ fn RenderWeapon(index: usize) -> Element {
                     r#type: "text",
                     placeholder: "Name",
                     value: "{w.name}",
-                    oninput: move |evt| { CHARACTER.write().weapons[index].name = evt.value(); },
+                    oninput: move |evt| {
+                        CHARACTER.write().weapons[index].name = evt.value();
+                    },
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
-                    onclick: move |_| { std::mem::drop(CHARACTER.write().weapons.remove(index)); },
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().weapons.remove(index));
+                    },
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
             }
 
@@ -173,7 +193,9 @@ fn RenderWeapon(index: usize) -> Element {
                     r#type: "text",
                     placeholder: "e.g. Blade",
                     value: "{w.skill}",
-                    oninput: move |evt| { CHARACTER.write().weapons[index].skill = evt.value(); },
+                    oninput: move |evt| {
+                        CHARACTER.write().weapons[index].skill = evt.value();
+                    },
                 }
                 span { class: "font-mono text-lg", "Req:" }
                 input {
@@ -185,6 +207,10 @@ fn RenderWeapon(index: usize) -> Element {
                         let v = evt.value();
                         CHARACTER.write().weapons[index].skill_requirement =
                             if v.is_empty() { None } else { Some(v) };
+                            None
+                        } else {
+                            Some(v)
+                        };
                     },
                 }
             }
@@ -199,6 +225,9 @@ fn RenderWeapon(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().weapons[index].base_damage =
                             evt.value().parse::<i32>().unwrap_or(1);
+                            .value()
+                            .parse::<i32>()
+                            .unwrap_or(1);
                     },
                 }
                 span { class: "font-mono text-lg", "+ Stat:" }
@@ -227,6 +256,9 @@ fn RenderWeapon(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().weapons[index].per_success_bonus_pct =
                             evt.value().parse::<i32>().unwrap_or(0);
+                            .value()
+                            .parse::<i32>()
+                            .unwrap_or(0);
                     },
                 }
                 span { class: "font-mono text-lg", "%" }
@@ -234,11 +266,19 @@ fn RenderWeapon(index: usize) -> Element {
 
             // Notes
             textarea {
-                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-y",
-                rows: 2,
+                id: "weapon-notes-{index}",
+                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden",
+                style: "min-height: 2.75rem",
                 placeholder: "Notes",
                 value: "{w.notes}",
-                oninput: move |evt| { CHARACTER.write().weapons[index].notes = evt.value(); },
+                onmounted: move |_| async move {
+                    let _ = document::eval(&auto_resize_js(&format!("weapon-notes-{index}"), true))
+                        .await;
+                },
+                oninput: move |evt| {
+                    CHARACTER.write().weapons[index].notes = evt.value();
+                    let _ = document::eval(&auto_resize_js(&format!("weapon-notes-{index}"), false));
+                },
             }
         }
     }
@@ -263,7 +303,11 @@ fn RenderArmor() -> Element {
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| show.set(!show()),
-                    if show() { "Hide" } else { "Show" }
+                    if show() {
+                        "Hide"
+                    } else {
+                        "Show"
+                    }
                 }
             }
             if show() {
@@ -284,7 +328,7 @@ fn RenderArmorPiece(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
+        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[280px] space-y-2",
             // Name + delete
             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                 input {
@@ -292,12 +336,21 @@ fn RenderArmorPiece(index: usize) -> Element {
                     r#type: "text",
                     placeholder: "Name",
                     value: "{a.name}",
-                    oninput: move |evt| { CHARACTER.write().armor[index].name = evt.value(); },
+                    oninput: move |evt| {
+                        CHARACTER.write().armor[index].name = evt.value();
+                    },
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
-                    onclick: move |_| { std::mem::drop(CHARACTER.write().armor.remove(index)); },
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().armor.remove(index));
+                    },
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
             }
 
@@ -311,6 +364,9 @@ fn RenderArmorPiece(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().armor[index].flat_reduction =
                             evt.value().parse::<i32>().unwrap_or(0);
+                            .value()
+                            .parse::<i32>()
+                            .unwrap_or(0);
                     },
                 }
                 span { class: "font-mono text-lg", "% reduction:" }
@@ -323,6 +379,10 @@ fn RenderArmorPiece(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().armor[index].pct_reduction =
                             evt.value().parse::<i32>().unwrap_or(0).clamp(0, 100);
+                            .value()
+                            .parse::<i32>()
+                            .unwrap_or(0)
+                            .clamp(0, 100);
                     },
                 }
                 span { class: "font-mono text-lg", "%" }
@@ -330,11 +390,19 @@ fn RenderArmorPiece(index: usize) -> Element {
 
             // Notes
             textarea {
-                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-y",
-                rows: 2,
+                id: "armor-notes-{index}",
+                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden",
+                style: "min-height: 2.75rem",
                 placeholder: "Notes",
                 value: "{a.notes}",
-                oninput: move |evt| { CHARACTER.write().armor[index].notes = evt.value(); },
+                onmounted: move |_| async move {
+                    let _ = document::eval(&auto_resize_js(&format!("armor-notes-{index}"), true))
+                        .await;
+                },
+                oninput: move |evt| {
+                    CHARACTER.write().armor[index].notes = evt.value();
+                    let _ = document::eval(&auto_resize_js(&format!("armor-notes-{index}"), false));
+                },
             }
         }
     }
@@ -359,7 +427,11 @@ fn RenderTalents() -> Element {
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| show.set(!show()),
-                    if show() { "Hide" } else { "Show" }
+                    if show() {
+                        "Hide"
+                    } else {
+                        "Show"
+                    }
                 }
             }
             if show() {
@@ -380,7 +452,7 @@ fn RenderTalent(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
+        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[280px] space-y-2",
             // Name + AP cost + delete
             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                 input {
@@ -388,7 +460,9 @@ fn RenderTalent(index: usize) -> Element {
                     r#type: "text",
                     placeholder: "Name",
                     value: "{t.name}",
-                    oninput: move |evt| { CHARACTER.write().talents[index].name = evt.value(); },
+                    oninput: move |evt| {
+                        CHARACTER.write().talents[index].name = evt.value();
+                    },
                 }
                 span { class: "font-mono text-lg", "AP:" }
                 input {
@@ -399,12 +473,22 @@ fn RenderTalent(index: usize) -> Element {
                     oninput: move |evt| {
                         CHARACTER.write().talents[index].ap_cost =
                             evt.value().parse::<usize>().unwrap_or(1);
+                            .value()
+                            .parse::<usize>()
+                            .unwrap_or(1);
                     },
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
-                    onclick: move |_| { std::mem::drop(CHARACTER.write().talents.remove(index)); },
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    onclick: move |_| {
+                        std::mem::drop(CHARACTER.write().talents.remove(index));
+                    },
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
             }
 
@@ -416,19 +500,30 @@ fn RenderTalent(index: usize) -> Element {
                     r#type: "text",
                     placeholder: "e.g. Blade",
                     value: "{t.required_skill}",
-                    oninput: move |evt| { CHARACTER.write().talents[index].required_skill = evt.value(); },
+                    oninput: move |evt| {
+                        CHARACTER.write().talents[index].required_skill = evt.value();
+                    },
                 }
             }
 
             // Effect
             textarea {
-                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-y",
-                rows: 2,
+                id: "talent-effect-{index}",
+                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden",
+                style: "min-height: 2.75rem",
                 placeholder: "Effect",
                 value: "{t.description}",
-                oninput: move |evt| { CHARACTER.write().talents[index].description = evt.value(); },
+                onmounted: move |_| async move {
+                    let _ = document::eval(&auto_resize_js(&format!("talent-effect-{index}"), true))
+                        .await;
+                },
+                oninput: move |evt| {
+                    CHARACTER.write().talents[index].description = evt.value();
+                    let _ = document::eval(
+                        &auto_resize_js(&format!("talent-effect-{index}"), false),
+                    );
+                },
             }
         }
     }
 }
-

@@ -1,23 +1,33 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    icons::bs_icons::{BsSave, BsTrash},
     Icon,
+    icons::bs_icons::{BsSave, BsTrash},
 };
 
 use arrata_lib::{Quirk, QuirkCategory};
 
-use crate::{CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU, SHOWN_CATEGORIES};
+use crate::{
+    CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU, SHOWN_CATEGORIES, render::auto_resize_js,
+};
 
 #[component]
 pub(crate) fn RenderQuirks() -> Element {
     rsx! {
-        div { class: "min-[1920px]:w-1/3 min-[1280px]:w-1/2 w-full flex flex-col gap-4 justify-center px-2 h-full",
+        div { class: "min-[2560px]:w-1/4 min-[1920px]:w-1/3 min-[1280px]:w-1/2 w-full flex flex-col gap-4 justify-center px-2",
             h2 { class: "text-center text-4xl font-bold font-mono", "Argos" }
 
             textarea {
-                class: "rounded-lg w-full p-2 bg-black resize-none h-fit text-slate-600 font-mono border border-white text-center",
+                id: "argos",
+                class: "rounded-lg w-full p-2 bg-black resize-none overflow-hidden h-fit text-slate-600 font-mono border border-white text-center",
+                style: "min-height: 2.75rem",
                 value: "{CHARACTER().argos}",
-                oninput: move |evt| CHARACTER.write().argos = evt.value().to_string(),
+                onmounted: move |_| async move {
+                    let _ = document::eval(&auto_resize_js("argos", true)).await;
+                },
+                oninput: move |evt| {
+                    CHARACTER.write().argos = evt.value().to_string();
+                    let _ = document::eval(&auto_resize_js("argos", false));
+                },
             }
 
             RenderInspiration {}
@@ -156,13 +166,20 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
             }
             div { class: "flex border justify-center content-center items-center justify-items-center",
                 textarea {
-                    class: "rounded-lg w-full p-2 bg-black text-white border-white",
+                    id: "quirk-desc-{index}",
+                    class: "rounded-lg w-full p-2 bg-black text-white border-white resize-none overflow-hidden",
+                    style: "min-height: 2.75rem",
                     value: "{quirk().description}",
+                    onmounted: move |_| async move {
+                        let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), true))
+                            .await;
+                    },
                     oninput: move |evt| {
                         CHARACTER
                             .with_mut(|character| {
                                 character.quirks[index].description = evt.value().to_string();
                             });
+                        let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), false));
                     },
                 }
             }
@@ -211,12 +228,25 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
 #[component]
 fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
     rsx! {
-        div { class: "flex gap-x-1 w-full justify-center h-24",
+        div { class: "flex gap-x-1 w-full justify-center",
             if boon {
                 textarea {
-                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white",
+                    id: "quirk-boon-{quirk}-{index}",
+                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white resize-none overflow-hidden",
+                    style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].boons[index]}",
-                    oninput: move |evt| CHARACTER.write().quirks[quirk].boons[index] = evt.value().to_string(),
+                    onmounted: move |_| async move {
+                        let _ = document::eval(
+                                &auto_resize_js(&format!("quirk-boon-{quirk}-{index}"), true),
+                            )
+                            .await;
+                    },
+                    oninput: move |evt| {
+                        CHARACTER.write().quirks[quirk].boons[index] = evt.value().to_string();
+                        let _ = document::eval(
+                            &auto_resize_js(&format!("quirk-boon-{quirk}-{index}"), false),
+                        );
+                    },
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
@@ -232,9 +262,22 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                 }
             } else {
                 textarea {
-                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white",
+                    id: "quirk-flaw-{quirk}-{index}",
+                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white resize-none overflow-hidden",
+                    style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].flaws[index]}",
-                    oninput: move |evt| CHARACTER.write().quirks[quirk].flaws[index] = evt.value().to_string(),
+                    onmounted: move |_| async move {
+                        let _ = document::eval(
+                                &auto_resize_js(&format!("quirk-flaw-{quirk}-{index}"), true),
+                            )
+                            .await;
+                    },
+                    oninput: move |evt| {
+                        CHARACTER.write().quirks[quirk].flaws[index] = evt.value().to_string();
+                        let _ = document::eval(
+                            &auto_resize_js(&format!("quirk-flaw-{quirk}-{index}"), false),
+                        );
+                    },
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
@@ -301,3 +344,4 @@ fn RenderInspiration() -> Element {
         }
     }
 }
+

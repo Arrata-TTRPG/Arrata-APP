@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use dioxus_free_icons::{icons::bs_icons::BsTrash, Icon};
+use dioxus_free_icons::{Icon, icons::bs_icons::BsTrash};
 
 use arrata_lib::Item;
 
@@ -8,7 +8,7 @@ use crate::CHARACTER;
 #[component]
 pub(crate) fn RenderInventory() -> Element {
     rsx! {
-        div { class: "min-[1920px]:w-1/3 w-full h-full flex flex-col justify-center px-2 gap-4",
+        div { class: "min-[1920px]:w-1/3 w-full flex flex-col justify-center px-2 gap-4",
             div { class: "flex justify-center content-center items-center gap-4",
                 h2 { class: "inline-flex text-center text-4xl font-bold font-mono",
                     "Inventory"
@@ -60,3 +60,4 @@ pub(crate) fn RenderInventory() -> Element {
         }
     }
 }
+

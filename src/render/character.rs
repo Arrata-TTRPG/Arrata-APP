@@ -4,7 +4,7 @@ use rfd::AsyncFileDialog;
 
 use crate::{
     CHARACTER,
-    render::{RenderCombat, RenderInventory, RenderQuirks, RenderStats},
+    render::{RenderCombat, RenderQuirks, RenderStats},
 };
 
 #[component]
@@ -29,11 +29,10 @@ pub(crate) fn RenderCharacter() -> Element {
             }
         }
 
-        div { class: "flex flex-grow flex-wrap pt-4 pb-4",
+        div { class: "flex flex-grow flex-wrap pt-4 pb-4 items-start",
             RenderStats {}
             RenderQuirks {}
             RenderCombat {}
-            RenderInventory {}
         }
     }
 }

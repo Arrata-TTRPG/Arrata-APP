@@ -12,10 +12,11 @@ const RAT_RELEASE: Asset = asset!("public/rat_release.svg");
 #[component]
 pub fn App() -> Element {
     let arrata_style = r"
-    body { background-color: black; color: white; }
-    input { background-color: black; color: white; }
-    select { background-color: black; color: white; }
-    option { background-color: black; color: white; }
+        body { background-color: black; color: white; }
+        input { background-color: black; color: white; }
+        select { background-color: black; color: white; }
+        option { background-color: black; color: white; }
+        textarea { background-color: black; color: white; field-sizing: content; }
     ";
 
     use_future(move || async {
