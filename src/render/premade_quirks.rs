@@ -1,8 +1,8 @@
 use arrata_lib::{Quirk, QuirkCategory};
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    icons::bs_icons::{BsSave, BsTrash, BsX},
     Icon,
+    icons::bs_icons::{BsSave, BsTrash, BsX},
 };
 use rfd::AsyncFileDialog;
 
@@ -130,7 +130,7 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
             }
             if shown() {
                 div { class: "flex flex-col w-full max-h-full gap-3 overflow-y-scroll pr-3",
-                    for (index , quirk) in PREMADE_QUIRKS()
+                    for (index, quirk) in PREMADE_QUIRKS()
                         .into_iter()
                         .enumerate()
                         .filter(|(_, quirk)| quirk.category == category)
@@ -148,7 +148,7 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
     rsx! {
         div {
             class: "flex flex-col bg-slate-900 w-full h-fit p-1 border gap-2",
-            key: index,
+            key: "{index}",
             // Name, add, and remove buttons
             div { class: "flex flex-wrap gap-2 justify-center place-items-center",
                 h3 { class: "text-xl font-extrabold", "{quirk.name}" }
@@ -185,7 +185,7 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                     div { class: "flex flex-col gap-1 h-full",
                         h4 { class: "font-mono text-lg text-center", "Boons" }
                         ul { class: "list-disc list-inside items-start px-2",
-                            for (index , boon) in quirk.boons.iter().enumerate() {
+                            for (index, boon) in quirk.boons.iter().enumerate() {
                                 li {
                                     key: "{index}",
                                     class: "text-sm font-mono text-wrap",
@@ -197,7 +197,7 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                     div { class: "flex flex-col gap-1 h-full",
                         h4 { class: "font-mono text-lg text-center", "Flaws" }
                         ul { class: "list-disc list-inside items-start px-2",
-                            for (index , flaw) in quirk.flaws.iter().enumerate() {
+                            for (index, flaw) in quirk.flaws.iter().enumerate() {
                                 li {
                                     key: "{index}",
                                     class: "text-sm font-mono text-wrap",

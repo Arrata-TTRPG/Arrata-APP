@@ -38,7 +38,7 @@ fn RenderCoreStats() -> Element {
         h2 { class: "text-center text-4xl font-bold font-mono", "Stats {stats_total}" }
         div { class: "flex justify-center justify-items-center content-center",
             div { class: "grid min-[1340px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
-                for (i , stat) in CHARACTER().stats.iter().enumerate() {
+                for (i, stat) in CHARACTER().stats.iter().enumerate() {
                     div { class: "flex flex-col border gap-2 justify-center p-2 rounded-lg w-full",
                         div { class: "inline-flex items-center justify-center",
                             div { class: "flex-grow font-mono text-center text-2xl",
@@ -143,7 +143,7 @@ fn RenderSkills() -> Element {
         }
         div { class: "flex justify-center",
             div { class: "grid min-[1340px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
-                for (i , skill) in CHARACTER().skills.iter().enumerate() {
+                for (i, skill) in CHARACTER().skills.iter().enumerate() {
                     div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
                         div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                             input {
@@ -284,7 +284,7 @@ fn RenderResources() -> Element {
                 }
                 div { class: "flex flex-col gap-1",
                     if render_infinite() {
-                        for (i , _) in CHARACTER().resources.iter().enumerate().filter(|(_, r)| !r.finite) {
+                        for (i, _) in CHARACTER().resources.iter().enumerate().filter(|(_, r)| !r.finite) {
                             RenderResource { index: i }
                         }
                     }
@@ -318,7 +318,7 @@ fn RenderResources() -> Element {
                 }
                 div { class: "flex flex-col gap-1",
                     if render_finite() {
-                        for (i , _) in CHARACTER().resources.iter().enumerate().filter(|(_, r)| r.finite) {
+                        for (i, _) in CHARACTER().resources.iter().enumerate().filter(|(_, r)| r.finite) {
                             RenderResource { index: i }
                         }
                     }

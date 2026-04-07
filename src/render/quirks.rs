@@ -103,7 +103,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
             }
             if show && has_in_category {
                 div { class: "flex flex-wrap p-3 border rounded w-full max-h-96 overflow-y-scroll gap-3",
-                    for (index , quirk) in CHARACTER()
+                    for (index, quirk) in CHARACTER()
                         .quirks
                         .iter()
                         .enumerate()
@@ -194,12 +194,12 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     }
                 }
                 div { class: "flex flex-col gap-y-1 items-center justify-items-center",
-                    for (j , _) in quirk().boons.iter().enumerate() {
+                    for (j, _) in quirk().boons.iter().enumerate() {
                         RenderBF { boon: true, quirk: index, index: j }
                     }
                 }
                 div { class: "flex flex-col gap-y-1 items-center justify-items-center",
-                    for (j , _) in quirk().flaws.iter().enumerate() {
+                    for (j, _) in quirk().flaws.iter().enumerate() {
                         RenderBF { boon: false, quirk: index, index: j }
                     }
                 }

@@ -1,9 +1,8 @@
 use dioxus::prelude::*;
 
 use crate::{
-    load_initial_quirks,
+    DICE_ROLL_STATE, VERSION, load_initial_quirks,
     render::{CharacterIO, RenderCharacter, RenderRolls},
-    DICE_ROLL_STATE, VERSION,
 };
 
 const TAILWIND_CSS: Asset = asset!("public/tailwind.css");
@@ -26,8 +25,8 @@ pub fn App() -> Element {
     #[cfg(any(feature = "web", feature = "desktop"))]
     {
         use crate::{
-            storage::{read_character, read_quirks, write_character, write_quirks},
             CHARACTER, PREMADE_QUIRKS,
+            storage::{read_character, read_quirks, write_character, write_quirks},
         };
 
         use_future(|| async {
@@ -57,8 +56,8 @@ pub fn App() -> Element {
     }
 
     rsx! {
+        Stylesheet { href: TAILWIND_CSS }
         style { "{arrata_style}" }
-        link { rel: "stylesheet", href: TAILWIND_CSS }
         div { class: "w-screen h-screen",
             div { class: "px-5 py-2 origin-center justify-center items-middle flex flex-wrap h-fit max-w-full gap-4",
                 // Arrata logo
