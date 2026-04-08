@@ -99,7 +99,6 @@ jobs:
             experimental-features = nix-command flakes
             accept-flake-config = true
       - name: Restore Nix cache
-        id: restore-nix-cache
         uses: nix-community/cache-nix-action/restore@v7
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-release

@@ -46,7 +46,7 @@ pub(crate) static PREMADE_QUIRKS: GlobalSignal<Vec<Quirk>> = GlobalSignal::new(V
 /// The `GlobalSignal` for which category of `Quirks` to display.
 /// The tuple is in the order of ethos, pathos, logos.
 pub(crate) static SHOWN_CATEGORIES: GlobalSignal<(bool, bool, bool)> =
-    GlobalSignal::new(|| (true, true, true));
+    GlobalSignal::new(|| (false, false, false));
 
 /// Loads the initial pre-made quirks from the `Arrata-Quirks` GitHub repository.
 pub(crate) async fn load_initial_quirks() {

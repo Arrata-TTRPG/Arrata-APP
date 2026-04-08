@@ -446,7 +446,7 @@ fn RenderResource(index: usize) -> Element {
 
 #[component]
 fn RenderInventory() -> Element {
-    let mut show = use_signal(|| true);
+    let mut show = use_signal(|| false);
     rsx! {
         div { class: "flex flex-col gap-2",
             div { class: "flex justify-center content-center items-center gap-4",
