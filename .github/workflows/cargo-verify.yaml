@@ -41,7 +41,7 @@ jobs:
         id: restore-nix-cache
         uses: nix-community/cache-nix-action/restore@v7
         with:
-          primary-key: nix-${{ runner.os }}-ci
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
           paths: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
@@ -65,7 +65,7 @@ jobs:
         if: always()
         uses: nix-community/cache-nix-action/save@v7
         with:
-          primary-key: nix-${{ runner.os }}-ci
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
           paths: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
