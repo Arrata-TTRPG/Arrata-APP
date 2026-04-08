@@ -50,13 +50,13 @@ fn RenderCombatStats() -> Element {
         div { class: "flex w-full flex-col gap-3 pb-4 gap-4",
             h2 { class: "text-center text-4xl font-bold font-mono", "Combat" }
 
-            div { class: "w-full flex flex-row justify-center items-center gap-4",
+            div { class: "w-full flex max-[1280px]:flex-col min-[1281px]:flex-row justify-center items-center gap-4",
                 // Health
-                div { class: "flex flex-shrink min-w-30 flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
+                div { class: "flex min-w-30 max-[1280px]:w-full flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
                     span { class: "font-mono text-sm text-slate-200", "Health" }
                     div { class: "w-full inline-flex items-center justify-center place-items-center gap-2",
                         input {
-                            class: "flex flex-1 min-w-10 max-w-40 border rounded-lg p-2 text-center",
+                            class: "flex flex-1 min-w-10 min-[1281px]:max-w-30 text-lg border rounded-lg p-2",
                             r#type: "number",
                             value: current_hp,
                             min: "0",
@@ -73,7 +73,7 @@ fn RenderCombatStats() -> Element {
                 }
 
                 // Injury
-                div { class: "flex flex-col items-center border rounded-lg p-3 gap-1 h-22",
+                div { class: "flex max-[1280px]:w-full flex-col items-center border rounded-lg p-3 gap-1 h-22",
                     span { class: "font-mono text-sm text-slate-200", "Injury" }
                     div { class: "inline-flex items-center gap-2",
                         button {
@@ -101,11 +101,11 @@ fn RenderCombatStats() -> Element {
                 }
 
                 // Action Points
-                div { class: "flex flex-shrink min-w-30 flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
+                div { class: "flex min-w-30 max-[1280px]:w-full flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
                     span { class: "font-mono text-sm text-slate-200", "Action Points" }
                     div { class: "inline-flex w-full items-center justify-center place-items-center gap-2",
                         input {
-                            class: "flex flex-1 min-w-10 max-w-40 border rounded-lg p-2 text-center",
+                            class: "flex flex-1 min-w-10 min-[1281px]:max-w-30 text-lg border rounded-lg p-2",
                             r#type: "number",
                             value: "{current_ap()}",
                             oninput: move |evt| {
@@ -132,9 +132,9 @@ fn RenderWeapons() -> Element {
                     "Weapons {CHARACTER().weapons.iter().count()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| CHARACTER.write().weapons.push(Weapon::default()),
-                    "+ Add Weapon"
+                    "+"
                 }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
@@ -221,16 +221,16 @@ fn RenderWeapon(index: usize) -> Element {
             }
 
             // Base dmg + stat dropdown
-            div { class: "flex flex-wrap justify-center content-center items-center justify-items-center space-x-2 space-y-2",
+            div { class: "flex flex-wrap justify-center gap-2",
                 div { class: "flex flex-row gap-2 items-center",
                     span { class: "font-mono text-lg", "Base dmg:" }
                     input {
-                        class: "w-24 border rounded-lg p-2 text-center",
+                        class: "w-24 border rounded-lg p-2 text-lg text-center",
                         r#type: "number",
                         value: i64::from(w.base_damage),
                         oninput: move |evt| {
                             CHARACTER.write().weapons[index].base_damage =
-                                evt.value().parse::<i32>().unwrap_or(1);
+                                evt.value().parse::<i32>().unwrap_or(0);
                         },
                     }
                 }
@@ -284,9 +284,9 @@ fn RenderArmor() -> Element {
                     "Armor {CHARACTER().armor.iter().count()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| CHARACTER.write().armor.push(Armor::default()),
-                    "+ Add Armor"
+                    "+"
                 }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
@@ -343,34 +343,36 @@ fn RenderArmorPiece(index: usize) -> Element {
             }
 
             // Reductions
-            div { class: "flex flex-wrap border rounded-lg justify-center content-center items-center justify-items-center space-x-2 space-y-2 pt-2",
+            div { class: "flex flex-col border rounded-lg justify-center place-items-center space-y-2 py-2",
                 span { class: "w-full font-mono text-xl text-center", "Reductions" }
-                div { class: "flex flex-row gap-2 items-center",
-                    span { class: "font-mono text-lg", "Flat:" }
-                    input {
-                        class: "w-16 border rounded-lg p-2 text-center",
-                        r#type: "number",
-                        value: i64::from(a.flat_reduction),
-                        oninput: move |evt| {
-                            CHARACTER.write().armor[index].flat_reduction =
-                                evt.value().parse::<i32>().unwrap_or(0);
-                        },
+                div { class: "flex flex-wrap space-x-2 ",
+                    div { class: "flex flex-row gap-2 justify-center items-center",
+                        span { class: "font-mono text-lg", "Flat:" }
+                        input {
+                            class: "w-16 border rounded-lg p-2 text-center",
+                            r#type: "number",
+                            value: i64::from(a.flat_reduction),
+                            oninput: move |evt| {
+                                CHARACTER.write().armor[index].flat_reduction =
+                                    evt.value().parse::<i32>().unwrap_or(0);
+                            },
+                        }
                     }
-                }
-                div { class: "flex flex-row gap-2 items-center",
-                    span { class: "font-mono text-lg", "Percent:" }
-                    input {
-                        class: "w-16 border rounded-lg p-2 text-center",
-                        r#type: "number",
-                        value: i64::from(a.pct_reduction),
-                        min: 0,
-                        max: 100,
-                        oninput: move |evt| {
-                            CHARACTER.write().armor[index].pct_reduction =
-                                evt.value().parse::<i32>().unwrap_or(0).clamp(0, 100);
-                        },
+                    div { class: "flex flex-row gap-2 justify-center items-center",
+                        span { class: "font-mono text-lg", "Percent:" }
+                        input {
+                            class: "w-16 border rounded-lg p-2 text-center",
+                            r#type: "number",
+                            value: i64::from(a.pct_reduction),
+                            min: 0,
+                            max: 100,
+                            oninput: move |evt| {
+                                CHARACTER.write().armor[index].pct_reduction =
+                                    evt.value().parse::<i32>().unwrap_or(0);
+                            },
+                        }
+                        span { class: "font-mono text-lg", "%" }
                     }
-                    span { class: "font-mono text-lg", "%" }
                 }
             }
 
@@ -406,9 +408,9 @@ fn RenderTalents() -> Element {
                     "Talents {CHARACTER().talents.iter().count()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
-                    "+ Add Talent"
+                    "+"
                 }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
@@ -458,7 +460,7 @@ fn RenderTalent(index: usize) -> Element {
                     min: 0,
                     oninput: move |evt| {
                         CHARACTER.write().talents[index].ap_cost =
-                            evt.value().parse::<usize>().unwrap_or(1);
+                            evt.value().parse::<usize>().unwrap_or(0);
                     },
                 }
                 button {

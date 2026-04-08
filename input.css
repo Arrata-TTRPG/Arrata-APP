@@ -1,2 +1,11 @@
 ﻿@import "tailwindcss";
 @source "./src/**/*.{rs,html,css}";
+
+@layer base {
+  body { @apply bg-black text-white text-center }
+  input { @apply bg-black text-white }
+  input[type="number"] { @apply bg-black text-white text-center font-mono }
+  select { @apply bg-black text-white }
+  option { @apply bg-black text-white }
+  textarea { @apply bg-black text-white field-sizing-content }
+}

@@ -11,14 +11,6 @@ const RAT_RELEASE: Asset = asset!("public/rat_release.svg");
 /// The main application.
 #[component]
 pub fn App() -> Element {
-    let arrata_style = r"
-        body { background-color: black; color: white; }
-        input { background-color: black; color: white; }
-        select { background-color: black; color: white; }
-        option { background-color: black; color: white; }
-        textarea { background-color: black; color: white; field-sizing: content; }
-    ";
-
     use_future(move || async {
         load_initial_quirks().await;
     });
@@ -64,7 +56,6 @@ pub fn App() -> Element {
 
     rsx! {
         Stylesheet { href: TAILWIND_CSS }
-        style { "{arrata_style}" }
 
         // Full-screen flex row: sidebar + main content
         div { class: "w-screen h-screen flex flex-row overflow-hidden",

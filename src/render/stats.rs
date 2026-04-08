@@ -93,7 +93,7 @@ fn RenderCoreStats() -> Element {
                                 }
                             }
                             input {
-                                class: "w-16 border rounded-lg p-2 appearance-none",
+                                class: "w-16 border rounded-lg p-2 font-mono text-center",
                                 r#type: "number",
                                 value: "{stat.quantity}",
                                 min: 0,
@@ -107,7 +107,7 @@ fn RenderCoreStats() -> Element {
                             }
                             div { class: "font-mono text-lg align-middle h-fit", "Checks:" }
                             input {
-                                class: "w-16 border rounded-lg p-2",
+                                class: "w-16 border rounded-lg font-mono text-center p-2",
                                 r#type: "number",
                                 value: "{stat.checks.unwrap_or_default()}",
                                 min: 0,
@@ -223,7 +223,7 @@ fn RenderSkills() -> Element {
                                     }
                                 }
                                 input {
-                                    class: "w-16 border rounded-lg p-2",
+                                    class: "w-16 border rounded-lg p-2 font-mono text-center",
                                     r#type: "number",
                                     value: "{skill.quantity}",
                                     min: 0,
@@ -237,7 +237,7 @@ fn RenderSkills() -> Element {
                                 }
                                 div { class: "font-mono text-lg", "Checks:" }
                                 input {
-                                    class: "w-16 border rounded-lg p-2",
+                                    class: "w-16 border rounded-lg font-mono text-center p-2",
                                     r#type: "number",
                                     value: "{skill.checks.unwrap_or(0)}",
                                     min: 0,
