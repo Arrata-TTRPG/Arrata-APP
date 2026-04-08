@@ -103,6 +103,9 @@ jobs:
         uses: nix-community/cache-nix-action/restore@v7
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-release
+          restore-prefixes-first-match: |
+            nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-release
+            nix-${{ runner.os }}-
           paths: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
