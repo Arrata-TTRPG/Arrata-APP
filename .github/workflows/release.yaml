@@ -141,7 +141,6 @@ jobs:
         uses: nix-community/cache-nix-action/save@v7
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-release
-          purge: true # Delete old caches
           paths: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
