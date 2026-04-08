@@ -23,7 +23,7 @@ const STAT_NAMES: [&str; 7] = [
 #[component]
 pub(crate) fn RenderCombat() -> Element {
     rsx! {
-        div { class: "flex flex-wrap w-full max-[1920px]:pt-10 min-[1921px]:w-1/3 min-[1921px]:pt-0 px-2 justify-center gap-4",
+        div { class: "flex flex-wrap w-full max-[1920px]:pt-10 min-[1921px]:w-1/3 min-[1921px]:pt-0 px-2 justify-center",
             RenderCombatStats {}
             RenderWeapons {}
             RenderArmor {}
@@ -132,7 +132,7 @@ fn RenderWeapons() -> Element {
                     "Weapons {CHARACTER().weapons.iter().count()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-3 rounded h-full border",
                     onclick: move |_| CHARACTER.write().weapons.push(Weapon::default()),
                     "+"
                 }
@@ -278,13 +278,13 @@ fn RenderWeapon(index: usize) -> Element {
 fn RenderArmor() -> Element {
     let mut show = use_signal(|| false);
     rsx! {
-        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pl-1 w-full flex-col gap-2 py-4",
+        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pl-1 min-[1281px]:max-[1920px]:py-0 w-full flex-col gap-2 py-4",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
                 h2 { class: "text-center text-4xl font-bold font-mono",
                     "Armor {CHARACTER().armor.iter().count()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-3 rounded h-full border",
                     onclick: move |_| CHARACTER.write().armor.push(Armor::default()),
                     "+"
                 }
@@ -408,7 +408,7 @@ fn RenderTalents() -> Element {
                     "Talents {CHARACTER().talents.iter().count()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold px-3 rounded h-full border",
                     onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
                     "+"
                 }
