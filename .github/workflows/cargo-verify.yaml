@@ -51,7 +51,7 @@ jobs:
       - name: Fix permissions
         run: |
           sudo chmod 777 ~/.cargo/**
-          sudo chmod 777 ~/.cargo/**
+          sudo chmod 777 target/**
       - name: Build tailwindcss
         run: nix develop -c tailwindcss build -i input.css -o public/tailwind.css
       - name: dx build
@@ -70,6 +70,7 @@ jobs:
         uses: nix-community/cache-nix-action/save@v7
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
+          purge: true # Delete old caches
           paths: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
