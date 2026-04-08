@@ -37,11 +37,17 @@ jobs:
           nix_conf: |
             keep-env-derivations = true
             keep-outputs = true
-      - name: Restore and save Nix store
-        uses: nix-community/cache-nix-action@v7
+      - name: Restore Nix cache
+        id: restore-nix-cache
+        uses: nix-community/cache-nix-action/restore@v7
         with:
-          # restore and save a cache using this key
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
+          primary-key: nix-${{ runner.os }}-ci
+          paths: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
       - name: Build tailwindcss
         run: nix develop -c tailwindcss build -i input.css -o public/tailwind.css
       - name: dx build
@@ -54,3 +60,15 @@ jobs:
         run: nix develop -c cargo clippy --all
       - name: Cargo fmt
         run: nix develop -c cargo fmt -- --check
+
+      - name: Save cache
+        if: always() && steps.restore-nix-cache.outputs.hit-primary-key != 'true'
+        uses: nix-community/cache-nix-action/save@v7
+        with:
+          primary-key: nix-${{ runner.os }}-ci
+          paths: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
