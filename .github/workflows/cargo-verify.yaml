@@ -49,6 +49,7 @@ jobs:
             ~/.cargo/git/db/
             target/
       - name: Fix permissions
+        continue-on-error: true
         run: |
           sudo chmod 777 ~/.cargo/**
           sudo chmod 777 target/**
