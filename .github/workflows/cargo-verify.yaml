@@ -66,8 +66,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh cache list --repo ${{ github.repository }} --key nix-${{ runner.os }}- --json id \
-            | jq -r '.[].id' \
+          gh cache list --repo ${{ github.repository }} --key nix-${{ runner.os }}- --json id,key \
+            | jq -r '.[] | select(.key | endswith("-ci")) | .id' \
             | xargs -r -I {} gh cache delete {} --repo ${{ github.repository }}
       - name: Save cache
         if: always()

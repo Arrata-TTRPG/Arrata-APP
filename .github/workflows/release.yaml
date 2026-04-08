@@ -138,7 +138,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh cache list --repo ${{ github.repository }} --key nix- --json id,ref,key \
-            | jq -r '.[] | select(.ref != "refs/heads/main" and .ref != "refs/tags/${{ env.VERSION }}") | .id' \
+            | jq -r '.[] | select((.key | endswith("-release")) and .ref != "refs/heads/main") | .id' \
             | xargs -r -I {} gh cache delete {} --repo ${{ github.repository }}
 
       - name: Save cache
