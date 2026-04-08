@@ -129,7 +129,7 @@ fn RenderCombatStats() -> Element {
 fn RenderWeapons() -> Element {
     let mut show = use_signal(|| true);
     rsx! {
-        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 w-full flex-col gap-2 py-4",
+        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pr-1 w-full flex-col gap-2 py-4",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
                 h2 { class: "text-center text-4xl font-bold font-mono",
                     "Weapons {CHARACTER().weapons.iter().count()}"
@@ -281,7 +281,7 @@ fn RenderWeapon(index: usize) -> Element {
 fn RenderArmor() -> Element {
     let mut show = use_signal(|| true);
     rsx! {
-        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 w-full flex-col gap-2 py-4",
+        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pl-1 w-full flex-col gap-2 py-4",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
                 h2 { class: "text-center text-4xl font-bold font-mono",
                     "Armor {CHARACTER().armor.iter().count()}"
@@ -441,7 +441,7 @@ fn RenderTalent(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[280px] space-y-2",
+        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[350px] space-y-2",
             // Name + AP cost + delete
             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                 input {
@@ -479,18 +479,16 @@ fn RenderTalent(index: usize) -> Element {
             }
 
             // Required skill
-            div { class: "flex justify-center content-center items-center justify-items-center space-x-1",
-                div {
-                    span { class: "font-mono text-lg", "Req. skill:" }
-                    input {
-                        class: "flex flex-1 font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
-                        r#type: "text",
-                        placeholder: "None",
-                        value: "{t.required_skill}",
-                        oninput: move |evt| {
-                            CHARACTER.write().talents[index].required_skill = evt.value();
-                        },
-                    }
+            div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-1",
+                span { class: "font-mono text-lg", "Req. skill:" }
+                input {
+                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                    r#type: "text",
+                    placeholder: "None",
+                    value: "{t.required_skill}",
+                    oninput: move |evt| {
+                        CHARACTER.write().talents[index].required_skill = evt.value();
+                    },
                 }
             }
 
