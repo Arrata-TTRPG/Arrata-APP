@@ -43,10 +43,7 @@ jobs:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
           restore-prefixes-first-match: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
           paths: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
+            ~/.cargo
             target/
       - name: Fix permissions
         continue-on-error: true
