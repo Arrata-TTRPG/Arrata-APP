@@ -32,15 +32,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
+      - uses: nixbuild/nix-quick-install-action@v30
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update Nix
-        run: |
-          nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-          nix-channel --update
+          nix_conf: |
+            keep-env-derivations = true
+            keep-outputs = true
+      - name: Restore and save Nix store
+        uses: nix-community/cache-nix-action@v7
+        with:
+          # restore and save a cache using this key
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
       - name: Build tailwindcss
         run: nix develop -c tailwindcss build -i input.css -o public/tailwind.css
       - name: dx build
