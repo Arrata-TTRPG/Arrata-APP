@@ -125,7 +125,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                 }
             }
             if show {
-                div { class: "flex flex-wrap p-3 border rounded w-full max-h-96 overflow-y-scroll gap-3",
+                div { class: "flex flex-wrap p-2 border rounded-lg w-full max-h-96 overflow-y-scroll gap-3",
                     for (index, quirk) in CHARACTER()
                         .quirks
                         .iter()
@@ -150,6 +150,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                     r#type: "text",
                     value: "{quirk().name}",
+                    placeholder: "Quirk Name",
                     oninput: move |evt| CHARACTER.write().quirks[index].name.clone_from(&evt.value()),
                 }
                 button {
@@ -183,6 +184,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     class: "rounded-lg w-full p-2 bg-black text-white border-white resize-none overflow-hidden",
                     style: "min-height: 2.75rem",
                     value: "{quirk().description}",
+                    placeholder: "Get quirky with it.",
                     onmounted: move |_| async move {
                         let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), true))
                             .await;

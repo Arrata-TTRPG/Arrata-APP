@@ -131,9 +131,10 @@ fn RenderCoreStats() -> Element {
 
 #[component]
 fn RenderSkills() -> Element {
+    let mut show = use_signal(|| false);
     rsx! {
-        div { class: "flex flex-row justify-center content-center items-center py-2",
-            h2 { class: "px-4 text-center text-4xl font-bold font-mono",
+        div { class: "flex flex-row justify-center content-center items-center py-2 gap-4",
+            h2 { class: "text-center text-4xl font-bold font-mono",
                 "Skills {CHARACTER().skills.iter().count()}"
             }
             button {
@@ -141,108 +142,115 @@ fn RenderSkills() -> Element {
                 onclick: move |_| CHARACTER.write().skills.push(Stat::new(String::new())),
                 "+ Add Skill"
             }
+            button {
+                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                onclick: move |_| show.set(!show()),
+                if show() { "Hide" } else { "Show" }
+            }
         }
-        div { class: "flex justify-center",
-            div { class: "flex flex-wrap gap-4 justify-center content-center items-start w-full",
-                for (i, skill) in CHARACTER().skills.iter().enumerate() {
-                    div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
-                        div { class: "flex w-full justify-center items-center text-2xl space-x-2",
-                            input {
-                                class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
-                                r#type: "text",
-                                value: "{skill.name}",
-                                placeholder: "Skill Name",
-                                oninput: move |evt| {
-                                    CHARACTER.write().skills[i].name.clone_from(&evt.value());
-                                },
-                            }
-                            button {
-                                class: "bg-slate-900 hover:bg-slate-600",
-                                onclick: move |_| {
-                                    DICE_ROLL_STATE
-                                        .with_mut(|state| {
-                                            state.0 = true;
-                                            state.1 = Some(CHARACTER().skills[i].clone());
-                                        });
-                                },
-                                Icon {
-                                    width: 45,
-                                    height: 45,
-                                    fill: "white",
-                                    icon: BsDice6,
+        if show() {
+            div { class: "flex justify-center border rounded-lg p-2",
+                div { class: "flex flex-wrap gap-4 justify-center content-center items-start w-full",
+                    for (i, skill) in CHARACTER().skills.iter().enumerate() {
+                        div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
+                            div { class: "flex w-full justify-center items-center text-2xl space-x-2",
+                                input {
+                                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                                    r#type: "text",
+                                    value: "{skill.name}",
+                                    placeholder: "Skill Name",
+                                    oninput: move |evt| {
+                                        CHARACTER.write().skills[i].name.clone_from(&evt.value());
+                                    },
+                                }
+                                button {
+                                    class: "bg-slate-900 hover:bg-slate-600",
+                                    onclick: move |_| {
+                                        DICE_ROLL_STATE
+                                            .with_mut(|state| {
+                                                state.0 = true;
+                                                state.1 = Some(CHARACTER().skills[i].clone());
+                                            });
+                                    },
+                                    Icon {
+                                        width: 45,
+                                        height: 45,
+                                        fill: "white",
+                                        icon: BsDice6,
+                                    }
+                                }
+                                button {
+                                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                                    onclick: move |_| {
+                                        std::mem::drop(CHARACTER.write().skills.remove(i));
+                                    },
+                                    Icon {
+                                        width: 25,
+                                        height: 25,
+                                        fill: "white",
+                                        icon: BsTrash,
+                                    }
                                 }
                             }
-                            button {
-                                class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
-                                onclick: move |_| {
-                                    std::mem::drop(CHARACTER.write().skills.remove(i));
-                                },
-                                Icon {
-                                    width: 25,
-                                    height: 25,
-                                    fill: "white",
-                                    icon: BsTrash,
+                            div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
+                                select {
+                                    class: "flex-grow hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer",
+                                    onchange: move |evt| {
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.skills[i].quality = match evt.value().parse::<usize>().unwrap()
+                                                {
+                                                    1 => Quality::Adept,
+                                                    2 => Quality::Superb,
+                                                    _ => Quality::Basic,
+                                                }
+                                            });
+                                    },
+                                    option {
+                                        value: 0,
+                                        selected: CHARACTER().skills[i].quality == Quality::Basic,
+                                        "Basic"
+                                    }
+                                    option {
+                                        value: 1,
+                                        selected: CHARACTER().skills[i].quality == Quality::Adept,
+                                        "Adept"
+                                    }
+                                    option {
+                                        value: 2,
+                                        selected: CHARACTER().skills[i].quality == Quality::Superb,
+                                        "Superb"
+                                    }
                                 }
-                            }
-                        }
-                        div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
-                            select {
-                                class: "flex-grow hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer",
-                                onchange: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.skills[i].quality = match evt.value().parse::<usize>().unwrap()
-                                            {
-                                                1 => Quality::Adept,
-                                                2 => Quality::Superb,
-                                                _ => Quality::Basic,
-                                            }
-                                        });
-                                },
-                                option {
-                                    value: 0,
-                                    selected: CHARACTER().skills[i].quality == Quality::Basic,
-                                    "Basic"
+                                input {
+                                    class: "w-16 border rounded-lg p-2",
+                                    r#type: "number",
+                                    value: "{skill.quantity}",
+                                    min: 0,
+                                    max: i64::MAX,
+                                    oninput: move |evt| {
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.skills[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
+                                            });
+                                    },
                                 }
-                                option {
-                                    value: 1,
-                                    selected: CHARACTER().skills[i].quality == Quality::Adept,
-                                    "Adept"
+                                div { class: "font-mono text-lg", "Checks:" }
+                                input {
+                                    class: "w-16 border rounded-lg p-2",
+                                    r#type: "number",
+                                    value: "{skill.checks.unwrap_or(0)}",
+                                    min: 0,
+                                    max: i64::MAX,
+                                    oninput: move |evt| {
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.skills[i].checks = Some(
+                                                    evt.value().parse::<usize>().unwrap_or(0),
+                                                );
+                                            });
+                                    },
                                 }
-                                option {
-                                    value: 2,
-                                    selected: CHARACTER().skills[i].quality == Quality::Superb,
-                                    "Superb"
-                                }
-                            }
-                            input {
-                                class: "w-16 border rounded-lg p-2",
-                                r#type: "number",
-                                value: "{skill.quantity}",
-                                min: 0,
-                                max: i64::MAX,
-                                oninput: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.skills[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
-                                        });
-                                },
-                            }
-                            div { class: "font-mono text-lg", "Checks:" }
-                            input {
-                                class: "w-16 border rounded-lg p-2",
-                                r#type: "number",
-                                value: "{skill.checks.unwrap_or(0)}",
-                                min: 0,
-                                max: i64::MAX,
-                                oninput: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.skills[i].checks = Some(
-                                                evt.value().parse::<usize>().unwrap_or(0),
-                                            );
-                                        });
-                                },
                             }
                         }
                     }
@@ -469,7 +477,7 @@ fn RenderInventory() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap gap-4 justify-center content-center items-start w-full",
+                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start w-full",
                     for (i, item) in CHARACTER().inventory.iter().enumerate() {
                         div { class: "flex flex-1 justify-center items-center border border-spacing-2 space-x-2 p-2 rounded-lg min-w-[200px]",
                             input {

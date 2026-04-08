@@ -5,7 +5,6 @@ use arrata_lib::{Armor, Talent, Weapon, combat};
 
 use crate::{CHARACTER, render::auto_resize_js};
 
-// ── Stat indices for derived combat values ────────────────────────────────────
 const WILL_IDX: usize = 0;
 const SPEED_IDX: usize = 4;
 const FORTE_IDX: usize = 5;
@@ -33,7 +32,7 @@ pub(crate) fn RenderCombat() -> Element {
     }
 }
 
-// ── Derived combat stats ──────────────────────────────────────────────────────
+// Combat stats
 
 #[component]
 fn RenderCombatStats() -> Element {
@@ -53,13 +52,15 @@ fn RenderCombatStats() -> Element {
 
             div { class: "w-full flex flex-row justify-center items-center gap-4",
                 // Health
-                div { class: "flex flex-1 min-w-30 flex-col items-center border rounded-lg py-3 px-1 gap-1 h-22",
+                div { class: "flex flex-shrink min-w-30 flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
                     span { class: "font-mono text-sm text-slate-200", "Health" }
                     div { class: "w-full inline-flex items-center justify-center place-items-center gap-2",
                         input {
-                            class: "flex flex-1 min-w-10 border rounded-lg p-2 text-center",
+                            class: "flex flex-1 min-w-10 max-w-40 border rounded-lg p-2 text-center",
                             r#type: "number",
-                            value: i64::try_from(current_hp).unwrap_or_default(),
+                            value: current_hp,
+                            min: "0",
+                            max: usize::MAX,
                             oninput: move |evt| {
                                 CHARACTER
                                     .with_mut(|c| {
@@ -76,7 +77,7 @@ fn RenderCombatStats() -> Element {
                     span { class: "font-mono text-sm text-slate-200", "Injury" }
                     div { class: "inline-flex items-center gap-2",
                         button {
-                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-2 py-1 font-mono text-lg",
+                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-4 py-1 font-mono font-bold text-xl",
                             onclick: move |_| {
                                 CHARACTER
                                     .with_mut(|c| {
@@ -87,7 +88,7 @@ fn RenderCombatStats() -> Element {
                         }
                         span { class: "font-mono text-2xl w-8 text-center", "{injury}" }
                         button {
-                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-2 py-1 font-mono text-lg",
+                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-4 py-1 font-mono font-bold text-xl",
                             onclick: move |_| {
                                 CHARACTER
                                     .with_mut(|c| {
@@ -100,11 +101,11 @@ fn RenderCombatStats() -> Element {
                 }
 
                 // Action Points
-                div { class: "flex flex-1 min-w-30 flex-col items-center border rounded-lg py-3 px-1 gap-1 h-22",
+                div { class: "flex flex-shrink min-w-30 flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
                     span { class: "font-mono text-sm text-slate-200", "Action Points" }
                     div { class: "inline-flex w-full items-center justify-center place-items-center gap-2",
                         input {
-                            class: "flex flex-1 min-w-10 border rounded-lg p-2 text-center",
+                            class: "flex flex-1 min-w-10 max-w-40 border rounded-lg p-2 text-center",
                             r#type: "number",
                             value: "{current_ap()}",
                             oninput: move |evt| {
@@ -119,11 +120,11 @@ fn RenderCombatStats() -> Element {
     }
 }
 
-// ── Weapons ───────────────────────────────────────────────────────────────────
+// Weapons
 
 #[component]
 fn RenderWeapons() -> Element {
-    let mut show = use_signal(|| true);
+    let mut show = use_signal(|| false);
     rsx! {
         div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pr-1 w-full flex-col gap-2",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
@@ -146,7 +147,7 @@ fn RenderWeapons() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap gap-4 justify-center content-center items-start",
+                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start",
                     for (i, _) in CHARACTER().weapons.iter().enumerate() {
                         RenderWeapon { index: i }
                     }
@@ -271,11 +272,11 @@ fn RenderWeapon(index: usize) -> Element {
     }
 }
 
-// ── Armor ─────────────────────────────────────────────────────────────────────
+// Armor
 
 #[component]
 fn RenderArmor() -> Element {
-    let mut show = use_signal(|| true);
+    let mut show = use_signal(|| false);
     rsx! {
         div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pl-1 w-full flex-col gap-2 py-4",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
@@ -298,7 +299,7 @@ fn RenderArmor() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap gap-4 justify-center content-center items-start",
+                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start",
                     for (i, _) in CHARACTER().armor.iter().enumerate() {
                         RenderArmorPiece { index: i }
                     }
@@ -393,11 +394,11 @@ fn RenderArmorPiece(index: usize) -> Element {
     }
 }
 
-// ── Talents ───────────────────────────────────────────────────────────────────
+// Talents
 
 #[component]
 fn RenderTalents() -> Element {
-    let mut show = use_signal(|| true);
+    let mut show = use_signal(|| false);
     rsx! {
         div { class: "flex w-full flex-col gap-2",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
@@ -420,7 +421,7 @@ fn RenderTalents() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap gap-4 justify-center content-center items-start",
+                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start",
                     for (i, _) in CHARACTER().talents.iter().enumerate() {
                         RenderTalent { index: i }
                     }
