@@ -12,22 +12,41 @@ use crate::{
 
 #[component]
 pub(crate) fn RenderQuirks() -> Element {
+    let mut show_argos = use_signal(|| false);
     rsx! {
-        div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 flex-col gap-4 justify-center px-2",
-            h2 { class: "text-center text-4xl font-bold font-mono", "Argos" }
+        div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 max-[1920px]:pt-10 flex-col gap-4 justify-center px-2",
+            div { class: "flex flex-row justify-center gap-2",
+                h2 { class: "text-center text-4xl font-bold font-mono", "Argos" }
+                button {
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    onclick: move |_| show_argos.set(!show_argos()),
+                    if show_argos() {
+                        "Hide"
+                    } else {
+                        "Show"
+                    }
+                }
+            }
 
-            textarea {
-                id: "argos",
-                class: "rounded-lg w-full p-2 bg-black resize-none overflow-hidden h-fit text-slate-600 font-mono border border-white text-center",
-                style: "min-height: 2.75rem",
-                value: "{CHARACTER().argos}",
-                onmounted: move |_| async move {
-                    let _ = document::eval(&auto_resize_js("argos", true)).await;
-                },
-                oninput: move |evt| {
-                    CHARACTER.write().argos.clone_from(&evt.value());
-                    let _ = document::eval(&auto_resize_js("argos", false));
-                },
+            if show_argos() {
+                textarea {
+                    id: "argos",
+                    class: "rounded-lg w-full p-2 bg-black resize-none overflow-hidden h-fit font-mono border border-white text-center",
+                    style: "min-height: 2.75rem; color: rgb(150 150 150);
+                            background-image:   radial-gradient(circle, white 0.4px, transparent 1px),
+                                                radial-gradient(circle, white 0.4px, transparent 1px);
+                            background-size: 10px 10px;
+                            background-position: 0 0, 5px 5px;",
+                    value: "{CHARACTER().argos}",
+                    placeholder: "TODO: Find purpose.",
+                    onmounted: move |_| async move {
+                        let _ = document::eval(&auto_resize_js("argos", true)).await;
+                    },
+                    oninput: move |evt| {
+                        CHARACTER.write().argos.clone_from(&evt.value());
+                        let _ = document::eval(&auto_resize_js("argos", false));
+                    },
+                }
             }
 
             RenderInspiration {}
@@ -68,10 +87,6 @@ pub(crate) fn RenderQuirks() -> Element {
 #[component]
 fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
     let category = Signal::new(category);
-    let has_in_category = CHARACTER()
-        .quirks
-        .iter()
-        .any(|quirk| quirk.category == category());
     rsx! {
         div { class: "flex flex-col w-full justify-center items-center gap-2",
             div { class: "flex justify-center items-center flex-row flex-wrap gap-2",
@@ -102,16 +117,14 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                             QuirkCategory::Uncategorized => {}
                         }
                     },
-                    if !has_in_category {
-                        "No {category} Quirks"
-                    } else if show {
-                        "Hide Quirks"
+                    if show {
+                        "Hide"
                     } else {
-                        "Show Quirks"
+                        "Show"
                     }
                 }
             }
-            if show && has_in_category {
+            if show {
                 div { class: "flex flex-wrap p-3 border rounded w-full max-h-96 overflow-y-scroll gap-3",
                     for (index, quirk) in CHARACTER()
                         .quirks
@@ -301,46 +314,47 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
 #[component]
 fn RenderInspiration() -> Element {
     rsx! {
-        h3 { class: "text-center p-2 text-3xl font-bold", "Inspiration" }
-
-        div { class: "flex justify-center gap-4",
-            div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
-                h4 { class: "text-center text-2xl font-bold", "Ethos" }
-                input {
-                    class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
-                    r#type: "number",
-                    min: 0,
-                    max: i64::MAX,
-                    value: "{CHARACTER().inspiration.ethos}",
-                    onchange: move |evt| {
-                        CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0);
-                    },
+        div { class: "flex flex-col space-y-2 border rounded-xl",
+            h3 { class: "text-center p-2 text-3xl font-bold", "Inspiration" }
+            div { class: "flex justify-center gap-4",
+                div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
+                    h4 { class: "text-center text-2xl font-bold", "Ethos" }
+                    input {
+                        class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
+                        r#type: "number",
+                        min: 0,
+                        max: i64::MAX,
+                        value: "{CHARACTER().inspiration.ethos}",
+                        onchange: move |evt| {
+                            CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0);
+                        },
+                    }
                 }
-            }
-            div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
-                h4 { class: "text-center text-2xl font-bold", "Pathos" }
-                input {
-                    class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
-                    r#type: "number",
-                    min: 0,
-                    max: i64::MAX,
-                    value: "{CHARACTER().inspiration.pathos}",
-                    onchange: move |evt| {
-                        CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0);
-                    },
+                div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
+                    h4 { class: "text-center text-2xl font-bold", "Pathos" }
+                    input {
+                        class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
+                        r#type: "number",
+                        min: 0,
+                        max: i64::MAX,
+                        value: "{CHARACTER().inspiration.pathos}",
+                        onchange: move |evt| {
+                            CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0);
+                        },
+                    }
                 }
-            }
-            div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
-                h4 { class: "text-center text-2xl font-bold", "Logos" }
-                input {
-                    class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
-                    r#type: "number",
-                    min: 0,
-                    max: i64::MAX,
-                    value: "{CHARACTER().inspiration.logos}",
-                    onchange: move |evt| {
-                        CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0);
-                    },
+                div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
+                    h4 { class: "text-center text-2xl font-bold", "Logos" }
+                    input {
+                        class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
+                        r#type: "number",
+                        min: 0,
+                        max: i64::MAX,
+                        value: "{CHARACTER().inspiration.logos}",
+                        onchange: move |evt| {
+                            CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0);
+                        },
+                    }
                 }
             }
         }

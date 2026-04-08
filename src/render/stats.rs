@@ -14,7 +14,7 @@ pub(crate) fn RenderStats() -> Element {
         div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 flex-col justify-center px-2 gap-4",
             RenderCoreStats {}
             RenderSkills {}
-            RenderResources {}
+            //RenderResources {} // TODO: Overhaul resources
             RenderInventory {}
         }
     }

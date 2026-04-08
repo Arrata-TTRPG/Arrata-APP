@@ -73,10 +73,12 @@ pub(crate) fn download_character(character: &Character) {
 /// `initial: false` for `oninput`.
 pub(crate) fn auto_resize_js(id: &str, initial: bool) -> String {
     let core = format!(
-        "var t=document.getElementById('{id}');if(t){{var s=window.scrollY;t.style.height='auto';t.style.height=t.scrollHeight+'px';window.scrollTo(0,s);}}"
+        "var t=document.getElementById('{id}');if(t){{var s=window.scrollY;t.style.height='0';t.style.height=t.scrollHeight+'px';window.scrollTo(0,s);}}"
     );
     if initial {
-        format!("setTimeout(function(){{{core}}},0);")
+        format!(
+            "requestAnimationFrame(function(){{requestAnimationFrame(function(){{{core}}});}});"
+        )
     } else {
         core
     }
