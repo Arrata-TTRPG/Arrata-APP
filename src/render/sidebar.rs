@@ -18,7 +18,12 @@ pub(crate) fn SidebarToggle() -> Element {
         button {
             class: "fixed left-0 top-[20px] z-50 bg-slate-800 hover:bg-slate-600 border border-slate-600 rounded-r-lg p-3",
             onclick: move |_| *SIDEBAR_OPEN.write() = true,
-            Icon { width: 28, height: 28, fill: "white", icon: BsList }
+            Icon {
+                width: 28,
+                height: 28,
+                fill: "white",
+                icon: BsList,
+            }
         }
     }
 }
@@ -60,7 +65,12 @@ pub(crate) fn CharacterSidebar() -> Element {
                         drop(chars);
                         switch_to(new_idx);
                     },
-                    Icon { width: 20, height: 20, fill: "white", icon: BsPersonPlusFill }
+                    Icon {
+                        width: 20,
+                        height: 20,
+                        fill: "white",
+                        icon: BsPersonPlusFill,
+                    }
                     "New"
                 }
                 button {
@@ -78,7 +88,12 @@ pub(crate) fn CharacterSidebar() -> Element {
                             }
                         });
                     },
-                    Icon { width: 20, height: 20, fill: "white", icon: BsBoxArrowInDown }
+                    Icon {
+                        width: 20,
+                        height: 20,
+                        fill: "white",
+                        icon: BsBoxArrowInDown,
+                    }
                     "Import"
                 }
             }
@@ -142,7 +157,12 @@ pub(crate) fn CharacterSidebar() -> Element {
                                                 evt.stop_propagation();
                                                 confirm_delete.set(Some(i));
                                             },
-                                            Icon { width: 18, height: 18, fill: "currentColor", icon: BsTrash }
+                                            Icon {
+                                                width: 18,
+                                                height: 18,
+                                                fill: "currentColor",
+                                                icon: BsTrash,
+                                            }
                                         }
                                     }
                                 }

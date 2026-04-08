@@ -11,7 +11,7 @@ use crate::{CHARACTER, DICE_ROLL_STATE};
 #[component]
 pub(crate) fn RenderStats() -> Element {
     rsx! {
-        div { class: "min-[2560px]:w-1/4 min-[1920px]:w-1/3 min-[1280px]:w-1/2 w-full flex flex-col justify-center px-2 gap-4",
+        div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 flex-col justify-center px-2 gap-4",
             RenderCoreStats {}
             RenderSkills {}
             RenderResources {}
@@ -38,9 +38,9 @@ fn RenderCoreStats() -> Element {
     rsx! {
         h2 { class: "text-center text-4xl font-bold font-mono", "Stats {stats_total}" }
         div { class: "flex justify-center justify-items-center content-center",
-            div { class: "grid min-[1340px]:grid-cols-2 min-[670px]:grid-cols-2 grid-cols-1 gap-4 justify-center justify-items-center content-center w-full",
+            div { class: "flex flex-wrap gap-4 justify-center content-center items-start w-full",
                 for (i, stat) in CHARACTER().stats.iter().enumerate() {
-                    div { class: "flex flex-col border gap-2 justify-center p-2 rounded-lg w-full",
+                    div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
                         div { class: "inline-flex items-center justify-center",
                             div { class: "flex-grow font-mono text-center text-2xl",
                                 "{stat.name}"
@@ -138,7 +138,7 @@ fn RenderSkills() -> Element {
             }
             button {
                 class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
-                onclick: move |_| CHARACTER.write().skills.push(Stat::new("New Skill!".into())),
+                onclick: move |_| CHARACTER.write().skills.push(Stat::new(String::new())),
                 "+ Add Skill"
             }
         }
@@ -151,6 +151,7 @@ fn RenderSkills() -> Element {
                                 class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                                 r#type: "text",
                                 value: "{skill.name}",
+                                placeholder: "Skill Name",
                                 oninput: move |evt| {
                                     CHARACTER.write().skills[i].name = evt.value().to_string();
                                 },
@@ -475,6 +476,7 @@ fn RenderInventory() -> Element {
                                 class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                                 r#type: "text",
                                 value: "{item.name}",
+                                placeholder: "Item",
                                 oninput: move |evt| CHARACTER.write().inventory[i].name = evt.value().to_string(),
                             }
                             input {
@@ -508,4 +510,3 @@ fn RenderInventory() -> Element {
         }
     }
 }
-

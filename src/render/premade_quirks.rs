@@ -23,7 +23,12 @@ pub fn RenderPremadeQuirkList() -> Element {
                 div {
                     class: "bg-slate-950 hover:bg-slate-700 rounded cursor-pointer",
                     onclick: move |_| *PREMADE_QUIRKS_MENU.write() = false,
-                    Icon { width: 35, height: 35, fill: "red", icon: BsX }
+                    Icon {
+                        width: 35,
+                        height: 35,
+                        fill: "red",
+                        icon: BsX,
+                    }
                 }
             }
 
@@ -35,7 +40,7 @@ pub fn RenderPremadeQuirkList() -> Element {
                         let bytes = bitcode::encode(&PREMADE_QUIRKS());
                         let b64 = BASE64_STANDARD.encode(&bytes);
                         let js = format!(
-                            r#"var b=atob("{b64}");var u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);var blob=new Blob([u],{{type:"application/octet-stream"}});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="quirks.quirks";a.click();URL.revokeObjectURL(a.href);"#
+                            r#"var b=atob("{b64}");var u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);var blob=new Blob([u],{{type:"application/octet-stream"}});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="quirks.quirks";a.click();URL.revokeObjectURL(a.href);"#,
                         );
                         let _ = document::eval(&js);
                     },
@@ -47,33 +52,33 @@ pub fn RenderPremadeQuirkList() -> Element {
                         spawn(async move {
                             // multiple=true mirrors the old pick_files behaviour
                             let js = r#"
-                                var input = document.createElement("input");
-                                input.type = "file";
-                                input.accept = ".quirks";
-                                input.multiple = true;
-                                input.onchange = async function(e) {
-                                    var results = [];
-                                    for (var i = 0; i < e.target.files.length; i++) {
-                                        var buf = await e.target.files[i].arrayBuffer();
-                                        var bytes = new Uint8Array(buf);
-                                        var b64 = "";
-                                        for (var j = 0; j < bytes.length; j += 8192) {
-                                            b64 += String.fromCharCode.apply(null, bytes.subarray(j, j + 8192));
-                                        }
-                                        results.push(btoa(b64));
-                                    }
-                                    dioxus.send(results);
-                                };
-                                input.click();
-                            "#;
+                                                                var input = document.createElement("input");
+                                                                input.type = "file";
+                                                                input.accept = ".quirks";
+                                                                input.multiple = true;
+                                                                input.onchange = async function(e) {
+                                                                    var results = [];
+                                                                    for (var i = 0; i < e.target.files.length; i++) {
+                                                                        var buf = await e.target.files[i].arrayBuffer();
+                                                                        var bytes = new Uint8Array(buf);
+                                                                        var b64 = "";
+                                                                        for (var j = 0; j < bytes.length; j += 8192) {
+                                                                            b64 += String.fromCharCode.apply(null, bytes.subarray(j, j + 8192));
+                                                                        }
+                                                                        results.push(btoa(b64));
+                                                                    }
+                                                                    dioxus.send(results);
+                                                                };
+                                                                input.click();
+                                                            "#;
                             let mut eval = document::eval(js);
                             if let Ok(val) = eval.recv::<Vec<String>>().await {
                                 for b64 in val {
-                                    let bytes = BASE64_STANDARD.decode(b64.as_bytes()).unwrap_or_default();
+                                    let bytes = BASE64_STANDARD
+                                        .decode(b64.as_bytes())
+                                        .unwrap_or_default();
                                     if let Ok(quirks) = bitcode::decode::<Vec<Quirk>>(&bytes) {
                                         PREMADE_QUIRKS.write().extend(quirks);
-                                    } else {
-                                        log::error!("Failed to decode quirks file");
                                     }
                                 }
                                 PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
@@ -90,16 +95,30 @@ pub fn RenderPremadeQuirkList() -> Element {
                 if PREMADE_QUIRKS().is_empty() {
                     p { class: "flex font-mono text-lg gap-2 place-items-center",
                         "No premade quirks available. Save some here with the"
-                        Icon { width: 18, height: 18, fill: "white", icon: BsSave }
+                        Icon {
+                            width: 18,
+                            height: 18,
+                            fill: "white",
+                            icon: BsSave,
+                        }
                         "save"
                         "button."
                     }
                 }
 
                 div { class: "flex flex-col h-full lg:flex-row gap-2 overflow-y-scroll lg:pr-0 pr-4",
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Ethos, shown: shown_categories.0 }
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Pathos, shown: shown_categories.1 }
-                    RenderPremadeQuirkCategory { category: QuirkCategory::Logos, shown: shown_categories.2 }
+                    RenderPremadeQuirkCategory {
+                        category: QuirkCategory::Ethos,
+                        shown: shown_categories.0,
+                    }
+                    RenderPremadeQuirkCategory {
+                        category: QuirkCategory::Pathos,
+                        shown: shown_categories.1,
+                    }
+                    RenderPremadeQuirkCategory {
+                        category: QuirkCategory::Logos,
+                        shown: shown_categories.2,
+                    }
                 }
             }
         }
@@ -115,7 +134,11 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-2 border rounded",
                     onclick: move |_| shown.set(!shown()),
-                    if shown() { "Hide" } else { "Show" }
+                    if shown() {
+                        "Hide"
+                    } else {
+                        "Show"
+                    }
                 }
             }
             if shown() {
@@ -144,14 +167,22 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                 button {
                     class: "flex bg-slate-900 hover:bg-slate-700 text-white font-bold py-1 px-2 border rounded",
                     onclick: move |_| {
-                        CHARACTER.with_mut(|character| { character.quirks.push(quirk.clone()); });
+                        CHARACTER
+                            .with_mut(|character| {
+                                character.quirks.push(quirk.clone());
+                            });
                     },
                     "+ Add"
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-1 border rounded-lg",
                     onclick: move |_| std::mem::drop(PREMADE_QUIRKS.write().remove(index)),
-                    Icon { width: 25, height: 25, fill: "white", icon: BsTrash }
+                    Icon {
+                        width: 25,
+                        height: 25,
+                        fill: "white",
+                        icon: BsTrash,
+                    }
                 }
             }
 
@@ -165,7 +196,11 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                         h4 { class: "font-mono text-lg text-center", "Boons" }
                         ul { class: "list-disc list-inside items-start px-2",
                             for (index, boon) in quirk.boons.iter().enumerate() {
-                                li { key: "{index}", class: "text-sm font-mono text-wrap", "{boon}" }
+                                li {
+                                    key: "{index}",
+                                    class: "text-sm font-mono text-wrap",
+                                    "{boon}"
+                                }
                             }
                         }
                     }
@@ -173,7 +208,11 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                         h4 { class: "font-mono text-lg text-center", "Flaws" }
                         ul { class: "list-disc list-inside items-start px-2",
                             for (index, flaw) in quirk.flaws.iter().enumerate() {
-                                li { key: "{index}", class: "text-sm font-mono text-wrap", "{flaw}" }
+                                li {
+                                    key: "{index}",
+                                    class: "text-sm font-mono text-wrap",
+                                    "{flaw}"
+                                }
                             }
                         }
                     }
@@ -182,4 +221,3 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
         }
     }
 }
-

@@ -32,41 +32,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Install Dependencies
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Nix
         run: |
-          sudo apt-get update
-          sudo apt-get install libsoup2.4 javascriptcoregtk-4.0 -y
-          sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev -y
-      - name: Install Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: nightly
-          components: rustfmt, clippy
-          target: wasm32-unknown-unknown
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ env.NODE_VERSION }}-node_modules-${{ hashFiles('**/package-lock.json') }}
-      - name: Create CSS
-        run: |
-          npm install -D tailwindcss
-          npx tailwindcss -i input.css -o public/tailwind.css
-      - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@main
-      - name: Binstall Dioxus-CLI
-        run: cargo binstall dioxus-cli --no-confirm --force
+          nix-channel --add https://nixos.org/channels/nixpkgs-unstable
+          nix-channel --update
       - name: dx build
-        run: dx build --platform web
+        run: nix develop -c dx build --platform web
       - name: Cargo Check
-        run: cargo check --all
+        run: nix develop -c cargo check --all
       - name: Cargo Test
-        run: cargo test --all
+        run: nix develop -c cargo test --all
       - name: Cargo Clippy
-        run: cargo clippy --all
+        run: nix develop -c cargo clippy --all
       - name: Cargo fmt
-        run: cargo fmt -- --check
+        run: nix develop -c cargo fmt -- --check

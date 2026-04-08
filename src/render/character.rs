@@ -70,7 +70,9 @@ pub(crate) fn CharacterIO() -> Element {
                             }
                             button {
                                 class: "font-mono bg-slate-700 hover:bg-slate-600 text-white font-bold py-1 px-4 rounded",
-                                onclick: move |_| { pending_import.set(None); },
+                                onclick: move |_| {
+                                    pending_import.set(None);
+                                },
                                 "Cancel"
                             }
                         }

@@ -13,7 +13,7 @@ use crate::{
 #[component]
 pub(crate) fn RenderQuirks() -> Element {
     rsx! {
-        div { class: "min-[2560px]:w-1/4 min-[1920px]:w-1/3 min-[1280px]:w-1/2 w-full flex flex-col gap-4 justify-center px-2",
+        div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 flex-col gap-4 justify-center px-2",
             h2 { class: "text-center text-4xl font-bold font-mono", "Argos" }
 
             textarea {
@@ -83,7 +83,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                             .write()
                             .quirks
                             .push(Quirk {
-                                name: "New Quirk!".into(),
+                                name: String::new(),
                                 description: String::new(),
                                 category: category(),
                                 boons: vec![],
@@ -191,7 +191,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {
-                                    character.quirks[index].boons.push("New Boon!".into());
+                                    character.quirks[index].boons.push(String::new());
                                 });
                         },
                         "+"
@@ -204,7 +204,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {
-                                    character.quirks[index].flaws.push("New Flaw!".into());
+                                    character.quirks[index].flaws.push(String::new());
                                 });
                         },
                         "+"
@@ -235,6 +235,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                     class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white resize-none overflow-hidden",
                     style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].boons[index]}",
+                    placeholder: "Boon",
                     onmounted: move |_| async move {
                         let _ = document::eval(
                                 &auto_resize_js(&format!("quirk-boon-{quirk}-{index}"), true),
@@ -266,6 +267,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                     class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white resize-none overflow-hidden",
                     style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].flaws[index]}",
+                    placeholder: "Flaw",
                     onmounted: move |_| async move {
                         let _ = document::eval(
                                 &auto_resize_js(&format!("quirk-flaw-{quirk}-{index}"), true),
@@ -301,11 +303,11 @@ fn RenderInspiration() -> Element {
     rsx! {
         h3 { class: "text-center p-2 text-3xl font-bold", "Inspiration" }
 
-        div { class: "flex flex-wrap justify-center gap-4",
-            div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
+        div { class: "flex justify-center gap-4",
+            div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
                 h4 { class: "text-center text-2xl font-bold", "Ethos" }
                 input {
-                    class: "rounded-lg w-16 p-2 bg-black text-white border border-white text-center",
+                    class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
                     r#type: "number",
                     min: 0,
                     max: i64::MAX,
@@ -315,10 +317,10 @@ fn RenderInspiration() -> Element {
                     },
                 }
             }
-            div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
+            div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
                 h4 { class: "text-center text-2xl font-bold", "Pathos" }
                 input {
-                    class: "rounded-lg w-16 p-2 bg-black text-white border border-white text-center",
+                    class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
                     r#type: "number",
                     min: 0,
                     max: i64::MAX,
@@ -328,10 +330,10 @@ fn RenderInspiration() -> Element {
                     },
                 }
             }
-            div { class: "flex flex-row gap-2 p-2 border rounded-xl place-items-center",
+            div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
                 h4 { class: "text-center text-2xl font-bold", "Logos" }
                 input {
-                    class: "rounded-lg w-16 p-2 bg-black text-white border border-white text-center",
+                    class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
                     r#type: "number",
                     min: 0,
                     max: i64::MAX,
@@ -344,4 +346,3 @@ fn RenderInspiration() -> Element {
         }
     }
 }
-

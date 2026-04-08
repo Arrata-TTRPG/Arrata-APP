@@ -5,7 +5,7 @@ pub(crate) mod character;
 pub(crate) use character::*;
 
 pub(crate) mod sidebar;
-pub(crate) use sidebar::{CharacterSidebar, SidebarToggle, sync_active_to_roster};
+pub(crate) use sidebar::{CharacterSidebar, SidebarToggle};
 
 pub(crate) mod rolls;
 pub(crate) use rolls::RenderRolls;
