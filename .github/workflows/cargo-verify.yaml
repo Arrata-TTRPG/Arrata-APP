@@ -41,6 +41,8 @@ jobs:
         run: |
           nix-channel --add https://nixos.org/channels/nixpkgs-unstable
           nix-channel --update
+      - name: Build tailwindcss
+        run: nix develop -c tailwindcss build -i input.css -o public/tailwind.css
       - name: dx build
         run: nix develop -c dx build --platform web
       - name: Cargo Check
