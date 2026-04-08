@@ -221,4 +221,3 @@ fn delete_character(idx: usize) {
     *CHARACTER.write() = character;
     *ACTIVE_IDX.write() = new_idx;
 }
-

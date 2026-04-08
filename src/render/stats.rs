@@ -153,7 +153,7 @@ fn RenderSkills() -> Element {
                                 value: "{skill.name}",
                                 placeholder: "Skill Name",
                                 oninput: move |evt| {
-                                    CHARACTER.write().skills[i].name = evt.value().to_string();
+                                    CHARACTER.write().skills[i].name.clone_from(&evt.value());
                                 },
                             }
                             button {
@@ -341,7 +341,7 @@ fn RenderResource(index: usize) -> Element {
                         r#type: "text",
                         value: "{r.stat.name}",
                         oninput: move |evt| {
-                            CHARACTER.write().resources[index].stat.name = evt.value().to_string();
+                            CHARACTER.write().resources[index].stat.name.clone_from(&evt.value());
                         },
                     }
                     button {
@@ -477,7 +477,7 @@ fn RenderInventory() -> Element {
                                 r#type: "text",
                                 value: "{item.name}",
                                 placeholder: "Item",
-                                oninput: move |evt| CHARACTER.write().inventory[i].name = evt.value().to_string(),
+                                oninput: move |evt| CHARACTER.write().inventory[i].name.clone_from(&evt.value()),
                             }
                             input {
                                 class: "w-16 border rounded-lg p-2",

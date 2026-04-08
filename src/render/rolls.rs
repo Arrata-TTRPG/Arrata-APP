@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
-use dioxus_free_icons::{icons::bs_icons::BsX, Icon};
+use dioxus_free_icons::{Icon, icons::bs_icons::BsX};
 
-use arrata_lib::{roll_stat, RollResult};
+use arrata_lib::{RollResult, roll_stat};
 
 use crate::DICE_ROLL_STATE;
 

@@ -6,6 +6,7 @@
     clippy::style,
     clippy::suspicious
 )]
+#![deny(warnings)]
 
 pub mod render;
 
@@ -75,4 +76,3 @@ pub(crate) async fn load_initial_quirks() {
         }
     }
 }
-

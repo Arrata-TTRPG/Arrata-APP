@@ -25,7 +25,7 @@ pub(crate) fn RenderQuirks() -> Element {
                     let _ = document::eval(&auto_resize_js("argos", true)).await;
                 },
                 oninput: move |evt| {
-                    CHARACTER.write().argos = evt.value().to_string();
+                    CHARACTER.write().argos.clone_from(&evt.value());
                     let _ = document::eval(&auto_resize_js("argos", false));
                 },
             }
@@ -137,7 +137,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
                     r#type: "text",
                     value: "{quirk().name}",
-                    oninput: move |evt| CHARACTER.write().quirks[index].name = evt.value().to_string(),
+                    oninput: move |evt| CHARACTER.write().quirks[index].name.clone_from(&evt.value()),
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
@@ -177,7 +177,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     oninput: move |evt| {
                         CHARACTER
                             .with_mut(|character| {
-                                character.quirks[index].description = evt.value().to_string();
+                                character.quirks[index].description.clone_from(&evt.value());
                             });
                         let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), false));
                     },
@@ -243,7 +243,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                             .await;
                     },
                     oninput: move |evt| {
-                        CHARACTER.write().quirks[quirk].boons[index] = evt.value().to_string();
+                        CHARACTER.write().quirks[quirk].boons[index].clone_from(&evt.value());
                         let _ = document::eval(
                             &auto_resize_js(&format!("quirk-boon-{quirk}-{index}"), false),
                         );
@@ -275,7 +275,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                             .await;
                     },
                     oninput: move |evt| {
-                        CHARACTER.write().quirks[quirk].flaws[index] = evt.value().to_string();
+                        CHARACTER.write().quirks[quirk].flaws[index].clone_from(&evt.value());
                         let _ = document::eval(
                             &auto_resize_js(&format!("quirk-flaw-{quirk}-{index}"), false),
                         );

@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::{
-    ACTIVE_IDX, CHARACTER, CHARACTERS, DICE_ROLL_STATE, VERSION, load_initial_quirks,
+    DICE_ROLL_STATE, VERSION, load_initial_quirks,
     render::{CharacterIO, CharacterSidebar, RenderCharacter, RenderRolls, SidebarToggle},
 };
 
@@ -26,13 +26,11 @@ pub fn App() -> Element {
     #[cfg(any(feature = "web", feature = "desktop"))]
     {
         use crate::{
-            PREMADE_QUIRKS,
+            ACTIVE_IDX, CHARACTER, CHARACTERS, PREMADE_QUIRKS,
             storage::{read_characters, read_quirks, write_characters, write_quirks},
         };
 
         use_future(|| async {
-            let version_key = format!("{}-{}", VERSION().major, VERSION().minor);
-
             // Load roster; fall back to a single default character
             if let Some(characters) = read_characters() {
                 *CHARACTERS.write() = characters;
@@ -106,4 +104,3 @@ pub fn App() -> Element {
         }
     }
 }
-

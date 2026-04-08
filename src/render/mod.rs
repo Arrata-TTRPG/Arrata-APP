@@ -48,12 +48,12 @@ pub(crate) async fn pick_character_file() -> Option<Character> {
     let mut eval = document::eval(js);
     let val = eval.recv::<String>().await.ok()?;
     let bytes = BASE64_STANDARD.decode(val.as_bytes()).ok()?;
-    match bitcode::decode::<Character>(&bytes) {
-        Ok(c) => Some(c),
-        Err(_) => {
-            log::error!("Failed to decode .arrata file");
-            None
-        }
+
+    if let Ok(c) = bitcode::decode::<Character>(&bytes) {
+        Some(c)
+    } else {
+        log::error!("Failed to decode .arrata file");
+        None
     }
 }
 

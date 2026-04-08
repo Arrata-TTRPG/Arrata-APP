@@ -113,4 +113,3 @@ pub fn write_quirks(quirks: &[Quirk], key: &str) {
 pub fn read_quirks(key: &str) -> Option<Vec<Quirk>> {
     serde_json::from_str(&LocalStorage::get::<String>(key).ok()?).ok()
 }
-
