@@ -41,9 +41,7 @@ jobs:
         uses: nix-community/cache-nix-action/restore@v7
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
-          restore-prefixes-first-match: |
-            nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
-            nix-${{ runner.os }}-
+          restore-prefixes-first-match: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-ci
           paths: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
@@ -67,7 +65,13 @@ jobs:
         run: nix develop -c cargo clippy --all
       - name: Cargo fmt
         run: nix develop -c cargo fmt -- --check
-
+      - name: Delete old caches
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh cache list --repo ${{ github.repository }} --key nix-${{ runner.os }}- --json id \
+            | jq -r '.[].id' \
+            | xargs -r -I {} gh cache delete {} --repo ${{ github.repository }}
       - name: Save cache
         if: always()
         uses: nix-community/cache-nix-action/save@v7

@@ -102,9 +102,7 @@ jobs:
         uses: nix-community/cache-nix-action/restore@v7
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-release
-          restore-prefixes-first-match: |
-            nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-release
-            nix-${{ runner.os }}-
+          restore-prefixes-first-match: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}-release
           paths: |
             ~/.cargo/bin/
             ~/.cargo/registry/index/
@@ -137,6 +135,14 @@ jobs:
           folder: docs
           target-folder: docs
           commit-message: "chore(cd): Deploy to GH Pages for ${{ env.VERSION }}"
+
+      - name: Delete release caches from old tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh cache list --repo ${{ github.repository }} --key nix- --json id,ref,key \
+            | jq -r '.[] | select(.ref != "refs/heads/main" and .ref != "refs/tags/${{ env.VERSION }}") | .id' \
+            | xargs -r -I {} gh cache delete {} --repo ${{ github.repository }}
 
       - name: Save cache
         if: always()
