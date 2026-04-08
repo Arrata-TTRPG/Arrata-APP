@@ -35,6 +35,8 @@ jobs:
           nix_conf: |
             keep-env-derivations = true
             keep-outputs = true
+            experimental-features = nix-command flakes
+            accept-flake-config = true
       - name: Restore Nix cache
         id: restore-nix-cache
         uses: nix-community/cache-nix-action/restore@v7
@@ -46,6 +48,10 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
+      - name: Fix permissions
+        run: |
+          sudo chmod 777 ~/.cargo/**
+          sudo chmod 777 ~/.cargo/**
       - name: Build tailwindcss
         run: nix develop -c tailwindcss build -i input.css -o public/tailwind.css
       - name: dx build
