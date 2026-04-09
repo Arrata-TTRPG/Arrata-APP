@@ -15,7 +15,7 @@ pub(crate) fn RenderRolls() -> Element {
     let mut advantage = use_signal(|| 0);
     let mut disadvantage = use_signal(|| 0);
     rsx! {
-        div { class: "z-10 fixed flex flex-col items-center max-w-[80%] max-h-[80%] h-fit w-96 overflow-hidden border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg gap-2 pt-2",
+        div { class: "z-10 fixed flex flex-col items-center max-w-[80%] max-h-[80%] h-fit w-96 overflow-hidden border text-white border-white bg-slate-800 m-auto left-0 right-0 top-0 bottom-0 rounded-lg gap-2 py-2",
             // Close button
             div { class: "z-20 absolute right-0 top-0 p-2",
                 div {

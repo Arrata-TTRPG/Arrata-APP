@@ -138,9 +138,9 @@ fn RenderSkills() -> Element {
                 "Skills {CHARACTER().skills.iter().count()}"
             }
             button {
-                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-3 rounded h-full border",
                 onclick: move |_| CHARACTER.write().skills.push(Stat::new(String::new())),
-                "+ Add Skill"
+                "+"
             }
             button {
                 class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
@@ -462,9 +462,9 @@ fn RenderInventory() -> Element {
                     "Inventory {CHARACTER().inventory.iter().count()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-4 rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-3 rounded",
                     onclick: move |_| CHARACTER.write().inventory.push(Item::default()),
-                    "+ Add Item"
+                    "+"
                 }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-4 rounded",

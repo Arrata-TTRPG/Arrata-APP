@@ -31,7 +31,7 @@ pub static CHARACTERS: GlobalSignal<Vec<Character>> =
 /// Index of the currently displayed character in `CHARACTERS`.
 pub static ACTIVE_IDX: GlobalSignal<usize> = GlobalSignal::new(|| 0);
 /// Whether the character sidebar is open.
-pub(crate) static SIDEBAR_OPEN: GlobalSignal<bool> = GlobalSignal::new(|| true);
+pub(crate) static SIDEBAR_OPEN: GlobalSignal<bool> = GlobalSignal::new(|| false);
 /// The `GlobalSignal` for rolling dice.
 pub(crate) static DICE_ROLL_STATE: GlobalSignal<(bool, Option<Stat>)> =
     GlobalSignal::new(|| (false, None));

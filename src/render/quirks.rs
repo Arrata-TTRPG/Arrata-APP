@@ -92,7 +92,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
             div { class: "flex justify-center items-center flex-row flex-wrap gap-2",
                 h1 { class: "text-center text-3xl font-bold font-mono", "{category}" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    class: "text-white font-bold py-1 px-2 border rounded bg-slate-900 hover:bg-slate-500",
                     onclick: move |_| {
                         CHARACTER
                             .write()
@@ -105,7 +105,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                                 flaws: vec![],
                             });
                     },
-                    "+ Add Quirk"
+                    "+"
                 }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",

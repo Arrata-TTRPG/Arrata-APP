@@ -23,6 +23,7 @@ base64 = "0.22"
 getrandom = { version = "0.4.2", optional = true }
 urlencoding = { version = "2.1.3", optional = true }
 gloo-storage = { version = "0.4.0" }
+gloo-timers = { version = "0.4.0", features = ["futures"] }
 reqwest = "0.13.1"
 
 [dependencies.dioxus-free-icons]

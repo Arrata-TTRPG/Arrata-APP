@@ -17,7 +17,7 @@ pub fn RenderPremadeQuirkList() -> Element {
     );
 
     rsx! {
-        div { class: "z-10 fixed flex flex-col max-w-[90%] w-full min-h-14 h-[90%] border text-white border-white bg-slate-950 m-auto left-0 right-0 top-0 bottom-0 rounded-lg",
+        div { class: "z-10 fixed flex flex-col w-full min-h-14 text-white border-white bg-black top-0 bottom-0 rounded-lg",
             // Close button
             div { class: "z-20 absolute right-0 top-0 p-2",
                 div {
@@ -106,7 +106,7 @@ pub fn RenderPremadeQuirkList() -> Element {
                     }
                 }
 
-                div { class: "flex flex-col h-full lg:flex-row gap-2 overflow-y-scroll lg:pr-0 pr-4",
+                div { class: "flex flex-col h-full lg:flex-row overflow-y-clip gap-2",
                     RenderPremadeQuirkCategory {
                         category: QuirkCategory::Ethos,
                         shown: shown_categories.0,
@@ -128,7 +128,7 @@ pub fn RenderPremadeQuirkList() -> Element {
 #[component]
 fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> Element {
     rsx! {
-        div { class: "flex flex-col lg:h-full h-2/3 gap-2 border rounded-lg p-1 w-full",
+        div { class: format!("flex flex-col lg:h-full gap-2 border rounded-lg p-1 w-full{}", if shown() { " flex-1 min-h-0" } else { "" }),
             div { class: "flex flex-wrap gap-2 justify-center items-center",
                 h2 { class: "text-xl font-mono font-bold text-center", "{category}" }
                 button {
@@ -142,7 +142,7 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
                 }
             }
             if shown() {
-                div { class: "flex flex-col w-full max-h-full gap-3 overflow-y-scroll pr-3",
+                div { class: "flex flex-col border-t w-full h-full gap-3 overflow-y-scroll pr-3 pt-1 min-h-0",
                     for (index, quirk) in PREMADE_QUIRKS()
                         .into_iter()
                         .enumerate()
@@ -158,21 +158,31 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
 
 #[component]
 fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
+    let num_boons = quirk.boons.len();
+    let num_flaws = quirk.flaws.len();
+    let mut flashing = use_signal(|| false);
     rsx! {
         div {
-            class: "flex flex-col bg-slate-900 w-full h-fit p-1 border gap-2",
+            class: "flex flex-col bg-slate-950 w-full h-fit p-1 border rounded-lg gap-2",
             key: "{index}",
             div { class: "flex flex-wrap gap-2 justify-center place-items-center",
-                h3 { class: "text-xl font-extrabold", "{quirk.name}" }
                 button {
-                    class: "flex bg-slate-900 hover:bg-slate-700 text-white font-bold py-1 px-2 border rounded",
+                    class: format!("flex font-extrabold font-xl py-1 px-3 border rounded-lg transition-colors duration-700{}",
+                    if flashing() { " bg-green-550" } else { " bg-slate-750 hover:bg-slate-500" }),
+                    disabled: flashing(),
                     onclick: move |_| {
+                        if flashing() { return; }
+                        spawn(async move {
+                            flashing.set(true);
+                            let _ = document::eval("await new Promise(r => setTimeout(r, 700))").await;
+                            flashing.set(false);
+                        });
                         CHARACTER
                             .with_mut(|character| {
                                 character.quirks.push(quirk.clone());
                             });
                     },
-                    "+ Add"
+                    "{quirk.name} +"
                 }
                 button {
                     class: "bg-red-950 hover:bg-red-600 p-1 border rounded-lg",
@@ -187,30 +197,40 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
             }
 
             if !quirk.description.is_empty() {
-                p { class: "font-mono text-base text-center px-1", "{quirk.description}" }
+                p { class: "font-mono text-md text-center px-1", "{quirk.description}" }
             }
 
-            if !quirk.boons.is_empty() || !quirk.flaws.is_empty() {
-                div { class: "grid grid-cols-2 h-full",
-                    div { class: "flex flex-col gap-1 h-full",
+            if num_boons + num_flaws > 0 {
+                div { class: "grid grid-cols-2 h-full border-t pt-2 [word-spacing:-4px]",
+                    div { class: "flex flex-col gap-1 h-full border-r pt-1",
                         h4 { class: "font-mono text-lg text-center", "Boons" }
                         ul { class: "list-disc list-inside items-start px-2",
                             for (index, boon) in quirk.boons.iter().enumerate() {
                                 li {
                                     key: "{index}",
-                                    class: "text-sm font-mono text-wrap",
+                                    class: format!("text-sm font-mono text-wrap text-left{}",
+                                        if num_boons > 1 && index < num_boons - 1 {
+                                            " border-b pb-1"
+                                        } else {
+                                            ""
+                                        }),
                                     "{boon}"
                                 }
                             }
                         }
                     }
-                    div { class: "flex flex-col gap-1 h-full",
+                    div { class: "flex flex-col gap-1 h-full pt-1",
                         h4 { class: "font-mono text-lg text-center", "Flaws" }
                         ul { class: "list-disc list-inside items-start px-2",
                             for (index, flaw) in quirk.flaws.iter().enumerate() {
                                 li {
                                     key: "{index}",
-                                    class: "text-sm font-mono text-wrap",
+                                    class: format!("text-sm font-mono text-wrap text-left{}",
+                                        if num_flaws > 1 && index < num_flaws - 1 {
+                                            " border-b pb-1"
+                                        } else {
+                                            ""
+                                        }),
                                     "{flaw}"
                                 }
                             }
