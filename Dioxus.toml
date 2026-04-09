@@ -25,6 +25,9 @@ reload_html = true
 # which files or dirs will be watcher monitoring
 watch_path = ["src", "public"]
 
+[web.wasm_opt]
+level = "z"
+
 [bundle]
 # Bundle publisher
 publisher = "Kaleb Burris"

@@ -52,7 +52,6 @@ pub(crate) async fn pick_character_file() -> Option<Character> {
     if let Ok(c) = bitcode::decode::<Character>(&bytes) {
         Some(c)
     } else {
-        log::error!("Failed to decode .arrata file");
         None
     }
 }

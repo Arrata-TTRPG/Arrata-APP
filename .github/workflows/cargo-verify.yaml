@@ -50,6 +50,8 @@ jobs:
         run: |
           sudo chmod 777 ~/.cargo/**
           sudo chmod 777 target/**
+      - name: Disable .cargo folder
+        run: mv .cargo .cargo-disabled
       - name: Build tailwindcss
         run: nix develop -c tailwindcss build -i input.css -o public/tailwind.css
       - name: dx build

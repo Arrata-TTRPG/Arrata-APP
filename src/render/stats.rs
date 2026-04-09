@@ -3,6 +3,7 @@ use dioxus_free_icons::{
     Icon,
     icons::bs_icons::{BsDice6, BsTrash},
 };
+use thousands::Separable;
 
 use arrata_lib::{Item, Quality, Resource, Stat};
 
@@ -22,7 +23,7 @@ pub(crate) fn RenderStats() -> Element {
 
 #[component]
 fn RenderCoreStats() -> Element {
-    let stats_total: usize = CHARACTER()
+    let stats_total = CHARACTER()
         .stats
         .iter()
         .map(|stat| {
@@ -33,14 +34,15 @@ fn RenderCoreStats() -> Element {
                 Quality::Superb => quantity + 10,
             }
         })
-        .sum();
+        .sum::<usize>()
+        .separate_with_commas();
 
     rsx! {
         h2 { class: "text-center text-4xl font-bold font-mono", "Stats {stats_total}" }
         div { class: "flex justify-center justify-items-center content-center",
-            div { class: "flex flex-wrap gap-4 justify-center content-center items-start w-full",
+            div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
                 for (i, stat) in CHARACTER().stats.iter().enumerate() {
-                    div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
+                    div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full space-y-2",
                         div { class: "inline-flex items-center justify-center",
                             div { class: "flex-grow font-mono text-center text-2xl",
                                 "{stat.name}"
@@ -62,64 +64,68 @@ fn RenderCoreStats() -> Element {
                                 }
                             }
                         }
-                        div { class: "inline-flex w-full h-full justify-center items-center space-x-2",
-                            select {
-                                class: "hover:bg-slate-700 flex-grow font-mono text-center border rounded-lg p-2 appearance-none cursor-pointer",
-                                onchange: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.stats[i].quality = match evt.value().parse::<usize>().unwrap()
-                                            {
-                                                1 => Quality::Adept,
-                                                2 => Quality::Superb,
-                                                _ => Quality::Basic,
-                                            }
-                                        });
-                                },
-                                option {
-                                    value: 0,
-                                    selected: CHARACTER().stats[i].quality == Quality::Basic,
-                                    "Basic"
+                        div { class: "flex flex-wrap w-full h-full justify-center items-center gap-2",
+                            div { class: "inline-flex flex-1 items-center justify-center space-x-2",
+                                select {
+                                    class: "hover:bg-slate-700 min-w-12 flex-1 font-mono text-center border rounded-lg p-2 appearance-none cursor-pointer",
+                                    onchange: move |evt| {
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.stats[i].quality = match evt.value().parse::<usize>().unwrap_or(1)
+                                                {
+                                                    1 => Quality::Adept,
+                                                    2 => Quality::Superb,
+                                                    _ => Quality::Basic,
+                                                }
+                                            });
+                                    },
+                                    option {
+                                        value: 0,
+                                        selected: CHARACTER().stats[i].quality == Quality::Basic,
+                                        "Basic"
+                                    }
+                                    option {
+                                        value: 1,
+                                        selected: CHARACTER().stats[i].quality == Quality::Adept,
+                                        "Adept"
+                                    }
+                                    option {
+                                        value: 2,
+                                        selected: CHARACTER().stats[i].quality == Quality::Superb,
+                                        "Superb"
+                                    }
                                 }
-                                option {
-                                    value: 1,
-                                    selected: CHARACTER().stats[i].quality == Quality::Adept,
-                                    "Adept"
-                                }
-                                option {
-                                    value: 2,
-                                    selected: CHARACTER().stats[i].quality == Quality::Superb,
-                                    "Superb"
+                                input {
+                                    class: "flex-1 min-w-12 border rounded-lg p-2 font-mono text-center",
+                                    r#type: "number",
+                                    value: "{stat.quantity}",
+                                    min: 0,
+                                    max: u64::MAX,
+                                    oninput: move |evt| {
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
+                                            });
+                                    },
                                 }
                             }
-                            input {
-                                class: "w-16 border rounded-lg p-2 font-mono text-center",
-                                r#type: "number",
-                                value: "{stat.quantity}",
-                                min: 0,
-                                max: i64::MAX,
-                                oninput: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
-                                        });
-                                },
-                            }
-                            div { class: "font-mono text-lg align-middle h-fit", "Checks:" }
-                            input {
-                                class: "w-16 border rounded-lg font-mono text-center p-2",
-                                r#type: "number",
-                                value: "{stat.checks.unwrap_or_default()}",
-                                min: 0,
-                                max: i64::MAX,
-                                oninput: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.stats[i].checks = Some(
-                                                evt.value().parse::<usize>().unwrap_or(0),
-                                            );
-                                        });
-                                },
+                            div { class: "inline-flex items-center justify-center space-x-2",
+                                span { class: "font-mono text-lg align-middle h-fit", "Checks:" }
+                                input {
+                                    class: "w-16 border rounded-lg font-mono text-center p-2",
+                                    r#type: "number",
+                                    value: "{stat.checks.unwrap_or_default()}",
+                                    min: 0,
+                                    max: u64::MAX,
+                                    oninput: move |evt| {
+                                        CHARACTER
+                                            .with_mut(|character| {
+                                                character.stats[i].checks = Some(
+                                                    evt.value().parse::<usize>().unwrap_or(0),
+                                                );
+                                            });
+                                    },
+                                }
                             }
                         }
                     }
@@ -135,7 +141,7 @@ fn RenderSkills() -> Element {
     rsx! {
         div { class: "flex flex-row justify-center content-center items-center py-2 gap-4",
             h2 { class: "text-center text-4xl font-bold font-mono",
-                "Skills {CHARACTER().skills.iter().count()}"
+                "Skills {CHARACTER().skills.iter().count().separate_with_commas()}"
             }
             button {
                 class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-3 rounded h-full border",
@@ -192,64 +198,68 @@ fn RenderSkills() -> Element {
                                     }
                                 }
                             }
-                            div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
-                                select {
-                                    class: "flex-grow hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer",
-                                    onchange: move |evt| {
-                                        CHARACTER
-                                            .with_mut(|character| {
-                                                character.skills[i].quality = match evt.value().parse::<usize>().unwrap()
-                                                {
-                                                    1 => Quality::Adept,
-                                                    2 => Quality::Superb,
-                                                    _ => Quality::Basic,
-                                                }
-                                            });
-                                    },
-                                    option {
-                                        value: 0,
-                                        selected: CHARACTER().skills[i].quality == Quality::Basic,
-                                        "Basic"
+                            div { class: "flex flex-wrap justify-center content-center items-center justify-items-center gap-2",
+                                div { class: "inline-flex flex-1 items-center justify-center space-x-2",
+                                    select {
+                                        class: "flex-1 min-w-12 hover:bg-slate-700 font-mono text-center border rounded-lg p-2 appearance-none cursor-pointer",
+                                        onchange: move |evt| {
+                                            CHARACTER
+                                                .with_mut(|character| {
+                                                    character.skills[i].quality = match evt.value().parse::<usize>().unwrap()
+                                                    {
+                                                        1 => Quality::Adept,
+                                                        2 => Quality::Superb,
+                                                        _ => Quality::Basic,
+                                                    }
+                                                });
+                                        },
+                                        option {
+                                            value: 0,
+                                            selected: CHARACTER().skills[i].quality == Quality::Basic,
+                                            "Basic"
+                                        }
+                                        option {
+                                            value: 1,
+                                            selected: CHARACTER().skills[i].quality == Quality::Adept,
+                                            "Adept"
+                                        }
+                                        option {
+                                            value: 2,
+                                            selected: CHARACTER().skills[i].quality == Quality::Superb,
+                                            "Superb"
+                                        }
                                     }
-                                    option {
-                                        value: 1,
-                                        selected: CHARACTER().skills[i].quality == Quality::Adept,
-                                        "Adept"
-                                    }
-                                    option {
-                                        value: 2,
-                                        selected: CHARACTER().skills[i].quality == Quality::Superb,
-                                        "Superb"
+                                    input {
+                                        class: "flex-1 min-w-12 border rounded-lg p-2 font-mono text-center",
+                                        r#type: "number",
+                                        value: "{skill.quantity}",
+                                        min: 0,
+                                        max: u64::MAX,
+                                        oninput: move |evt| {
+                                            CHARACTER
+                                                .with_mut(|character| {
+                                                    character.skills[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
+                                                });
+                                        },
                                     }
                                 }
-                                input {
-                                    class: "w-16 border rounded-lg p-2 font-mono text-center",
-                                    r#type: "number",
-                                    value: "{skill.quantity}",
-                                    min: 0,
-                                    max: i64::MAX,
-                                    oninput: move |evt| {
-                                        CHARACTER
-                                            .with_mut(|character| {
-                                                character.skills[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
-                                            });
-                                    },
-                                }
-                                div { class: "font-mono text-lg", "Checks:" }
-                                input {
-                                    class: "w-16 border rounded-lg font-mono text-center p-2",
-                                    r#type: "number",
-                                    value: "{skill.checks.unwrap_or(0)}",
-                                    min: 0,
-                                    max: i64::MAX,
-                                    oninput: move |evt| {
-                                        CHARACTER
-                                            .with_mut(|character| {
-                                                character.skills[i].checks = Some(
-                                                    evt.value().parse::<usize>().unwrap_or(0),
-                                                );
-                                            });
-                                    },
+                                div { class: "inline-flex items-center justify-center space-x-2",
+                                    span { class: "font-mono text-lg", "Checks:" }
+                                    input {
+                                        class: "w-16 border rounded-lg font-mono text-center p-2",
+                                        r#type: "number",
+                                        value: "{skill.checks.unwrap_or(0)}",
+                                        min: 0,
+                                        max: u64::MAX,
+                                        oninput: move |evt| {
+                                            CHARACTER
+                                                .with_mut(|character| {
+                                                    character.skills[i].checks = Some(
+                                                        evt.value().parse::<usize>().unwrap_or(0),
+                                                    );
+                                                });
+                                        },
+                                    }
                                 }
                             }
                         }
@@ -390,7 +400,7 @@ fn RenderResource(index: usize) -> Element {
                                     character.resources[index].stat.quality = match evt
                                         .value()
                                         .parse::<usize>()
-                                        .unwrap()
+                                        .unwrap_or(1)
                                     {
                                         1 => Quality::Adept,
                                         2 => Quality::Superb,
@@ -459,7 +469,7 @@ fn RenderInventory() -> Element {
         div { class: "flex flex-col gap-2",
             div { class: "flex justify-center content-center items-center gap-4",
                 h2 { class: "inline-flex text-center text-4xl font-bold font-mono",
-                    "Inventory {CHARACTER().inventory.iter().count()}"
+                    "Inventory {CHARACTER().inventory.iter().count().separate_with_commas()}"
                 }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-3 rounded",

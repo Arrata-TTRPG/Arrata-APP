@@ -5,6 +5,7 @@ use dioxus_free_icons::{
     Icon,
     icons::bs_icons::{BsSave, BsTrash, BsX},
 };
+use thousands::Separable;
 
 use crate::{CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU};
 
@@ -127,10 +128,15 @@ pub fn RenderPremadeQuirkList() -> Element {
 
 #[component]
 fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> Element {
+    let num_quirks = PREMADE_QUIRKS()
+        .iter()
+        .filter(|quirk| quirk.category == category)
+        .count()
+        .separate_with_commas();
     rsx! {
-        div { class: format!("flex flex-col lg:h-full gap-2 border rounded-lg p-1 w-full{}", if shown() { " flex-1 min-h-0" } else { "" }),
+        div { class: format!("flex flex-col lg:h-full gap-2 border rounded-lg p-1 pt-2 w-full{}", if shown() { " flex-1 min-h-0" } else { "" }),
             div { class: "flex flex-wrap gap-2 justify-center items-center",
-                h2 { class: "text-xl font-mono font-bold text-center", "{category}" }
+                h2 { class: "text-xl font-mono font-bold leading-none mb-0", "{category}" }
                 button {
                     class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-2 border rounded",
                     onclick: move |_| shown.set(!shown()),
@@ -139,6 +145,9 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
                     } else {
                         "Show"
                     }
+                }
+                span { class: "text-xl font-mono font-bold leading-none mb-0",
+                    "{num_quirks} available"
                 }
             }
             if shown() {

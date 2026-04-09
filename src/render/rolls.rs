@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{Icon, icons::bs_icons::BsX};
+use thousands::Separable;
 
 use arrata_lib::{RollResult, roll_stat};
 
@@ -42,7 +43,7 @@ pub(crate) fn RenderRolls() -> Element {
             // Quality + Quantity
             div { class: "inline-flex w-full justify-center place-items-center content-center gap-2",
                 p { class: "text-xl font-mono", "{stat.quality}" }
-                p { class: "text-xl font-mono", "{stat.quantity}" }
+                p { class: "text-xl font-mono", "{stat.quantity.separate_with_commas()}" }
                 // Rolling
                 button {
                     class: "max-w-fit font-mono place-self-center bg-slate-900 hover:bg-slate-600 p-2 rounded",
@@ -89,20 +90,22 @@ pub(crate) fn RenderRolls() -> Element {
                 div { class: "flex flex-col font-mono justify-center max-h-full overflow-y-hidden pt-2",
                     div { class: "flex justify-center",
                         // Successes
-                        div { class: "text-center text-green-600 p-2", "Successes: {results.successes}" }
+                        div { class: "text-center text-green-600 p-2", "Successes: {results.successes.separate_with_commas()}" }
                         // Failures
-                        div { class: "text-center text-red-600 p-2", "Failures: {results.failures}" }
+                        div { class: "text-center text-red-600 p-2", "Failures: {results.failures.separate_with_commas()}" }
                     }
-                    h2 { class: "p-2 text-lg text-center", "Results" }
-                    // Results
-                    div { class: "p-1 overflow-scroll flex flex-wrap justify-center max-h-full w-full gap-1 border rounded bg-slate-900",
-                        for r in results.results.iter() {
-                            div {
-                                class: format!(
-                                    "px-1 bg-slate-950 rounded {}",
-                                    if *r >= stat.quality as u8 { "text-green-500" } else { "text-red-600" },
-                                ),
-                                "{r}"
+                    // Results if we have any to display
+                    if !results.results.is_empty() {
+                        h2 { class: "p-2 text-lg text-center", "Results" }
+                        div { class: "p-1 overflow-scroll flex flex-wrap justify-center max-h-full w-full gap-1 border rounded bg-slate-900",
+                            for r in results.results.iter() {
+                                div {
+                                    class: format!(
+                                        "px-1 bg-slate-950 rounded {}",
+                                        if *r >= stat.quality as u8 { "text-green-500" } else { "text-red-600" },
+                                    ),
+                                    "{r}"
+                                }
                             }
                         }
                     }

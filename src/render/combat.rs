@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{Icon, icons::bs_icons::BsTrash};
+use thousands::Separable;
 
 use arrata_lib::{Armor, Talent, Weapon, combat};
 
@@ -68,7 +69,7 @@ fn RenderCombatStats() -> Element {
                                     });
                             },
                         }
-                        span { class: "flex font-mono text-lg leading-none whitespace-nowrap", "/ {max_hp}" }
+                        span { class: "flex font-mono text-lg leading-none whitespace-nowrap", "/ {max_hp.separate_with_commas()}" }
                     }
                 }
 
@@ -77,7 +78,7 @@ fn RenderCombatStats() -> Element {
                     span { class: "font-mono text-sm text-slate-200", "Injury" }
                     div { class: "inline-flex items-center gap-2",
                         button {
-                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-4 py-1 font-mono font-bold text-xl",
+                            class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-3 rounded h-full border",
                             onclick: move |_| {
                                 CHARACTER
                                     .with_mut(|c| {
@@ -86,9 +87,9 @@ fn RenderCombatStats() -> Element {
                             },
                             "+"
                         }
-                        span { class: "font-mono text-2xl w-8 text-center", "{injury}" }
+                        span { class: "font-mono text-2xl w-8 text-center", "{injury.separate_with_commas()}" }
                         button {
-                            class: "bg-slate-900 hover:bg-slate-600 border rounded px-4 py-1 font-mono font-bold text-xl",
+                            class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-4 rounded h-full border",
                             onclick: move |_| {
                                 CHARACTER
                                     .with_mut(|c| {
@@ -112,7 +113,7 @@ fn RenderCombatStats() -> Element {
                                 current_ap.set(evt.value().parse::<isize>().unwrap_or(0));
                             },
                         }
-                        span { class: "font-mono text-lg leading-none whitespace-nowrap", "/ {max_ap}" }
+                        span { class: "font-mono text-lg leading-none whitespace-nowrap", "/ {max_ap.separate_with_commas()}" }
                     }
                 }
             }
@@ -129,15 +130,15 @@ fn RenderWeapons() -> Element {
         div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pr-1 w-full flex-col gap-2",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
                 h2 { class: "text-center text-4xl font-bold font-mono",
-                    "Weapons {CHARACTER().weapons.iter().count()}"
+                    "Weapons {CHARACTER().weapons.iter().count().separate_with_commas()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-3 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-3 rounded h-full border",
                     onclick: move |_| CHARACTER.write().weapons.push(Weapon::default()),
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"
@@ -281,15 +282,15 @@ fn RenderArmor() -> Element {
         div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pl-1 min-[1281px]:max-[1920px]:py-0 w-full flex-col gap-2 py-4",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
                 h2 { class: "text-center text-4xl font-bold font-mono",
-                    "Armor {CHARACTER().armor.iter().count()}"
+                    "Armor {CHARACTER().armor.iter().count().separate_with_commas()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold py-1 px-3 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-3 rounded h-full border",
                     onclick: move |_| CHARACTER.write().armor.push(Armor::default()),
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"
@@ -405,15 +406,15 @@ fn RenderTalents() -> Element {
         div { class: "flex w-full flex-col gap-2",
             div { class: "flex flex-row justify-center items-center py-2 gap-4",
                 h2 { class: "text-center text-4xl font-bold font-mono",
-                    "Talents {CHARACTER().talents.iter().count()}"
+                    "Talents {CHARACTER().talents.iter().count().separate_with_commas()}"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold text-white text-xl font-bold px-3 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold px-3 rounded h-full border",
                     onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 rounded h-full border",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"

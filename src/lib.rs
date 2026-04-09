@@ -19,8 +19,10 @@ use arrata_lib::{
 };
 
 use dioxus::prelude::GlobalSignal;
-use reqwest::Client;
+use js_sys::Uint8Array;
 use semver::Version;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::JsFuture;
 
 /// The active character, kept in sync with `CHARACTERS[ACTIVE_IDX]`.
 /// All render components read/write this; switching characters updates it from the vec.
@@ -50,29 +52,38 @@ pub(crate) static SHOWN_CATEGORIES: GlobalSignal<(bool, bool, bool)> =
 
 /// Loads the initial pre-made quirks from the `Arrata-Quirks` GitHub repository.
 pub(crate) async fn load_initial_quirks() {
-    log::info!("Loading initial pre-made quirks");
-
     let url = "https://raw.githubusercontent.com/Arrata-TTRPG/Arrata-Quirks/main/";
-
     let categories = ["ethos", "pathos", "logos"];
 
-    let client = Client::new();
+    let window = web_sys::window().unwrap();
 
     for category in categories {
-        let file = format!("{category}.quirks");
+        let full_url = format!("{url}{category}.quirks");
 
-        let request = client.get(format!("{url}{file}")).build().unwrap();
+        let resp = match JsFuture::from(window.fetch_with_str(&full_url)).await {
+            Ok(r) => r,
+            Err(_) => {
+                continue;
+            }
+        };
 
-        let response = client.execute(request).await;
-
-        if let Ok(response) = response {
-            let quirks: Vec<Quirk> = bitcode::decode(&response.bytes().await.unwrap()).unwrap();
-            PREMADE_QUIRKS.write().extend(quirks);
-            // Add a sort and dedup to the pre-made quirks
-            PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
-            PREMADE_QUIRKS.write().dedup();
-        } else {
-            log::error!("Failed to load pre-made quirks from {url}{file}");
+        let resp: web_sys::Response = resp.dyn_into().unwrap();
+        if !resp.ok() {
+            continue;
         }
+
+        let buf = match JsFuture::from(resp.array_buffer().unwrap()).await {
+            Ok(b) => b,
+            Err(_) => {
+                continue;
+            }
+        };
+
+        let bytes = Uint8Array::new(&buf).to_vec();
+        let quirks: Vec<Quirk> = bitcode::decode(&bytes).unwrap();
+        PREMADE_QUIRKS.write().extend(quirks);
     }
+
+    PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
+    PREMADE_QUIRKS.write().dedup();
 }

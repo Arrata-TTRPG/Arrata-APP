@@ -3,6 +3,7 @@ use dioxus_free_icons::{
     Icon,
     icons::bs_icons::{BsSave, BsTrash},
 };
+use thousands::Separable;
 
 use arrata_lib::{Quirk, QuirkCategory};
 
@@ -18,7 +19,7 @@ pub(crate) fn RenderQuirks() -> Element {
             div { class: "flex flex-row justify-center gap-2",
                 h2 { class: "text-center text-4xl font-bold font-mono", "Argos" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 border rounded",
                     onclick: move |_| show_argos.set(!show_argos()),
                     if show_argos() {
                         "Hide"
@@ -56,7 +57,7 @@ pub(crate) fn RenderQuirks() -> Element {
                     "Quirks"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 border rounded",
                     onclick: move |_| *PREMADE_QUIRKS_MENU.write() = true,
                     "+ Load Premade Quirk"
                 }
@@ -86,13 +87,18 @@ pub(crate) fn RenderQuirks() -> Element {
 
 #[component]
 fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
+    let num_quirks = CHARACTER()
+        .quirks
+        .iter()
+        .filter(|quirk| quirk.category == category)
+        .count();
     let category = Signal::new(category);
     rsx! {
         div { class: "flex flex-col w-full justify-center items-center gap-2",
-            div { class: "flex justify-center items-center flex-row flex-wrap gap-2",
-                h1 { class: "text-center text-3xl font-bold font-mono", "{category}" }
+            div { class: "flex justify-center items-center flex-row flex-wrap gap-4",
+                h1 { class: "text-center text-3xl font-bold font-mono", "{category} {num_quirks.separate_with_commas()}" }
                 button {
-                    class: "text-white font-bold py-1 px-2 border rounded bg-slate-900 hover:bg-slate-500",
+                    class: "font-bold py-1 px-2 border rounded bg-slate-900 hover:bg-slate-500",
                     onclick: move |_| {
                         CHARACTER
                             .write()
@@ -108,7 +114,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 border rounded",
+                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 border rounded",
                     onclick: move |_| {
                         match category() {
                             QuirkCategory::Ethos => SHOWN_CATEGORIES.write().0 = !SHOWN_CATEGORIES().0,
@@ -181,7 +187,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
             div { class: "flex border justify-center content-center items-center justify-items-center",
                 textarea {
                     id: "quirk-desc-{index}",
-                    class: "rounded-lg w-full p-2 bg-black text-white border-white resize-none overflow-hidden",
+                    class: "rounded-lg w-full p-2 bg-black border-white resize-none overflow-hidden",
                     style: "min-height: 2.75rem",
                     value: "{quirk().description}",
                     placeholder: "Get quirky with it.",
@@ -202,7 +208,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                 div { class: "inline-flex font-mono text-xl gap-x-3 justify-center items-center",
                     h3 { class: "font-mono text-xl", "Boons" }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-3",
+                        class: "bg-slate-900 hover:bg-slate-500 text-lg border font-bold rounded py-1 px-3",
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -215,7 +221,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                 div { class: "inline-flex font-mono text-xl gap-x-3 justify-center items-center",
                     h3 { class: "font-mono text-xl", "Flaws" }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-lg text-white border font-bold rounded py-1 px-3",
+                        class: "bg-slate-900 hover:bg-slate-500 text-lg border font-bold rounded py-1 px-3",
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -247,7 +253,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
             if boon {
                 textarea {
                     id: "quirk-boon-{quirk}-{index}",
-                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white resize-none overflow-hidden",
+                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black resize-none overflow-hidden",
                     style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].boons[index]}",
                     placeholder: "Boon",
@@ -279,7 +285,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
             } else {
                 textarea {
                     id: "quirk-flaw-{quirk}-{index}",
-                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black text-white resize-none overflow-hidden",
+                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black resize-none overflow-hidden",
                     style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].flaws[index]}",
                     placeholder: "Flaw",
@@ -322,7 +328,7 @@ fn RenderInspiration() -> Element {
                 div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
                     h4 { class: "text-center text-2xl font-bold", "Ethos" }
                     input {
-                        class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
+                        class: "rounded-lg w-24 p-2 bg-black border border-white text-center",
                         r#type: "number",
                         min: 0,
                         max: i64::MAX,
@@ -335,7 +341,7 @@ fn RenderInspiration() -> Element {
                 div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
                     h4 { class: "text-center text-2xl font-bold", "Pathos" }
                     input {
-                        class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
+                        class: "rounded-lg w-24 p-2 bg-black border border-white text-center",
                         r#type: "number",
                         min: 0,
                         max: i64::MAX,
@@ -348,7 +354,7 @@ fn RenderInspiration() -> Element {
                 div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
                     h4 { class: "text-center text-2xl font-bold", "Logos" }
                     input {
-                        class: "rounded-lg w-24 p-2 bg-black text-white border border-white text-center",
+                        class: "rounded-lg w-24 p-2 bg-black border border-white text-center",
                         r#type: "number",
                         min: 0,
                         max: i64::MAX,
