@@ -2,8 +2,8 @@ use arrata_lib::{Quirk, QuirkCategory};
 use base64::prelude::*;
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    Icon,
     icons::bs_icons::{BsSave, BsTrash, BsX},
+    Icon,
 };
 use thousands::Separable;
 
@@ -53,25 +53,25 @@ pub fn RenderPremadeQuirkList() -> Element {
                         spawn(async move {
                             // multiple=true mirrors the old pick_files behaviour
                             let js = r#"
-                                                                var input = document.createElement("input");
-                                                                input.type = "file";
-                                                                input.accept = ".quirks";
-                                                                input.multiple = true;
-                                                                input.onchange = async function(e) {
-                                                                    var results = [];
-                                                                    for (var i = 0; i < e.target.files.length; i++) {
-                                                                        var buf = await e.target.files[i].arrayBuffer();
-                                                                        var bytes = new Uint8Array(buf);
-                                                                        var b64 = "";
-                                                                        for (var j = 0; j < bytes.length; j += 8192) {
-                                                                            b64 += String.fromCharCode.apply(null, bytes.subarray(j, j + 8192));
-                                                                        }
-                                                                        results.push(btoa(b64));
-                                                                    }
-                                                                    dioxus.send(results);
-                                                                };
-                                                                input.click();
-                                                            "#;
+                                var input = document.createElement("input");
+                                input.type = "file";
+                                input.accept = ".quirks";
+                                input.multiple = true;
+                                input.onchange = async function(e) {
+                                    var results = [];
+                                    for (var i = 0; i < e.target.files.length; i++) {
+                                        var buf = await e.target.files[i].arrayBuffer();
+                                        var bytes = new Uint8Array(buf);
+                                        var b64 = "";
+                                        for (var j = 0; j < bytes.length; j += 8192) {
+                                            b64 += String.fromCharCode.apply(null, bytes.subarray(j, j + 8192));
+                                        }
+                                        results.push(btoa(b64));
+                                    }
+                                    dioxus.send(results);
+                                };
+                                input.click();
+                            "#;
                             let mut eval = document::eval(js);
                             if let Ok(val) = eval.recv::<Vec<String>>().await {
                                 for b64 in val {
@@ -176,9 +176,8 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
             key: "{index}",
             div { class: "flex flex-wrap gap-2 justify-center place-items-center",
                 button {
-                    class: format!("flex font-extrabold font-xl py-1 px-3 border rounded-lg transition-colors duration-700{}",
-                    if flashing() { " bg-green-550" } else { " bg-slate-750 hover:bg-slate-600" }),
-                    disabled: flashing(),
+                    class: format!("flex font-extrabold font-xl py-1 px-3 border rounded-lg transition-colors duration-300{}",
+                    if flashing() { " bg-green-500" } else { " bg-slate-900 hover:bg-slate-600" }),
                     onclick: move |_| {
                         if flashing() { return; }
                         spawn(async move {
@@ -191,7 +190,7 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                                 character.quirks.push(quirk.clone());
                             });
                     },
-                    "{quirk.name} +"
+                    "+ {quirk.name}"
                 }
                 button {
                     class: "btn-danger-sm",

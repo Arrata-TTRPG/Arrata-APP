@@ -148,7 +148,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
 fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
     let quirk: Signal<Quirk> = Signal::new(quirk);
     rsx! {
-        div { class: "flex flex-1 flex-col w-full md:w-1/2 border border-spacing-2 p-2 rounded-lg gap-1",
+        div { class: "flex flex-1 flex-col w-full md:w-1/2 min-w-[310px] border border-spacing-2 p-2 rounded-lg gap-1",
             div { class: "inline-field",
                 input {
                     class: "input-stat",
