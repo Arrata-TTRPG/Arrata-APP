@@ -15,11 +15,11 @@ use crate::{
 pub(crate) fn RenderQuirks() -> Element {
     let mut show_argos = use_signal(|| false);
     rsx! {
-        div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 max-[1920px]:pt-10 flex-col gap-4 justify-center px-2",
+        div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 max-[1280px]:pt-10 flex-col gap-4 justify-center px-2",
             div { class: "flex flex-row justify-center gap-2",
-                h2 { class: "text-center text-4xl font-bold font-mono", "Argos" }
+                h1 { "Argos" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 border rounded",
+                    class: "btn",
                     onclick: move |_| show_argos.set(!show_argos()),
                     if show_argos() {
                         "Hide"
@@ -32,7 +32,7 @@ pub(crate) fn RenderQuirks() -> Element {
             if show_argos() {
                 textarea {
                     id: "argos",
-                    class: "rounded-lg w-full p-2 bg-black resize-none overflow-hidden h-fit font-mono border border-white text-center",
+                    class: "textarea-notes text-center",
                     style: "min-height: 2.75rem; color: rgb(150 150 150);
                             background-image:   radial-gradient(circle, white 0.4px, transparent 1px),
                                                 radial-gradient(circle, white 0.4px, transparent 1px);
@@ -52,12 +52,10 @@ pub(crate) fn RenderQuirks() -> Element {
 
             RenderInspiration {}
 
-            div { class: "flex flex-wrap gap-3 justify-center content-center items-center",
-                h2 { class: "inline-flex text-center text-4xl font-bold font-mono",
-                    "Quirks"
-                }
+            div { class: "flex-grid-big",
+                h1 { "Quirks" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 border rounded",
+                    class: "btn",
                     onclick: move |_| *PREMADE_QUIRKS_MENU.write() = true,
                     "+ Load Premade Quirk"
                 }
@@ -95,10 +93,10 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
     let category = Signal::new(category);
     rsx! {
         div { class: "flex flex-col w-full justify-center items-center gap-2",
-            div { class: "flex justify-center items-center flex-row flex-wrap gap-4",
-                h1 { class: "text-center text-3xl font-bold font-mono", "{category} {num_quirks.separate_with_commas()}" }
+            div { class: "flex-grid-big w-full",
+                h2 { "{category} {num_quirks.separate_with_commas()}" }
                 button {
-                    class: "font-bold py-1 px-2 border rounded bg-slate-900 hover:bg-slate-500",
+                    class: "btn",
                     onclick: move |_| {
                         CHARACTER
                             .write()
@@ -114,7 +112,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 border rounded",
+                    class: "btn",
                     onclick: move |_| {
                         match category() {
                             QuirkCategory::Ethos => SHOWN_CATEGORIES.write().0 = !SHOWN_CATEGORIES().0,
@@ -151,16 +149,16 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
     let quirk: Signal<Quirk> = Signal::new(quirk);
     rsx! {
         div { class: "flex flex-1 flex-col w-full md:w-1/2 border border-spacing-2 p-2 rounded-lg gap-1",
-            div { class: "flex justify-center content-center items-center justify-items-center text-2xl w-full gap-x-2",
+            div { class: "inline-field",
                 input {
-                    class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                    class: "input-stat",
                     r#type: "text",
                     value: "{quirk().name}",
                     placeholder: "Quirk Name",
                     oninput: move |evt| CHARACTER.write().quirks[index].name.clone_from(&evt.value()),
                 }
                 button {
-                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    class: "btn-danger",
                     onclick: move |_| std::mem::drop(CHARACTER.write().quirks.remove(index)),
                     Icon {
                         width: 25,
@@ -170,7 +168,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     }
                 }
                 button {
-                    class: "flex p-2 hover:bg-slate-700 border text-lg rounded-lg cursor-pointer",
+                    class: "btn-add",
                     onclick: move |_| {
                         PREMADE_QUIRKS.write().push(quirk());
                         PREMADE_QUIRKS.write().sort_by(|a, b| a.name.cmp(&b.name));
@@ -184,29 +182,27 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                     }
                 }
             }
-            div { class: "flex border justify-center content-center items-center justify-items-center",
-                textarea {
-                    id: "quirk-desc-{index}",
-                    class: "rounded-lg w-full p-2 bg-black border-white resize-none overflow-hidden",
-                    style: "min-height: 2.75rem",
-                    value: "{quirk().description}",
-                    placeholder: "Get quirky with it.",
-                    onmounted: move |_| async move {
-                        let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), true))
-                            .await;
-                    },
-                    oninput: move |evt| {
-                        CHARACTER
-                            .with_mut(|character| {
-                                character.quirks[index].description.clone_from(&evt.value());
-                            });
-                        let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), false));
-                    },
-                }
+            textarea {
+                id: "quirk-desc-{index}",
+                class: "textarea-quirk",
+                style: "min-height: 2.75rem",
+                value: "{quirk().description}",
+                placeholder: "Get quirky with it.",
+                onmounted: move |_| async move {
+                    let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), true))
+                        .await;
+                },
+                oninput: move |evt| {
+                    CHARACTER
+                        .with_mut(|character| {
+                            character.quirks[index].description.clone_from(&evt.value());
+                        });
+                    let _ = document::eval(&auto_resize_js(&format!("quirk-desc-{index}"), false));
+                },
             }
             div { class: "grid grid-cols-2 p-1 gap-1",
-                div { class: "inline-flex font-mono text-xl gap-x-3 justify-center items-center",
-                    h3 { class: "font-mono text-xl", "Boons" }
+                div { class: "inline-field",
+                    h4 { "Boons" }
                     button {
                         class: "bg-slate-900 hover:bg-slate-500 text-lg border font-bold rounded py-1 px-3",
                         onclick: move |_| {
@@ -218,8 +214,8 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                         "+"
                     }
                 }
-                div { class: "inline-flex font-mono text-xl gap-x-3 justify-center items-center",
-                    h3 { class: "font-mono text-xl", "Flaws" }
+                div { class: "inline-field",
+                    h4 { "Flaws" }
                     button {
                         class: "bg-slate-900 hover:bg-slate-500 text-lg border font-bold rounded py-1 px-3",
                         onclick: move |_| {
@@ -253,7 +249,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
             if boon {
                 textarea {
                     id: "quirk-boon-{quirk}-{index}",
-                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black resize-none overflow-hidden",
+                    class: "textarea-quirk",
                     style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].boons[index]}",
                     placeholder: "Boon",
@@ -271,7 +267,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                     },
                 }
                 button {
-                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    class: "btn-danger",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().quirks[quirk].boons.remove(index));
                     },
@@ -285,7 +281,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
             } else {
                 textarea {
                     id: "quirk-flaw-{quirk}-{index}",
-                    class: "w-full text-mono flex-shrink border-spacing-1 border p-2 bg-black resize-none overflow-hidden",
+                    class: "textarea-quirk",
                     style: "min-height: 2.75rem",
                     value: "{CHARACTER().quirks[quirk].flaws[index]}",
                     placeholder: "Flaw",
@@ -303,7 +299,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                     },
                 }
                 button {
-                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    class: "btn-danger",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().quirks[quirk].flaws.remove(index));
                     },
@@ -322,13 +318,13 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
 #[component]
 fn RenderInspiration() -> Element {
     rsx! {
-        div { class: "flex flex-col space-y-2 border rounded-xl",
-            h3 { class: "text-center p-2 text-3xl font-bold", "Inspiration" }
-            div { class: "flex justify-center gap-4",
-                div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
-                    h4 { class: "text-center text-2xl font-bold", "Ethos" }
+        div { class: "flex-col-md border rounded-xl",
+            h1 { "Inspiration" }
+            div { class: "flex w-full justify-around gap-4 pt-4",
+                div { class: "flex-col-md",
+                    h2 { "Ethos" }
                     input {
-                        class: "rounded-lg w-24 p-2 bg-black border border-white text-center",
+                        class: "input-counter w-24",
                         r#type: "number",
                         min: 0,
                         max: i64::MAX,
@@ -338,10 +334,10 @@ fn RenderInspiration() -> Element {
                         },
                     }
                 }
-                div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
-                    h4 { class: "text-center text-2xl font-bold", "Pathos" }
+                div { class: "flex-col-md",
+                    h2 { "Pathos" }
                     input {
-                        class: "rounded-lg w-24 p-2 bg-black border border-white text-center",
+                        class: "input-counter w-24",
                         r#type: "number",
                         min: 0,
                         max: i64::MAX,
@@ -351,10 +347,10 @@ fn RenderInspiration() -> Element {
                         },
                     }
                 }
-                div { class: "flex flex-1 flex-wrap flex-col gap-2 p-2 rounded-xl justify-center place-items-center",
-                    h4 { class: "text-center text-2xl font-bold", "Logos" }
+                div { class: "flex-col-md",
+                    h2 { "Logos" }
                     input {
-                        class: "rounded-lg w-24 p-2 bg-black border border-white text-center",
+                        class: "input-counter w-24",
                         r#type: "number",
                         min: 0,
                         max: i64::MAX,

@@ -49,15 +49,15 @@ fn RenderCombatStats() -> Element {
 
     rsx! {
         div { class: "flex w-full flex-col gap-3 pb-4 gap-4",
-            h2 { class: "text-center text-4xl font-bold font-mono", "Combat" }
+            h1 { "Combat" }
 
-            div { class: "w-full flex max-[1280px]:flex-col min-[1281px]:flex-row justify-center items-center gap-4",
+            div { class: "flex-grid-big max-[1280px]:flex-col min-[1281px]:flex-row",
                 // Health
-                div { class: "flex min-w-30 max-[1280px]:w-full flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
-                    span { class: "font-mono text-sm text-slate-200", "Health" }
-                    div { class: "w-full inline-flex items-center justify-center place-items-center gap-2",
+                div { class: "flex-col-md border rounded-lg min-w-30 max-[1280px]:w-full",
+                    span { "Health" }
+                    div { class: "inline-field",
                         input {
-                            class: "flex flex-1 min-w-10 min-[1281px]:max-w-30 text-lg border rounded-lg p-2",
+                            class: "input-counter flex-1 min-[1281px]:max-w-30",
                             r#type: "number",
                             value: current_hp,
                             min: "0",
@@ -69,16 +69,16 @@ fn RenderCombatStats() -> Element {
                                     });
                             },
                         }
-                        span { class: "flex font-mono text-lg leading-none whitespace-nowrap", "/ {max_hp.separate_with_commas()}" }
+                        p { class: "label whitespace-nowrap", "/ {max_hp.separate_with_commas()}" }
                     }
                 }
 
                 // Injury
-                div { class: "flex max-[1280px]:w-full flex-col items-center border rounded-lg p-3 gap-1 h-22",
-                    span { class: "font-mono text-sm text-slate-200", "Injury" }
-                    div { class: "inline-flex items-center gap-2",
+                div { class: "flex-col-md border rounded-lg min-w-30 max-[1280px]:w-full min-[1281px]:h-full",
+                    span { "Injury" }
+                    div { class: "inline-field",
                         button {
-                            class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-3 rounded h-full border",
+                            class: "btn-add",
                             onclick: move |_| {
                                 CHARACTER
                                     .with_mut(|c| {
@@ -87,9 +87,9 @@ fn RenderCombatStats() -> Element {
                             },
                             "+"
                         }
-                        span { class: "font-mono text-2xl w-8 text-center", "{injury.separate_with_commas()}" }
+                        h2 { "{injury.separate_with_commas()}" }
                         button {
-                            class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-4 rounded h-full border",
+                            class: "btn-add",
                             onclick: move |_| {
                                 CHARACTER
                                     .with_mut(|c| {
@@ -102,18 +102,18 @@ fn RenderCombatStats() -> Element {
                 }
 
                 // Action Points
-                div { class: "flex min-w-30 max-[1280px]:w-full flex-col items-center border rounded-lg py-3 px-2 gap-1 h-22",
-                    span { class: "font-mono text-sm text-slate-200", "Action Points" }
-                    div { class: "inline-flex w-full items-center justify-center place-items-center gap-2",
+                div { class: "flex-col-md border rounded-lg min-w-30 max-[1280px]:w-full",
+                    span { "Action Points" }
+                    div { class: "inline-field",
                         input {
-                            class: "flex flex-1 min-w-10 min-[1281px]:max-w-30 text-lg border rounded-lg p-2",
+                            class: "input-counter flex-1 min-[1281px]:max-w-30",
                             r#type: "number",
                             value: "{current_ap()}",
                             oninput: move |evt| {
                                 current_ap.set(evt.value().parse::<isize>().unwrap_or(0));
                             },
                         }
-                        span { class: "font-mono text-lg leading-none whitespace-nowrap", "/ {max_ap.separate_with_commas()}" }
+                        p { class: "label whitespace-nowrap", "/ {max_ap.separate_with_commas()}" }
                     }
                 }
             }
@@ -128,17 +128,15 @@ fn RenderWeapons() -> Element {
     let mut show = use_signal(|| false);
     rsx! {
         div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pr-1 w-full flex-col gap-2",
-            div { class: "flex flex-row justify-center items-center py-2 gap-4",
-                h2 { class: "text-center text-4xl font-bold font-mono",
-                    "Weapons {CHARACTER().weapons.iter().count().separate_with_commas()}"
-                }
+            div { class: "inline-field",
+                h2 { "Weapons {CHARACTER().weapons.iter().count().separate_with_commas()}" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-3 rounded h-full border",
+                    class: "btn-add",
                     onclick: move |_| CHARACTER.write().weapons.push(Weapon::default()),
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 rounded h-full border",
+                    class: "btn text-lg",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"
@@ -148,7 +146,7 @@ fn RenderWeapons() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start",
+                div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
                     for (i, _) in CHARACTER().weapons.iter().enumerate() {
                         RenderWeapon { index: i }
                     }
@@ -165,11 +163,11 @@ fn RenderWeapon(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[310px] space-y-2 text-center",
+        div { class: "flex-grid-md min-w-[310px] border rounded-lg p-2",
             // Name + delete
-            div { class: "flex w-full justify-center items-center text-2xl space-x-2",
+            div { class: "inline-field",
                 input {
-                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                    class: "input-stat",
                     r#type: "text",
                     placeholder: "Weapon Name",
                     value: "{w.name}",
@@ -178,7 +176,7 @@ fn RenderWeapon(index: usize) -> Element {
                     },
                 }
                 button {
-                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    class: "btn-danger",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().weapons.remove(index));
                     },
@@ -192,11 +190,11 @@ fn RenderWeapon(index: usize) -> Element {
             }
 
             // Skill (bounded) + Req (fixed)
-            div { class: "inline-flex flex-wrap justify-center content-center items-center justify-items-center gap-2",
-                div { class: "flex flex-row gap-2 items-center",
-                    span { class: "font-mono text-lg", "Skill:" }
+            div { class: "flex-grid-big",
+                div { class: "inline-field-sm flex-1",
+                    p { class: "label", "Skill:" }
                     input {
-                        class: "flex flex-1 min-w-14 border rounded-lg p-2 font-mono text-lg text-center",
+                        class: "input-stat",
                         r#type: "text",
                         value: "{w.skill}",
                         placeholder: "None",
@@ -205,10 +203,10 @@ fn RenderWeapon(index: usize) -> Element {
                         },
                     }
                 }
-                div { class: "flex flex-row gap-2 items-center",
-                    span { class: "font-mono text-lg", "Min Skill Level:" }
+                div { class: "inline-field-sm",
+                    p { class: "label", "Min:" }
                     input {
-                        class: "w-16 border rounded-lg p-2 font-mono text-lg text-center",
+                        class: "input-counter",
                         r#type: "text",
                         value: "{w.skill_requirement.clone().unwrap_or_default()}",
                         placeholder: "B0",
@@ -222,11 +220,11 @@ fn RenderWeapon(index: usize) -> Element {
             }
 
             // Base dmg + stat dropdown
-            div { class: "flex flex-wrap justify-center gap-2",
-                div { class: "flex flex-row gap-2 items-center",
-                    span { class: "font-mono text-lg", "Base dmg:" }
+            div { class: "flex-grid-md",
+                div { class: "inline-field-sm",
+                    p { class: "label", "Base dmg:" }
                     input {
-                        class: "w-24 border rounded-lg p-2 text-lg text-center",
+                        class: "input-counter",
                         r#type: "number",
                         value: i64::from(w.base_damage),
                         oninput: move |evt| {
@@ -235,10 +233,10 @@ fn RenderWeapon(index: usize) -> Element {
                         },
                     }
                 }
-                div { class: "flex flex-row gap-2 items-center",
-                    span { class: "font-mono text-lg", "+" }
+                div { class: "inline-field-sm",
+                    p { class: "label", "+" }
                     select {
-                        class: "flex-grow hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer",
+                        class: "select-field",
                         onchange: move |evt| {
                             CHARACTER.write().weapons[index].stat_modifier = evt.value();
                         },
@@ -256,7 +254,7 @@ fn RenderWeapon(index: usize) -> Element {
             // Notes
             textarea {
                 id: "weapon-notes-{index}",
-                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden",
+                class: "textarea-notes",
                 style: "min-height: 2.75rem",
                 placeholder: "Notes",
                 value: "{w.notes}",

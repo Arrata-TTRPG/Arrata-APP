@@ -7,5 +7,102 @@
   input[type="number"] { @apply bg-black text-white text-center font-mono }
   select { @apply bg-black text-white }
   option { @apply bg-black text-white }
+  span { @apply font-mono text-sm text-slate-200 }
   textarea { @apply bg-black text-white field-sizing-content }
+  h1 { @apply text-center text-4xl font-bold font-mono }
+  h2 { @apply text-center text-3xl font-bold font-mono }
+  h3 { @apply text-center text-2xl font-bold font-mono }
+  h4 { @apply text-center text-xl font-mono }
+}
+
+@layer components {
+  /* == Buttons == */
+
+  /* Standard action button - most common across the app */
+  .btn { @apply bg-slate-900 hover:bg-slate-600 font-bold py-1 px-4 border rounded }
+
+  /* Smaller horizontal padding variant */
+  .btn-sm { @apply bg-slate-900 hover:bg-slate-600 font-bold py-1 px-2 border rounded }
+
+  /* Counter increment/decrement - tall, used in +/- pairs */
+  .btn-counter { @apply bg-slate-900 hover:bg-slate-600 text-xl font-bold py-1 px-3 rounded h-full border }
+
+  /* Add item to a list - like btn but with h-full */
+  .btn-add { @apply bg-slate-900 hover:bg-slate-600 font-bold py-1 px-3 rounded h-full border }
+
+  /* Large prominent action - file import/export, character save */
+  .btn-lg { @apply font-mono text-xl bg-slate-900 hover:bg-slate-600 font-bold py-2 px-4 rounded flex-grow }
+
+  /* Delete/remove item - red, heavier border */
+  .btn-danger { @apply bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg }
+
+  /* Smaller delete - used inline in tighter layouts */
+  .btn-danger-sm { @apply bg-red-950 hover:bg-red-600 p-1 border rounded-lg }
+
+  /* Confirm destructive action in a dialog */
+  .btn-confirm-delete { @apply font-mono bg-red-700 hover:bg-red-600 font-bold py-1 px-4 rounded }
+
+  /* Cancel/dismiss action in a dialog */
+  .btn-cancel { @apply font-mono bg-slate-700 hover:bg-slate-600 font-bold py-1 px-4 rounded }
+
+  /* Sidebar file management buttons - taller, monospaced */
+  .btn-sidebar { @apply bg-slate-900 hover:bg-slate-600 font-mono font-bold flex px-2 h-12 items-center border rounded }
+
+  /* Close (X) button on overlays */
+  .btn-close { @apply bg-slate-950 hover:bg-slate-700 rounded cursor-pointer }
+
+  /* Minimal stat roll trigger - just a background swap */
+  .btn-ghost { @apply bg-slate-900 hover:bg-slate-600 }
+
+  /* == Textareas == */
+
+  /* Notes fields - weapons, armor, talents */
+  .textarea-notes { @apply w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden }
+
+  /* Quirk boon/flaw entries */
+  .textarea-quirk { @apply w-full font-mono border-spacing-1 border p-2 bg-black resize-none overflow-hidden }
+
+  /* == Inputs == */
+
+  /* Standard bordered input */
+  .input-field { @apply border rounded-lg p-2 }
+
+  /* Editable name/title - centered text */
+  .input-name { @apply border-spacing-1 border rounded-lg p-2 text-center }
+
+  /* Stat/skill name - monospace, growable */
+  .input-stat { @apply flex-1 font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2 }
+
+  /* Select dropdown styled as input */
+  .select-field { @apply hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer }
+
+  /* Small numeric counter display */
+  .input-counter { @apply w-16 border text-lg rounded-lg p-2 text-center }
+
+  /* == Layout == */
+
+  /* Section title - Stats, Combat, Quirks, Skills, etc. */
+  .section-title { @apply text-center text-4xl font-bold font-mono }
+
+  /* Card container - stat block, weapon, armor, skill, etc. */
+  .card { @apply flex flex-col border p-2 rounded-lg }
+
+  /* Items container - wrapping grid of cards */
+  .card-grid { @apply flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start }
+
+  /* Inline container for label + input pairs */
+  .inline-field { @apply inline-flex items-center justify-center gap-2 w-full }
+  .inline-field-sm { @apply inline-flex items-center justify-center gap-2 }
+
+  /* Inline label */
+  .label { @apply font-mono text-lg whitespace-nowrap }
+
+  .flex-grid-none { @apply flex flex-wrap justify-center items-center }
+
+  /* Flexbox with large spacing */
+  .flex-grid-big { @apply flex flex-wrap justify-center items-center gap-4 p-2 w-full }
+
+  .flex-grid-md { @apply flex flex-wrap justify-center items-center gap-2 p-2 w-full }
+
+  .flex-col-md { @apply flex flex-col gap-2 p-2 rounded-xl justify-center items-center }
 }

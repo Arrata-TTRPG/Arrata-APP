@@ -38,17 +38,17 @@ fn RenderCoreStats() -> Element {
         .separate_with_commas();
 
     rsx! {
-        h2 { class: "text-center text-4xl font-bold font-mono", "Stats {stats_total}" }
-        div { class: "flex justify-center justify-items-center content-center",
+        h1 { "Stats {stats_total}" }
+        div { class: "flex-grid-none",
             div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
                 for (i, stat) in CHARACTER().stats.iter().enumerate() {
-                    div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full space-y-2",
-                        div { class: "inline-flex items-center justify-center",
-                            div { class: "flex-grow font-mono text-center text-2xl",
+                    div { class: "flex-col-md border rounded-lg p-2 flex-1 w-full",
+                        div { class: "inline-field",
+                            h3 { class: "flex-grow",
                                 "{stat.name}"
                             }
                             button {
-                                class: "bg-slate-900 hover:bg-slate-600",
+                                class: "btn-ghost",
                                 onclick: move |_| {
                                     DICE_ROLL_STATE
                                         .with_mut(|state| {
@@ -65,9 +65,9 @@ fn RenderCoreStats() -> Element {
                             }
                         }
                         div { class: "flex flex-wrap w-full h-full justify-center items-center gap-2",
-                            div { class: "inline-flex flex-1 items-center justify-center space-x-2",
+                            div { class: "inline-field flex-1 gap-2",
                                 select {
-                                    class: "hover:bg-slate-700 min-w-12 flex-1 font-mono text-center border rounded-lg p-2 appearance-none cursor-pointer",
+                                    class: "select-field min-w-12 flex-1",
                                     onchange: move |evt| {
                                         CHARACTER
                                             .with_mut(|character| {
@@ -96,7 +96,7 @@ fn RenderCoreStats() -> Element {
                                     }
                                 }
                                 input {
-                                    class: "flex-1 min-w-12 border rounded-lg p-2 font-mono text-center",
+                                    class: "input-stat",
                                     r#type: "number",
                                     value: "{stat.quantity}",
                                     min: 0,
@@ -110,9 +110,9 @@ fn RenderCoreStats() -> Element {
                                 }
                             }
                             div { class: "inline-flex items-center justify-center space-x-2",
-                                span { class: "font-mono text-lg align-middle h-fit", "Checks:" }
+                                span { class: "label", "Checks:" }
                                 input {
-                                    class: "w-16 border rounded-lg font-mono text-center p-2",
+                                    class: "input-counter",
                                     r#type: "number",
                                     value: "{stat.checks.unwrap_or_default()}",
                                     min: 0,
@@ -139,29 +139,27 @@ fn RenderCoreStats() -> Element {
 fn RenderSkills() -> Element {
     let mut show = use_signal(|| false);
     rsx! {
-        div { class: "flex flex-row justify-center content-center items-center py-2 gap-4",
-            h2 { class: "text-center text-4xl font-bold font-mono",
-                "Skills {CHARACTER().skills.iter().count().separate_with_commas()}"
-            }
+        div { class: "inline-field",
+            h1 { "Skills {CHARACTER().skills.iter().count().separate_with_commas()}" }
             button {
-                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-3 rounded h-full border",
+                class: "btn-add",
                 onclick: move |_| CHARACTER.write().skills.push(Stat::new(String::new())),
                 "+"
             }
             button {
-                class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                class: "btn",
                 onclick: move |_| show.set(!show()),
                 if show() { "Hide" } else { "Show" }
             }
         }
         if show() {
             div { class: "flex justify-center border rounded-lg p-2",
-                div { class: "flex flex-wrap gap-4 justify-center content-center items-start w-full",
+                div { class: "flex-grid-big",
                     for (i, skill) in CHARACTER().skills.iter().enumerate() {
-                        div { class: "flex flex-1 flex-col border p-2 rounded-lg w-full md:w-1/2 space-y-2",
-                            div { class: "flex w-full justify-center items-center text-2xl space-x-2",
+                        div { class: "flex-col-md flex-1 border rounded-lg",
+                            div { class: "inline-field w-full",
                                 input {
-                                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                                    class: "input-stat",
                                     r#type: "text",
                                     value: "{skill.name}",
                                     placeholder: "Skill Name",
@@ -170,7 +168,7 @@ fn RenderSkills() -> Element {
                                     },
                                 }
                                 button {
-                                    class: "bg-slate-900 hover:bg-slate-600",
+                                    class: "btn-ghost",
                                     onclick: move |_| {
                                         DICE_ROLL_STATE
                                             .with_mut(|state| {
@@ -186,7 +184,7 @@ fn RenderSkills() -> Element {
                                     }
                                 }
                                 button {
-                                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                                    class: "btn-danger",
                                     onclick: move |_| {
                                         std::mem::drop(CHARACTER.write().skills.remove(i));
                                     },
@@ -198,10 +196,10 @@ fn RenderSkills() -> Element {
                                     }
                                 }
                             }
-                            div { class: "flex flex-wrap justify-center content-center items-center justify-items-center gap-2",
-                                div { class: "inline-flex flex-1 items-center justify-center space-x-2",
+                            div { class: "flex-grid-md",
+                                div { class: "inline-field flex-1",
                                     select {
-                                        class: "flex-1 min-w-12 hover:bg-slate-700 font-mono text-center border rounded-lg p-2 appearance-none cursor-pointer",
+                                        class: "select-field flex-1",
                                         onchange: move |evt| {
                                             CHARACTER
                                                 .with_mut(|character| {
@@ -230,7 +228,7 @@ fn RenderSkills() -> Element {
                                         }
                                     }
                                     input {
-                                        class: "flex-1 min-w-12 border rounded-lg p-2 font-mono text-center",
+                                        class: "input-stat",
                                         r#type: "number",
                                         value: "{skill.quantity}",
                                         min: 0,
@@ -243,10 +241,10 @@ fn RenderSkills() -> Element {
                                         },
                                     }
                                 }
-                                div { class: "inline-flex items-center justify-center space-x-2",
-                                    span { class: "font-mono text-lg", "Checks:" }
+                                div { class: "inline-field",
+                                    span { class: "label", "Checks:" }
                                     input {
-                                        class: "w-16 border rounded-lg font-mono text-center p-2",
+                                        class: "input-counter",
                                         r#type: "number",
                                         value: "{skill.checks.unwrap_or(0)}",
                                         min: 0,
@@ -466,18 +464,16 @@ fn RenderResource(index: usize) -> Element {
 fn RenderInventory() -> Element {
     let mut show = use_signal(|| false);
     rsx! {
-        div { class: "flex flex-col gap-2",
-            div { class: "flex justify-center content-center items-center gap-4",
-                h2 { class: "inline-flex text-center text-4xl font-bold font-mono",
-                    "Inventory {CHARACTER().inventory.iter().count().separate_with_commas()}"
-                }
+        div { class: "flex-col-md",
+            div { class: "inline-field",
+                h1 { "Inventory {CHARACTER().inventory.iter().count().separate_with_commas()}" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-3 rounded",
+                    class: "btn-add",
                     onclick: move |_| CHARACTER.write().inventory.push(Item::default()),
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold border py-1 px-4 rounded",
+                    class: "btn",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"
@@ -487,18 +483,18 @@ fn RenderInventory() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start w-full",
+                div { class: "flex-grid-md border rounded-lg p-2",
                     for (i, item) in CHARACTER().inventory.iter().enumerate() {
-                        div { class: "flex flex-1 justify-center items-center border border-spacing-2 space-x-2 p-2 rounded-lg min-w-[200px]",
+                        div { class: "inline-field border rounded-lg p-2 flex-1 min-w-[200px]",
                             input {
-                                class: "flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                                class: "input-stat flex-grow",
                                 r#type: "text",
                                 value: "{item.name}",
                                 placeholder: "Item",
                                 oninput: move |evt| CHARACTER.write().inventory[i].name.clone_from(&evt.value()),
                             }
                             input {
-                                class: "w-16 border rounded-lg p-2",
+                                class: "input-counter",
                                 r#type: "number",
                                 value: i64::try_from(item.quantity).unwrap_or_default(),
                                 oninput: move |evt| {
@@ -512,7 +508,7 @@ fn RenderInventory() -> Element {
                                 },
                             }
                             button {
-                                class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                                class: "btn-danger",
                                 onclick: move |_| std::mem::drop(CHARACTER.write().inventory.remove(i)),
                                 Icon {
                                     width: 25,
