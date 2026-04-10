@@ -283,12 +283,12 @@ fn RenderArmor() -> Element {
             div { class: "inline-field",
                 h2 { "Armor {CHARACTER().armor.iter().count().separate_with_commas()}" }
                 button {
-                    class: "btn-counter",
+                    class: "btn-add",
                     onclick: move |_| CHARACTER.write().armor.push(Armor::default()),
                     "+"
                 }
                 button {
-                    class: "btn-add",
+                    class: "btn text-lg",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"
@@ -404,12 +404,12 @@ fn RenderTalents() -> Element {
         div { class: "inline-field",
             h2 { "Talents {CHARACTER().talents.iter().count().separate_with_commas()}" }
             button {
-                class: "btn-counter",
+                class: "btn-add",
                 onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
                 "+"
             }
             button {
-                class: "btn-add",
+                class: "btn text-lg",
                 onclick: move |_| show.set(!show()),
                 if show() {
                     "Hide"

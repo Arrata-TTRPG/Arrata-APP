@@ -92,11 +92,11 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
         .count();
     let category = Signal::new(category);
     rsx! {
-        div { class: "flex flex-col w-full justify-center items-center gap-2",
-            div { class: "flex-grid-big w-full",
+        div { class: "flex flex-wrap w-full justify-center items-center gap-2",
+            div { class: "inline-field",
                 h2 { "{category} {num_quirks.separate_with_commas()}" }
                 button {
-                    class: "btn",
+                    class: "btn-add",
                     onclick: move |_| {
                         CHARACTER
                             .write()
@@ -112,7 +112,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
                     "+"
                 }
                 button {
-                    class: "btn",
+                    class: "btn text-lg",
                     onclick: move |_| {
                         match category() {
                             QuirkCategory::Ethos => SHOWN_CATEGORIES.write().0 = !SHOWN_CATEGORIES().0,
@@ -148,7 +148,7 @@ fn RenderQuirkCategory(category: QuirkCategory, show: bool) -> Element {
 fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
     let quirk: Signal<Quirk> = Signal::new(quirk);
     rsx! {
-        div { class: "flex flex-1 flex-col w-full md:w-1/2 min-w-[310px] border border-spacing-2 p-2 rounded-lg gap-1",
+        div { class: "flex flex-1 flex-col w-full md:w-1/2 min-w-[310px] border p-1 rounded-lg gap-1",
             div { class: "inline-field",
                 input {
                     class: "input-stat",
@@ -204,7 +204,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                 div { class: "inline-field",
                     h4 { "Boons" }
                     button {
-                        class: "btn-sm text-lg",
+                        class: "btn-sm",
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -217,7 +217,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                 div { class: "inline-field",
                     h4 { "Flaws" }
                     button {
-                        class: "btn-sm text-lg",
+                        class: "btn-sm",
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -267,7 +267,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                     },
                 }
                 button {
-                    class: "btn-danger",
+                    class: "btn-danger-sm",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().quirks[quirk].boons.remove(index));
                     },
@@ -299,7 +299,7 @@ fn RenderBF(boon: bool, quirk: usize, index: usize) -> Element {
                     },
                 }
                 button {
-                    class: "btn-danger",
+                    class: "btn-danger-sm",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().quirks[quirk].flaws.remove(index));
                     },

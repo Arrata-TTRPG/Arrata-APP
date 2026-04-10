@@ -19,19 +19,19 @@
   /* == Buttons == */
 
   /* Standard action button - most common across the app */
-  .btn { @apply bg-slate-900 hover:bg-slate-600 font-bold py-1 px-4 border rounded }
+  .btn { @apply bg-slate-900 hover:bg-slate-600 font-bold self-stretch px-4 border rounded }
 
   /* Smaller horizontal padding variant */
-  .btn-sm { @apply bg-slate-900 hover:bg-slate-600 font-bold py-1 px-2 border rounded }
+  .btn-sm { @apply bg-slate-900 hover:bg-slate-600 font-bold self-stretch px-2 border rounded }
 
   /* Counter increment/decrement - tall, used in +/- pairs */
-  .btn-counter { @apply bg-slate-900 hover:bg-slate-600 text-xl font-bold py-1 px-3 rounded h-full border }
+  .btn-counter { @apply bg-slate-900 hover:bg-slate-600 text-xl font-bold self-stretch px-3 rounded h-full border }
 
   /* Add item to a list - like btn but with h-full */
-  .btn-add { @apply bg-slate-900 hover:bg-slate-600 font-bold py-1 px-3 rounded h-full border }
+  .btn-add { @apply bg-slate-900 hover:bg-slate-600 text-lg font-bold self-stretch px-3 rounded border }
 
   /* Large prominent action - file import/export, character save */
-  .btn-lg { @apply font-mono text-xl bg-slate-900 hover:bg-slate-600 font-bold py-2 px-4 rounded flex-grow }
+  .btn-lg { @apply font-mono text-xl bg-slate-900 hover:bg-slate-600 font-bold self-stretch px-4 rounded flex-grow }
 
   /* Delete/remove item - red, heavier border */
   .btn-danger { @apply bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg }
@@ -104,5 +104,5 @@
 
   .flex-grid-md { @apply flex flex-wrap justify-center gap-2 p-2 w-full }
 
-  .flex-col-md { @apply flex flex-col gap-2 p-2 rounded-xl justify-center items-center }
+  .flex-col-md { @apply flex flex-col gap-2 p-2 border rounded-xl justify-center items-center }
 }
