@@ -60,6 +60,8 @@ jobs:
         run: nix develop -c tailwindcss build -i input.css -o public/tailwind.css
       - name: dx build
         run: nix develop -c dx build --platform web
+      - name: dx check
+        run: nix develop -c dx check --platform web
       - name: Cargo Check
         run: nix develop -c cargo check --all
       - name: Cargo Test

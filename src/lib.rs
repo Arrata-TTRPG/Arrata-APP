@@ -7,6 +7,7 @@
     clippy::suspicious
 )]
 #![deny(warnings)]
+#![allow(non_snake_case)]
 
 pub mod render;
 

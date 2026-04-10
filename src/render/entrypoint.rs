@@ -23,7 +23,6 @@ pub fn App() -> Element {
         };
 
         use_future(|| async {
-            // Load roster; fall back to a single default character
             if let Some(characters) = read_characters() {
                 *CHARACTERS.write() = characters;
             }
@@ -31,26 +30,26 @@ pub fn App() -> Element {
             *CHARACTER.write() = first;
             *ACTIVE_IDX.write() = 0;
 
-            // Persist roster whenever CHARACTER changes (syncs active slot then saves all)
-            use_effect(move || {
-                let character = CHARACTER();
-                let idx = ACTIVE_IDX();
-                let mut chars = CHARACTERS.write();
-                if let Some(slot) = chars.get_mut(idx) {
-                    *slot = character;
-                }
-                write_characters(&chars);
-            });
-
-            // Pre-made quirks
             let quirks_key = format!("quirks-{}-{}", VERSION().major, VERSION().minor);
             if let Some(quirks) = read_quirks(&quirks_key) {
                 PREMADE_QUIRKS.write().extend(quirks);
             }
-            use_effect(move || {
-                let quirks = PREMADE_QUIRKS();
-                write_quirks(&quirks, &quirks_key);
-            });
+        });
+
+        use_effect(move || {
+            let character = CHARACTER();
+            let idx = ACTIVE_IDX();
+            let mut chars = CHARACTERS.write();
+            if let Some(slot) = chars.get_mut(idx) {
+                *slot = character;
+            }
+            write_characters(&chars);
+        });
+
+        let quirks_key = format!("quirks-{}-{}", VERSION().major, VERSION().minor);
+        use_effect(move || {
+            let quirks = PREMADE_QUIRKS();
+            write_quirks(&quirks, &quirks_key);
         });
     }
 
