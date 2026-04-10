@@ -20,7 +20,7 @@ pub(crate) fn RenderRolls() -> Element {
             // Close button
             div { class: "z-20 absolute right-0 top-0 p-2",
                 div {
-                    class: "bg-slate-950 hover:bg-slate-700 rounded cursor-pointer",
+                    class: "btn-close",
                     onclick: move |_| {
                         DICE_ROLL_STATE
                             .with_mut(|state| {

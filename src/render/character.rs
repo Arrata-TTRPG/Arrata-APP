@@ -60,7 +60,7 @@ pub(crate) fn CharacterIO() -> Element {
                         }
                         div { class: "flex gap-2",
                             button {
-                                class: "font-mono bg-red-700 hover:bg-red-600 text-white font-bold py-1 px-4 rounded",
+                                class: "btn-confirm-delete",
                                 onclick: move |_| {
                                     if let Some(character) = pending_import.take() {
                                         *CHARACTER.write() = character;
@@ -69,7 +69,7 @@ pub(crate) fn CharacterIO() -> Element {
                                 "Confirm"
                             }
                             button {
-                                class: "font-mono bg-slate-700 hover:bg-slate-600 text-white font-bold py-1 px-4 rounded",
+                                class: "btn-cancel",
                                 onclick: move |_| {
                                     pending_import.set(None);
                                 },

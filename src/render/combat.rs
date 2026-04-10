@@ -146,7 +146,7 @@ fn RenderWeapons() -> Element {
                 }
             }
             if show() {
-                div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
+                div { class: "card-grid",
                     for (i, _) in CHARACTER().weapons.iter().enumerate() {
                         RenderWeapon { index: i }
                     }
@@ -278,17 +278,15 @@ fn RenderArmor() -> Element {
     let mut show = use_signal(|| false);
     rsx! {
         div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pl-1 min-[1281px]:max-[1920px]:py-0 w-full flex-col gap-2 py-4",
-            div { class: "flex flex-row justify-center items-center py-2 gap-4",
-                h2 { class: "text-center text-4xl font-bold font-mono",
-                    "Armor {CHARACTER().armor.iter().count().separate_with_commas()}"
-                }
+            div { class: "inline-field",
+                h2 { "Armor {CHARACTER().armor.iter().count().separate_with_commas()}" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold py-1 px-3 rounded h-full border",
+                    class: "btn-counter",
                     onclick: move |_| CHARACTER.write().armor.push(Armor::default()),
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 rounded h-full border",
+                    class: "btn-add",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"
@@ -298,7 +296,7 @@ fn RenderArmor() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start",
+                div { class: "card-grid",
                     for (i, _) in CHARACTER().armor.iter().enumerate() {
                         RenderArmorPiece { index: i }
                     }
@@ -319,7 +317,7 @@ fn RenderArmorPiece(index: usize) -> Element {
             // Name + delete
             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                 input {
-                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                    class: "input-stat",
                     r#type: "text",
                     placeholder: "Armor Name",
                     value: "{a.name}",
@@ -328,7 +326,7 @@ fn RenderArmorPiece(index: usize) -> Element {
                     },
                 }
                 button {
-                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    class: "btn-danger",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().armor.remove(index));
                     },
@@ -348,7 +346,7 @@ fn RenderArmorPiece(index: usize) -> Element {
                     div { class: "flex flex-row gap-2 justify-center items-center",
                         span { class: "font-mono text-lg", "Flat:" }
                         input {
-                            class: "w-16 border rounded-lg p-2 text-center",
+                            class: "input-counter",
                             r#type: "number",
                             value: i64::from(a.flat_reduction),
                             oninput: move |evt| {
@@ -360,7 +358,7 @@ fn RenderArmorPiece(index: usize) -> Element {
                     div { class: "flex flex-row gap-2 justify-center items-center",
                         span { class: "font-mono text-lg", "Percent:" }
                         input {
-                            class: "w-16 border rounded-lg p-2 text-center",
+                            class: "input-counter",
                             r#type: "number",
                             value: i64::from(a.pct_reduction),
                             min: 0,
@@ -378,7 +376,7 @@ fn RenderArmorPiece(index: usize) -> Element {
             // Notes
             textarea {
                 id: "armor-notes-{index}",
-                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden",
+                class: "textarea-notes",
                 style: "min-height: 2.75rem",
                 placeholder: "Notes",
                 value: "{a.notes}",
@@ -402,17 +400,15 @@ fn RenderTalents() -> Element {
     let mut show = use_signal(|| false);
     rsx! {
         div { class: "flex w-full flex-col gap-2",
-            div { class: "flex flex-row justify-center items-center py-2 gap-4",
-                h2 { class: "text-center text-4xl font-bold font-mono",
-                    "Talents {CHARACTER().talents.iter().count().separate_with_commas()}"
-                }
+            div { class: "inline-field",
+                h2 { "Talents {CHARACTER().talents.iter().count().separate_with_commas()}" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-xl font-bold px-3 rounded h-full border",
+                    class: "btn-counter",
                     onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
                     "+"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 font-bold py-1 px-4 rounded h-full border",
+                    class: "btn-add",
                     onclick: move |_| show.set(!show()),
                     if show() {
                         "Hide"
@@ -422,7 +418,7 @@ fn RenderTalents() -> Element {
                 }
             }
             if show() {
-                div { class: "flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start",
+                div { class: "card-grid",
                     for (i, _) in CHARACTER().talents.iter().enumerate() {
                         RenderTalent { index: i }
                     }
@@ -443,7 +439,7 @@ fn RenderTalent(index: usize) -> Element {
             // Name + AP cost + delete
             div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                 input {
-                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                    class: "input-stat",
                     r#type: "text",
                     placeholder: "Talent Name",
                     value: "{t.name}",
@@ -463,7 +459,7 @@ fn RenderTalent(index: usize) -> Element {
                     },
                 }
                 button {
-                    class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                    class: "btn-danger",
                     onclick: move |_| {
                         std::mem::drop(CHARACTER.write().talents.remove(index));
                     },
@@ -477,10 +473,10 @@ fn RenderTalent(index: usize) -> Element {
             }
 
             // Required skill
-            div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-1",
+            div { class: "inline-field-sm",
                 span { class: "font-mono text-lg", "Req. skill:" }
                 input {
-                    class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                    class: "input-stat",
                     r#type: "text",
                     placeholder: "None",
                     value: "{t.required_skill}",
@@ -493,7 +489,7 @@ fn RenderTalent(index: usize) -> Element {
             // Effect
             textarea {
                 id: "talent-effect-{index}",
-                class: "w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden",
+                class: "textarea-notes",
                 style: "min-height: 2.75rem",
                 placeholder: "Effects",
                 value: "{t.description}",

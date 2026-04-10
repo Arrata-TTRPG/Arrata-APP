@@ -204,7 +204,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                 div { class: "inline-field",
                     h4 { "Boons" }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-lg border font-bold rounded py-1 px-3",
+                        class: "btn-sm text-lg",
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -217,7 +217,7 @@ fn RenderQuirk(index: usize, quirk: Quirk) -> Element {
                 div { class: "inline-field",
                     h4 { "Flaws" }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-lg border font-bold rounded py-1 px-3",
+                        class: "btn-sm text-lg",
                         onclick: move |_| {
                             CHARACTER
                                 .with_mut(|character| {

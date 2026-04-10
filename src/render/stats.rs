@@ -277,9 +277,9 @@ fn RenderResources() -> Element {
             div { class: "flex flex-col min-[670px]:w-1/2 w-full p-1 gap-2",
                 // Infinite resources
                 div { class: "flex flex-row justify-center items-center gap-2",
-                    h2 { class: "text-center text-3xl font-bold font-mono", "Infinite Resources" }
+                    h2 { class: "section-title text-3xl", "Infinite Resources" }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                        class: "btn-add",
                         onclick: move |_| {
                             CHARACTER
                                 .write()
@@ -289,7 +289,7 @@ fn RenderResources() -> Element {
                         "+ Add"
                     }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                        class: "btn-add",
                         onclick: move |_| {
                             render_infinite.set(!render_infinite());
                         },
@@ -311,9 +311,9 @@ fn RenderResources() -> Element {
             // Finite resources
             div { class: "flex flex-col min-[670px]:w-1/2 w-full p-1 gap-2",
                 div { class: "flex flex-row justify-center items-center gap-2",
-                    h2 { class: "text-center text-3xl font-bold font-mono", "Finite Resources" }
+                    h2 { class: "section-title text-3xl", "Finite Resources" }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                        class: "btn-add",
                         onclick: move |_| {
                             CHARACTER
                                 .write()
@@ -323,7 +323,7 @@ fn RenderResources() -> Element {
                         "+ Add"
                     }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-4 rounded h-full border",
+                        class: "btn-add",
                         onclick: move |_| {
                             render_finite.set(!render_finite());
                         },
@@ -350,10 +350,10 @@ fn RenderResources() -> Element {
 fn RenderResource(index: usize) -> Element {
     rsx! {
         if let Some(r) = CHARACTER().resources.get(index) {
-            div { class: "flex flex-col border p-2 rounded-lg w-full space-y-2",
+            div { class: "card w-full space-y-2",
                 div { class: "flex w-full justify-center items-center text-2xl space-x-2",
                     input {
-                        class: "flex flex-grow font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2",
+                        class: "input-stat",
                         r#type: "text",
                         value: "{r.stat.name}",
                         oninput: move |evt| {
@@ -361,7 +361,7 @@ fn RenderResource(index: usize) -> Element {
                         },
                     }
                     button {
-                        class: "bg-slate-900 hover:bg-slate-600",
+                        class: "btn-ghost",
                         onclick: move |_| {
                             DICE_ROLL_STATE
                                 .with_mut(|state| {
@@ -377,7 +377,7 @@ fn RenderResource(index: usize) -> Element {
                         }
                     }
                     button {
-                        class: "bg-red-950 hover:bg-red-600 p-2 border-2 rounded-lg",
+                        class: "btn-danger",
                         onclick: move |_| {
                             std::mem::drop(CHARACTER.write().resources.remove(index));
                         },
@@ -389,9 +389,9 @@ fn RenderResource(index: usize) -> Element {
                         }
                     }
                 }
-                div { class: "inline-flex justify-center content-center items-center justify-items-center space-x-2",
+                div { class: "inline-field-sm space-x-2",
                     select {
-                        class: "flex-grow hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer",
+                        class: "select-field flex-grow",
                         onchange: move |evt| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -423,7 +423,7 @@ fn RenderResource(index: usize) -> Element {
                         }
                     }
                     input {
-                        class: "w-16 border rounded-lg p-2",
+                        class: "input-counter",
                         r#type: "number",
                         value: "{r.stat.quantity}",
                         min: 0,
@@ -440,7 +440,7 @@ fn RenderResource(index: usize) -> Element {
                     }
                     div { class: "font-mono text-lg", "Checks:" }
                     input {
-                        class: "w-16 border rounded-lg p-2",
+                        class: "input-counter",
                         r#type: "number",
                         value: "{r.stat.checks.unwrap_or(0)}",
                         min: 0,

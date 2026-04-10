@@ -22,7 +22,7 @@ pub fn RenderPremadeQuirkList() -> Element {
             // Close button
             div { class: "z-20 absolute right-0 top-0 p-2",
                 div {
-                    class: "bg-slate-950 hover:bg-slate-700 rounded cursor-pointer",
+                    class: "btn-close",
                     onclick: move |_| *PREMADE_QUIRKS_MENU.write() = false,
                     Icon {
                         width: 35,
@@ -36,7 +36,7 @@ pub fn RenderPremadeQuirkList() -> Element {
             div { class: "p-2 flex flex-wrap justify-center gap-x-4 gap-y-2",
                 h1 { class: "text-center py-2 text-2xl font-bold font-mono", "Premade Quirks" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-mono font-bold flex px-2 h-12 items-center border rounded",
+                    class: "btn-sidebar",
                     onclick: move |_| {
                         let bytes = bitcode::encode(&PREMADE_QUIRKS());
                         let b64 = BASE64_STANDARD.encode(&bytes);
@@ -48,7 +48,7 @@ pub fn RenderPremadeQuirkList() -> Element {
                     "Download Quirks"
                 }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-mono font-bold flex px-2 h-12 items-center border rounded",
+                    class: "btn-sidebar",
                     onclick: move |_| {
                         spawn(async move {
                             // multiple=true mirrors the old pick_files behaviour
@@ -138,7 +138,7 @@ fn RenderPremadeQuirkCategory(category: QuirkCategory, shown: Signal<bool>) -> E
             div { class: "flex flex-wrap gap-2 justify-center items-center",
                 h2 { class: "text-xl font-mono font-bold leading-none mb-0", "{category}" }
                 button {
-                    class: "bg-slate-900 hover:bg-slate-500 text-white font-bold py-1 px-2 border rounded",
+                    class: "btn-sm",
                     onclick: move |_| shown.set(!shown()),
                     if shown() {
                         "Hide"
@@ -177,7 +177,7 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
             div { class: "flex flex-wrap gap-2 justify-center place-items-center",
                 button {
                     class: format!("flex font-extrabold font-xl py-1 px-3 border rounded-lg transition-colors duration-700{}",
-                    if flashing() { " bg-green-550" } else { " bg-slate-750 hover:bg-slate-500" }),
+                    if flashing() { " bg-green-550" } else { " bg-slate-750 hover:bg-slate-600" }),
                     disabled: flashing(),
                     onclick: move |_| {
                         if flashing() { return; }
@@ -194,7 +194,7 @@ fn RenderPremadeQuirk(index: usize, quirk: Quirk) -> Element {
                     "{quirk.name} +"
                 }
                 button {
-                    class: "bg-red-950 hover:bg-red-600 p-1 border rounded-lg",
+                    class: "btn-danger-sm",
                     onclick: move |_| std::mem::drop(PREMADE_QUIRKS.write().remove(index)),
                     Icon {
                         width: 25,
