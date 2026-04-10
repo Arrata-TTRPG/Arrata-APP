@@ -49,11 +49,7 @@ pub(crate) async fn pick_character_file() -> Option<Character> {
     let val = eval.recv::<String>().await.ok()?;
     let bytes = BASE64_STANDARD.decode(val.as_bytes()).ok()?;
 
-    if let Ok(c) = bitcode::decode::<Character>(&bytes) {
-        Some(c)
-    } else {
-        None
-    }
+    bitcode::decode::<Character>(&bytes).ok()
 }
 
 /// Encodes `character` and triggers a browser download as `<name>.arrata`.

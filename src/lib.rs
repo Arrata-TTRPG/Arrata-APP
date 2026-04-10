@@ -60,11 +60,8 @@ pub(crate) async fn load_initial_quirks() {
     for category in categories {
         let full_url = format!("{url}{category}.quirks");
 
-        let resp = match JsFuture::from(window.fetch_with_str(&full_url)).await {
-            Ok(r) => r,
-            Err(_) => {
-                continue;
-            }
+        let Ok(resp) = JsFuture::from(window.fetch_with_str(&full_url)).await else {
+            continue;
         };
 
         let resp: web_sys::Response = resp.dyn_into().unwrap();
@@ -72,11 +69,8 @@ pub(crate) async fn load_initial_quirks() {
             continue;
         }
 
-        let buf = match JsFuture::from(resp.array_buffer().unwrap()).await {
-            Ok(b) => b,
-            Err(_) => {
-                continue;
-            }
+        let Ok(buf) = JsFuture::from(resp.array_buffer().unwrap()).await else {
+            continue;
         };
 
         let bytes = Uint8Array::new(&buf).to_vec();
