@@ -26,7 +26,7 @@ checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
 [[package]]
 name = "arrata-lib"
 version = "0.3.2"
-source = "git+https://github.com/Arrata-TTRPG/Arrata-LIB?tag=v0.1.0#d9778cde4b836af85665fb0f67a54d449f97d793"
+source = "git+https://github.com/Arrata-TTRPG/Arrata-LIB?tag=v0.1.1#d0ef472ac2859bf07ea5609e740ab38fdbc6c818"
 dependencies = [
  "bitcode",
  "rand 0.10.0",

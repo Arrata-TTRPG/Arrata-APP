@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    Icon,
     icons::bs_icons::{BsDice6, BsTrash},
+    Icon,
 };
 use thousands::Separable;
 
@@ -39,93 +39,91 @@ fn RenderCoreStats() -> Element {
 
     rsx! {
         h1 { "Stats {stats_total}" }
-        div { class: "flex-grid-none",
-            div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
-                for (i, stat) in CHARACTER().stats.iter().enumerate() {
-                    div { class: "flex-col-md border rounded-lg p-2 flex-1 w-full",
-                        div { class: "inline-field",
-                            h3 { class: "flex-grow",
-                                "{stat.name}"
-                            }
-                            button {
-                                class: "btn-ghost",
-                                onclick: move |_| {
-                                    DICE_ROLL_STATE
-                                        .with_mut(|state| {
-                                            state.0 = true;
-                                            state.1 = Some(CHARACTER().stats[i].clone());
-                                        });
-                                },
-                                Icon {
-                                    width: 45,
-                                    height: 45,
-                                    fill: "white",
-                                    icon: BsDice6,
-                                }
+        div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
+            for (i, stat) in CHARACTER().stats.iter().enumerate() {
+                div { class: "flex-col-md border rounded-lg p-2 flex-1 w-full",
+                    div { class: "inline-field",
+                        h3 { class: "flex-grow",
+                            "{stat.name}"
+                        }
+                        button {
+                            class: "btn-ghost",
+                            onclick: move |_| {
+                                DICE_ROLL_STATE
+                                    .with_mut(|state| {
+                                        state.0 = true;
+                                        state.1 = Some(CHARACTER().stats[i].clone());
+                                    });
+                            },
+                            Icon {
+                                width: 45,
+                                height: 45,
+                                fill: "white",
+                                icon: BsDice6,
                             }
                         }
-                        div { class: "flex flex-wrap w-full h-full justify-center items-center gap-2",
-                            div { class: "inline-field flex-1 gap-2",
-                                select {
-                                    class: "select-field min-w-12 flex-1",
-                                    onchange: move |evt| {
-                                        CHARACTER
-                                            .with_mut(|character| {
-                                                character.stats[i].quality = match evt.value().parse::<usize>().unwrap_or(1)
-                                                {
-                                                    1 => Quality::Adept,
-                                                    2 => Quality::Superb,
-                                                    _ => Quality::Basic,
-                                                }
-                                            });
-                                    },
-                                    option {
-                                        value: 0,
-                                        selected: CHARACTER().stats[i].quality == Quality::Basic,
-                                        "Basic"
-                                    }
-                                    option {
-                                        value: 1,
-                                        selected: CHARACTER().stats[i].quality == Quality::Adept,
-                                        "Adept"
-                                    }
-                                    option {
-                                        value: 2,
-                                        selected: CHARACTER().stats[i].quality == Quality::Superb,
-                                        "Superb"
-                                    }
+                    }
+                    div { class: "flex flex-wrap w-full h-full justify-center items-center gap-2",
+                        div { class: "inline-field flex-1 gap-2",
+                            select {
+                                class: "select-field min-w-12 flex-1",
+                                onchange: move |evt| {
+                                    CHARACTER
+                                        .with_mut(|character| {
+                                            character.stats[i].quality = match evt.value().parse::<usize>().unwrap_or(1)
+                                            {
+                                                1 => Quality::Adept,
+                                                2 => Quality::Superb,
+                                                _ => Quality::Basic,
+                                            }
+                                        });
+                                },
+                                option {
+                                    value: 0,
+                                    selected: CHARACTER().stats[i].quality == Quality::Basic,
+                                    "Basic"
                                 }
-                                input {
-                                    class: "input-stat",
-                                    r#type: "number",
-                                    value: "{stat.quantity}",
-                                    min: 0,
-                                    max: u64::MAX,
-                                    oninput: move |evt| {
-                                        CHARACTER
-                                            .with_mut(|character| {
-                                                character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
-                                            });
-                                    },
+                                option {
+                                    value: 1,
+                                    selected: CHARACTER().stats[i].quality == Quality::Adept,
+                                    "Adept"
+                                }
+                                option {
+                                    value: 2,
+                                    selected: CHARACTER().stats[i].quality == Quality::Superb,
+                                    "Superb"
                                 }
                             }
-                            div { class: "inline-flex items-center justify-center space-x-2",
-                                span { class: "label", "Checks:" }
-                                input {
-                                    class: "input-counter",
-                                    r#type: "number",
-                                    value: "{stat.checks.unwrap_or_default()}",
-                                    min: 0,
-                                    max: u64::MAX,
-                                    oninput: move |evt| {
-                                        CHARACTER
-                                            .with_mut(|character| {
-                                                character.stats[i].checks = Some(
-                                                    evt.value().parse::<usize>().unwrap_or(0),
-                                                );
-                                            });
-                                    },
-                                }
+                            input {
+                                class: "input-counter flex-1",
+                                r#type: "number",
+                                value: "{stat.quantity}",
+                                min: "0",
+                                max: usize::MAX -1,
+                                oninput: move |evt| {
+                                    CHARACTER
+                                        .with_mut(|character| {
+                                            character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
+                                        });
+                                },
+                            }
+                        }
+                        div { class: "inline-field-sm",
+                            span { class: "label", "Checks:" }
+                            input {
+                                class: "input-counter",
+                                r#type: "number",
+                                value: "{stat.checks.unwrap_or_default()}",
+                                min: "0",
+                                max: usize::MAX,
+                                oninput: move |evt| {
+                                    CHARACTER
+                                        .with_mut(|character| {
+                                            character.stats[i].checks = Some(
+                                                evt.value().parse::<usize>().unwrap_or(0),
+                                            );
+                                        });
+                                },
                             }
                         }
                     }
@@ -197,7 +195,7 @@ fn RenderSkills() -> Element {
                                 }
                             }
                             div { class: "flex-grid-md",
-                                div { class: "inline-field flex-1",
+                                div { class: "inline-field-sm flex-1",
                                     select {
                                         class: "select-field flex-1",
                                         onchange: move |evt| {
@@ -228,11 +226,11 @@ fn RenderSkills() -> Element {
                                         }
                                     }
                                     input {
-                                        class: "input-stat",
+                                        class: "input-counter flex-1",
                                         r#type: "number",
                                         value: "{skill.quantity}",
-                                        min: 0,
-                                        max: u64::MAX,
+                                        min: "0",
+                                        max: usize::MAX,
                                         oninput: move |evt| {
                                             CHARACTER
                                                 .with_mut(|character| {
@@ -241,14 +239,14 @@ fn RenderSkills() -> Element {
                                         },
                                     }
                                 }
-                                div { class: "inline-field",
+                                div { class: "inline-field-sm",
                                     span { class: "label", "Checks:" }
                                     input {
                                         class: "input-counter",
                                         r#type: "number",
                                         value: "{skill.checks.unwrap_or(0)}",
-                                        min: 0,
-                                        max: u64::MAX,
+                                        min: "0",
+                                        max: usize::MAX,
                                         oninput: move |evt| {
                                             CHARACTER
                                                 .with_mut(|character| {
@@ -426,8 +424,8 @@ fn RenderResource(index: usize) -> Element {
                         class: "input-counter",
                         r#type: "number",
                         value: "{r.stat.quantity}",
-                        min: 0,
-                        max: i64::MAX,
+                        min: "0",
+                        max: usize::MAX,
                         oninput: move |evt| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -443,8 +441,8 @@ fn RenderResource(index: usize) -> Element {
                         class: "input-counter",
                         r#type: "number",
                         value: "{r.stat.checks.unwrap_or(0)}",
-                        min: 0,
-                        max: i64::MAX,
+                        min: "0",
+                        max: usize::MAX,
                         oninput: move |evt| {
                             CHARACTER
                                 .with_mut(|character| {
@@ -496,7 +494,7 @@ fn RenderInventory() -> Element {
                             input {
                                 class: "input-counter",
                                 r#type: "number",
-                                value: i64::try_from(item.quantity).unwrap_or_default(),
+                                value: usize::try_from(item.quantity).unwrap_or_default(),
                                 oninput: move |evt| {
                                     CHARACTER
                                         .with_mut(|character| {

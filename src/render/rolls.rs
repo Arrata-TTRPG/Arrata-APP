@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
-use dioxus_free_icons::{Icon, icons::bs_icons::BsX};
+use dioxus_free_icons::{icons::bs_icons::BsX, Icon};
 use thousands::Separable;
 
-use arrata_lib::{RollResult, roll_stat};
+use arrata_lib::{roll_stat, RollResult};
 
 use crate::DICE_ROLL_STATE;
 
@@ -66,7 +66,7 @@ pub(crate) fn RenderRolls() -> Element {
                             r#type: "number",
                             value: "{advantage()}",
                             min: 0,
-                            max: i64::MAX,
+                            max: isize::MAX,
                             oninput: move |evt| advantage.set(evt.value().parse::<usize>().unwrap_or(0)),
                         }
                     }
@@ -79,7 +79,7 @@ pub(crate) fn RenderRolls() -> Element {
                             r#type: "number",
                             value: "{disadvantage()}",
                             min: 0,
-                            max: i64::MAX,
+                            max: isize::MAX,
                             oninput: move |evt| disadvantage.set(evt.value().parse::<usize>().unwrap_or(0)),
                         }
                     }

@@ -1,10 +1,10 @@
 use dioxus::prelude::*;
-use dioxus_free_icons::{Icon, icons::bs_icons::BsTrash};
+use dioxus_free_icons::{icons::bs_icons::BsTrash, Icon};
 use thousands::Separable;
 
-use arrata_lib::{Armor, Talent, Weapon, combat};
+use arrata_lib::{combat, Armor, Talent, Weapon};
 
-use crate::{CHARACTER, render::auto_resize_js};
+use crate::{render::auto_resize_js, CHARACTER};
 
 const WILL_IDX: usize = 0;
 const SPEED_IDX: usize = 4;
@@ -108,6 +108,8 @@ fn RenderCombatStats() -> Element {
                         input {
                             class: "input-counter flex-1 min-[1281px]:max-w-30",
                             r#type: "number",
+                            min: isize::MIN,
+                            max: isize::MAX,
                             value: "{current_ap()}",
                             oninput: move |evt| {
                                 current_ap.set(evt.value().parse::<isize>().unwrap_or(0));
@@ -226,10 +228,10 @@ fn RenderWeapon(index: usize) -> Element {
                     input {
                         class: "input-counter",
                         r#type: "number",
-                        value: i64::from(w.base_damage),
+                        value: isize::from(w.base_damage),
                         oninput: move |evt| {
                             CHARACTER.write().weapons[index].base_damage =
-                                evt.value().parse::<i32>().unwrap_or(0);
+                                evt.value().parse::<isize>().unwrap_or(0);
                         },
                     }
                 }
@@ -348,10 +350,10 @@ fn RenderArmorPiece(index: usize) -> Element {
                         input {
                             class: "input-counter",
                             r#type: "number",
-                            value: i64::from(a.flat_reduction),
+                            value: isize::from(a.flat_reduction),
                             oninput: move |evt| {
                                 CHARACTER.write().armor[index].flat_reduction =
-                                    evt.value().parse::<i32>().unwrap_or(0);
+                                    evt.value().parse::<isize>().unwrap_or(0);
                             },
                         }
                     }
@@ -360,12 +362,12 @@ fn RenderArmorPiece(index: usize) -> Element {
                         input {
                             class: "input-counter",
                             r#type: "number",
-                            value: i64::from(a.pct_reduction),
+                            value: isize::from(a.pct_reduction),
                             min: 0,
                             max: 100,
                             oninput: move |evt| {
                                 CHARACTER.write().armor[index].pct_reduction =
-                                    evt.value().parse::<i32>().unwrap_or(0);
+                                    evt.value().parse::<isize>().unwrap_or(0);
                             },
                         }
                         p { class: "label", "%" }
@@ -441,7 +443,6 @@ fn RenderTalent(index: usize) -> Element {
                     r#type: "text",
                     placeholder: "Talent Name",
                     value: "{t.name}",
-                    size: 1,
                     oninput: move |evt| {
                         CHARACTER.write().talents[index].name = evt.value();
                     },
@@ -450,7 +451,7 @@ fn RenderTalent(index: usize) -> Element {
                 input {
                     class: "input-counter",
                     r#type: "number",
-                    value: i64::try_from(t.ap_cost).unwrap_or_default(),
+                    value: isize::try_from(t.ap_cost).unwrap_or_default(),
                     min: 0,
                     oninput: move |evt| {
                         CHARACTER.write().talents[index].ap_cost =

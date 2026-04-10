@@ -1,14 +1,14 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    Icon,
     icons::bs_icons::{BsSave, BsTrash},
+    Icon,
 };
 use thousands::Separable;
 
 use arrata_lib::{Quirk, QuirkCategory};
 
 use crate::{
-    CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU, SHOWN_CATEGORIES, render::auto_resize_js,
+    render::auto_resize_js, CHARACTER, PREMADE_QUIRKS, PREMADE_QUIRKS_MENU, SHOWN_CATEGORIES,
 };
 
 #[component]
@@ -327,7 +327,7 @@ fn RenderInspiration() -> Element {
                         class: "input-counter min-w-16 w-full max-w-24",
                         r#type: "number",
                         min: 0,
-                        max: u64::MAX,
+                        max: usize::MAX,
                         value: "{CHARACTER().inspiration.ethos}",
                         onchange: move |evt| {
                             CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0);
@@ -340,7 +340,7 @@ fn RenderInspiration() -> Element {
                         class: "input-counter min-w-16 w-full max-w-24",
                         r#type: "number",
                         min: 0,
-                        max: u64::MAX,
+                        max: usize::MAX,
                         value: "{CHARACTER().inspiration.pathos}",
                         onchange: move |evt| {
                             CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0);
@@ -353,7 +353,7 @@ fn RenderInspiration() -> Element {
                         class: "input-counter min-w-16 w-full max-w-24",
                         r#type: "number",
                         min: 0,
-                        max: u64::MAX,
+                        max: usize::MAX,
                         value: "{CHARACTER().inspiration.logos}",
                         onchange: move |evt| {
                             CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0);
