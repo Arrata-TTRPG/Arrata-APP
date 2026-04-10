@@ -2,48 +2,51 @@
 
 Access the online version here: [https://arrata-ttrpg.github.io/Arrata-APP/](https://arrata-ttrpg.github.io/Arrata-APP/)
 
-This repo contains the code for an [Arrata](https://github.com/kalebvonburris/Arrata-TTRPG) character sheet manager.
+This repo contains the code for an [Arrata](https://github.com/Arrata-TTRPG) character sheet manager.
 
-The application itself is written in Rust and therefore can be compiled for and used across multiple platforms if you would like to do so for yourself. See [Compiling Locally](#compiling-locally) for details if you're on an unusual platform.
+The application is written in Rust using [Dioxus](https://dioxuslabs.com/) and can be compiled for web, desktop, and mobile. See [Compiling Locally](#compiling-locally) for details.
 
 ## Installation
 
-To install, go to the [latest release](https://github.com/kalebvonburris/Arrata-APP/releases/latest) and download the zip that matches your system. Extract into a folder of your choosing but maintain the file structure. You should be able to run the executable and use the app.
+To use the web version, visit the link above. No installation required.
+
+To install a desktop build, go to the [latest release](https://github.com/Arrata-TTRPG/Arrata-APP/releases/latest) and download the zip that matches your system. Extract it and run the executable.
 
 ## Compiling Locally
 
-### Prerequisites
+### With Nix (recommended)
 
-- For these operating systems:
-  - Windows 10/11
-    - [Webview2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/): This should be installed if you have Microsoft Edge.
-  - Linux
-    - WebkitGtk
-      - `sudo apt install libwebkit2gtk-4.0-dev libgtk-3-dev libappindicator3-dev`
-      - on Debian/bullseye use: `sudo apt install libwebkit2gtk-4.0-dev libgtk-3-dev libayatana-appindicator3-dev`
-  - Mac OS
-    - No needed dependencies
-- Rust Nightly
-- Tailwind CSS
-  - `npm install -D tailwindcss`
+The project includes a Nix flake that provides the full development environment.
 
-### Compilation
+1. [Install Nix](https://nixos.org/download) with flakes enabled
+2. Clone the repo: `git clone https://github.com/Arrata-TTRPG/Arrata-APP.git`
+3. `cd Arrata-APP`
+4. `nix develop` - this drops you into a shell with Rust nightly, Tailwind, and all dependencies
 
-Clone the repo: `git clone https://github.com/Arrata-TTRPG/Arrata-APP.git`
+From there:
 
-`cd` into `Arrata-APP`
+- **Web:** `dx serve --platform web`
+- **Desktop:** `dx serve --platform desktop`
+- **Release build:** `dx build --release --platform web`
 
-Run `npx tailwindcss -i input.css -o public/tailwind.css`.
+### Without Nix
 
-#### Web
+#### Prerequisites
 
-To compile and run the web version, install Dioxus CLI: `cargo install dioxus-cli`.
+- Rust Nightly (with `wasm32-unknown-unknown` target and `rust-src` component)
+- [Dioxus CLI](https://dioxuslabs.com/learn/0.7/getting_started): `cargo install dioxus-cli`
+- [Tailwind CSS v4](https://tailwindcss.com/docs/installation)
+- Platform-specific dependencies:
+  - **Linux:** WebkitGtk - `sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev`
+  - **Windows:** [WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (included with Microsoft Edge)
+  - **macOS:** No additional dependencies
 
-Then compile and run by `cd Arrata-APP` and `dx serve --platform web --features web`.
+#### Build
 
-#### Desktop
-
-To compile and run the desktop version, `cd` into `Arrata-APP` and run `cargo run --release --features desktop`
+1. Clone the repo: `git clone https://github.com/Arrata-TTRPG/Arrata-APP.git`
+2. `cd Arrata-APP`
+3. `tailwindcss -i input.css -o public/tailwind.css`
+4. `dx serve --platform web` or `dx serve --platform desktop`
 
 ## Roadmap
 
@@ -69,4 +72,4 @@ To compile and run the desktop version, `cd` into `Arrata-APP` and run `cargo ru
 ## Troubleshooting
 
 If you're on Linux and encounter the app being blank and/or the message: `AcceleratedSurfaceDMABuf was unable to construct a complete framebuffer`,
-add `WEBKIT_DISABLE_DMABUF_RENDERER=1` to your environment variables. Usually this is under `/etc/environment` but it will differ based on your shell.
+add `WEBKIT_DISABLE_DMABUF_RENDERER=1` to your environment variables. Usually this is under `/etc/environment` but it will differ based on your shell.dd `WEBKIT_DISABLE_DMABUF_RENDERER=1` to your environment variables. Usually this is under `/etc/environment` but it will differ based on your shell.
