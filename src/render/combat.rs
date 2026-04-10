@@ -24,7 +24,7 @@ const STAT_NAMES: [&str; 7] = [
 #[component]
 pub(crate) fn RenderCombat() -> Element {
     rsx! {
-        div { class: "flex flex-wrap w-full max-[1920px]:pt-10 min-[1921px]:w-1/3 min-[1921px]:pt-0 px-2 justify-center",
+        div { class: "flex flex-wrap w-full max-[1920px]:pt-10 min-[1921px]:w-1/3 min-[1921px]:pt-0 px-2 justify-center gap-4",
             RenderCombatStats {}
             RenderWeapons {}
             RenderArmor {}
@@ -163,7 +163,7 @@ fn RenderWeapon(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex-grid-md min-w-[310px] border rounded-lg p-2",
+        div { class: "flex-col-md border flex-1 border rounded-lg min-w-[310px]",
             // Name + delete
             div { class: "inline-field",
                 input {
@@ -313,9 +313,9 @@ fn RenderArmorPiece(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[310px] space-y-2",
+        div { class: "flex-col-md border flex-1 border rounded-lg min-w-[310px]",
             // Name + delete
-            div { class: "flex w-full justify-center items-center text-2xl space-x-2",
+            div { class: "inline-field",
                 input {
                     class: "input-stat",
                     r#type: "text",
@@ -340,11 +340,11 @@ fn RenderArmorPiece(index: usize) -> Element {
             }
 
             // Reductions
-            div { class: "flex flex-col border rounded-lg justify-center place-items-center space-y-2 py-2",
-                span { class: "w-full font-mono text-xl text-center", "Reductions" }
-                div { class: "flex flex-wrap space-x-2 ",
-                    div { class: "flex flex-row gap-2 justify-center items-center",
-                        span { class: "font-mono text-lg", "Flat:" }
+            div { class: "flex-col-md",
+                h4 { "Reductions" }
+                div { class: "flex-grid-md",
+                    div { class: "inline-field-sm",
+                        p { class: "label", "Flat:" }
                         input {
                             class: "input-counter",
                             r#type: "number",
@@ -355,8 +355,8 @@ fn RenderArmorPiece(index: usize) -> Element {
                             },
                         }
                     }
-                    div { class: "flex flex-row gap-2 justify-center items-center",
-                        span { class: "font-mono text-lg", "Percent:" }
+                    div { class: "inline-field-sm",
+                        p { class: "label", "Percent:" }
                         input {
                             class: "input-counter",
                             r#type: "number",
@@ -368,7 +368,7 @@ fn RenderArmorPiece(index: usize) -> Element {
                                     evt.value().parse::<i32>().unwrap_or(0);
                             },
                         }
-                        span { class: "font-mono text-lg", "%" }
+                        p { class: "label", "%" }
                     }
                 }
             }
@@ -399,29 +399,27 @@ fn RenderArmorPiece(index: usize) -> Element {
 fn RenderTalents() -> Element {
     let mut show = use_signal(|| false);
     rsx! {
-        div { class: "flex w-full flex-col gap-2",
-            div { class: "inline-field",
-                h2 { "Talents {CHARACTER().talents.iter().count().separate_with_commas()}" }
-                button {
-                    class: "btn-counter",
-                    onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
-                    "+"
-                }
-                button {
-                    class: "btn-add",
-                    onclick: move |_| show.set(!show()),
-                    if show() {
-                        "Hide"
-                    } else {
-                        "Show"
-                    }
+        div { class: "inline-field",
+            h2 { "Talents {CHARACTER().talents.iter().count().separate_with_commas()}" }
+            button {
+                class: "btn-counter",
+                onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
+                "+"
+            }
+            button {
+                class: "btn-add",
+                onclick: move |_| show.set(!show()),
+                if show() {
+                    "Hide"
+                } else {
+                    "Show"
                 }
             }
-            if show() {
-                div { class: "card-grid",
-                    for (i, _) in CHARACTER().talents.iter().enumerate() {
-                        RenderTalent { index: i }
-                    }
+        }
+        if show() {
+            div { class: "card-grid",
+                for (i, _) in CHARACTER().talents.iter().enumerate() {
+                    RenderTalent { index: i }
                 }
             }
         }
@@ -435,9 +433,9 @@ fn RenderTalent(index: usize) -> Element {
     };
 
     rsx! {
-        div { class: "flex flex-1 flex-col border p-2 rounded-lg min-w-[350px] space-y-2",
+        div { class: "flex-col-md border flex-1 border rounded-lg min-w-[310px]",
             // Name + AP cost + delete
-            div { class: "flex w-full justify-center items-center text-2xl space-x-2",
+            div { class: "inline-field",
                 input {
                     class: "input-stat",
                     r#type: "text",
@@ -447,9 +445,9 @@ fn RenderTalent(index: usize) -> Element {
                         CHARACTER.write().talents[index].name = evt.value();
                     },
                 }
-                span { class: "font-mono text-lg", "AP:" }
+                p { class: "label", "AP:" }
                 input {
-                    class: "w-14 border rounded-lg p-2 text-center",
+                    class: "input-counter",
                     r#type: "number",
                     value: i64::try_from(t.ap_cost).unwrap_or_default(),
                     min: 0,
@@ -473,8 +471,8 @@ fn RenderTalent(index: usize) -> Element {
             }
 
             // Required skill
-            div { class: "inline-field-sm",
-                span { class: "font-mono text-lg", "Req. skill:" }
+            div { class: "inline-field",
+                p { class: "label", "Req. skill:" }
                 input {
                     class: "input-stat",
                     r#type: "text",
