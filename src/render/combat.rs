@@ -441,6 +441,7 @@ fn RenderTalent(index: usize) -> Element {
                     r#type: "text",
                     placeholder: "Talent Name",
                     value: "{t.name}",
+                    size: 1,
                     oninput: move |evt| {
                         CHARACTER.write().talents[index].name = evt.value();
                     },

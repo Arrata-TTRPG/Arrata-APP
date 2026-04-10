@@ -9,8 +9,8 @@ use crate::{
 #[component]
 pub(crate) fn RenderCharacter() -> Element {
     rsx! {
-        div { class: "flex flex-wrap sm:flex-row flex-col content-center items-center justify-center gap-2 px-2",
-            div { class: "flex sm:w-fit w-full",
+        div { class: "flex-grid-md",
+            div { class: "inline-field-sm",
                 h2 { class: "label p-2", "Name:" }
                 input {
                     class: "input-name",
@@ -18,7 +18,7 @@ pub(crate) fn RenderCharacter() -> Element {
                     oninput: move |evt| CHARACTER.write().name = evt.value(),
                 }
             }
-            div { class: "flex sm:w-fit w-full",
+            div { class: "inline-field-sm",
                 h2 { class: "label p-2", "Stock:" }
                 input {
                     class: "input-name",

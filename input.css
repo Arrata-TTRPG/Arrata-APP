@@ -57,7 +57,7 @@
   /* == Textareas == */
 
   /* Notes fields - weapons, armor, talents */
-  .textarea-notes { @apply w-full max-w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden }
+  .textarea-notes { @apply w-full border rounded-lg p-2 font-mono text-lg resize-none overflow-hidden }
 
   /* Quirk boon/flaw entries */
   .textarea-quirk { @apply w-full font-mono border-spacing-1 border p-2 bg-black resize-none overflow-hidden }
@@ -65,13 +65,13 @@
   /* == Inputs == */
 
   /* Standard bordered input */
-  .input-field { @apply border rounded-lg p-2 }
+  .input-field { @apply border rounded-lg p-2 w-0 }
 
   /* Editable name/title - centered text */
-  .input-name { @apply border-spacing-1 border rounded-lg p-2 text-center }
+  .input-name { @apply border-spacing-1 border rounded-lg p-2 text-center min-w-0 }
 
   /* Stat/skill name - monospace, growable */
-  .input-stat { @apply flex-1 font-mono text-lg text-center border-spacing-1 border rounded-lg min-w-10 p-2 }
+  .input-stat { @apply flex-1 font-mono text-lg text-center border-spacing-1 border rounded-lg w-0 min-w-0 p-2 overflow-hidden }
 
   /* Select dropdown styled as input */
   .select-field { @apply hover:bg-slate-700 font-mono text-center text-lg border rounded-lg p-2 appearance-none cursor-pointer }
@@ -88,7 +88,7 @@
   .card { @apply flex flex-col border p-2 rounded-lg }
 
   /* Items container - wrapping grid of cards */
-  .card-grid { @apply flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-start items-start }
+  .card-grid { @apply flex flex-wrap w-full border rounded-lg p-2 gap-4 justify-center content-start items-start }
 
   /* Inline container for label + input pairs */
   .inline-field { @apply inline-flex items-center justify-center gap-2 w-full }

@@ -320,40 +320,40 @@ fn RenderInspiration() -> Element {
     rsx! {
         div { class: "flex-col-md border rounded-xl",
             h1 { "Inspiration" }
-            div { class: "flex w-full justify-around gap-4 pt-4",
-                div { class: "flex-col-md",
-                    h2 { "Ethos" }
+            div { class: "inline-field gap-1 pt-4",
+                div { class: "flex-col-md flex-1",
+                    h3 { "Ethos" }
                     input {
-                        class: "input-counter w-24",
+                        class: "input-counter min-w-16 w-full max-w-24",
                         r#type: "number",
                         min: 0,
-                        max: i64::MAX,
+                        max: u64::MAX,
                         value: "{CHARACTER().inspiration.ethos}",
                         onchange: move |evt| {
                             CHARACTER.write().inspiration.ethos = evt.value().parse::<usize>().unwrap_or(0);
                         },
                     }
                 }
-                div { class: "flex-col-md",
-                    h2 { "Pathos" }
+                div { class: "flex-col-md flex-1",
+                    h3 { "Pathos" }
                     input {
-                        class: "input-counter w-24",
+                        class: "input-counter min-w-16 w-full max-w-24",
                         r#type: "number",
                         min: 0,
-                        max: i64::MAX,
+                        max: u64::MAX,
                         value: "{CHARACTER().inspiration.pathos}",
                         onchange: move |evt| {
                             CHARACTER.write().inspiration.pathos = evt.value().parse::<usize>().unwrap_or(0);
                         },
                     }
                 }
-                div { class: "flex-col-md",
-                    h2 { "Logos" }
+                div { class: "flex-col-md flex-1",
+                    h3 { "Logos" }
                     input {
-                        class: "input-counter w-24",
+                        class: "input-counter min-w-16 w-full max-w-24",
                         r#type: "number",
                         min: 0,
-                        max: i64::MAX,
+                        max: u64::MAX,
                         value: "{CHARACTER().inspiration.logos}",
                         onchange: move |evt| {
                             CHARACTER.write().inspiration.logos = evt.value().parse::<usize>().unwrap_or(0);
