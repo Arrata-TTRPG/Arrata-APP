@@ -43,7 +43,7 @@
           PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
 
           shellHook = ''
-            export PATH="$HOME/.cargo/bin:$PATH"
+            export PATH="$PATH:$HOME/.cargo/bin"
             echo "Rust nightly development environment loaded."
             
             if ! command -v dx &> /dev/null; then
