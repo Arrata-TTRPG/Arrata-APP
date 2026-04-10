@@ -24,7 +24,7 @@ const STAT_NAMES: [&str; 7] = [
 #[component]
 pub(crate) fn RenderCombat() -> Element {
     rsx! {
-        div { class: "flex flex-wrap w-full max-[1920px]:pt-10 min-[1921px]:w-1/3 min-[1921px]:pt-0 px-2 justify-center gap-4",
+        div { class: "flex flex-wrap w-full max-[1920px]:pt-10 min-[1921px]:w-1/3 min-[1921px]:pt-0 px-2 justify-center gap-y-4",
             RenderCombatStats {}
             RenderWeapons {}
             RenderArmor {}

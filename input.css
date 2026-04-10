@@ -88,7 +88,7 @@
   .card { @apply flex flex-col border p-2 rounded-lg }
 
   /* Items container - wrapping grid of cards */
-  .card-grid { @apply flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-center items-start }
+  .card-grid { @apply flex flex-wrap border rounded-lg p-2 gap-4 justify-center content-start items-start }
 
   /* Inline container for label + input pairs */
   .inline-field { @apply inline-flex items-center justify-center gap-2 w-full }
@@ -100,9 +100,9 @@
   .flex-grid-none { @apply flex flex-wrap justify-center items-center }
 
   /* Flexbox with large spacing */
-  .flex-grid-big { @apply flex flex-wrap justify-center items-center gap-4 p-2 w-full }
+  .flex-grid-big { @apply flex flex-wrap justify-center gap-4 p-2 w-full }
 
-  .flex-grid-md { @apply flex flex-wrap justify-center items-center gap-2 p-2 w-full }
+  .flex-grid-md { @apply flex flex-wrap justify-center gap-2 p-2 w-full }
 
   .flex-col-md { @apply flex flex-col gap-2 p-2 rounded-xl justify-center items-center }
 }
