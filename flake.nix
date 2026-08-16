@@ -21,7 +21,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             toolchain  # Includes nightly rustc, cargo, rust-src, etc.
-            cargo-binstall
+            dioxus-cli
             lld
             openssl
             pkg-config
@@ -34,7 +34,6 @@
             gdk-pixbuf
             atk
             gtk3
-            tailwindcss_4
           ];
 
           OPENSSL_DIR = "${pkgs.openssl.out}";
@@ -45,11 +44,6 @@
           shellHook = ''
             export PATH="$PATH:$HOME/.cargo/bin"
             echo "Rust nightly development environment loaded."
-            
-            if ! command -v dx &> /dev/null; then
-              echo "Installing dioxus-cli..."
-              cargo binstall dioxus-cli --force --no-confirm
-            fi
           '';
         };
       }

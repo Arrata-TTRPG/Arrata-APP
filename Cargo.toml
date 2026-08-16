@@ -14,43 +14,35 @@ categories = ["game", "ttrpg", "dioxus"]
 
 [dependencies]
 serde_json = { version = "1.0.149", default-features = false }
-dioxus = { version = "0.7.5", default-features = false, features = [
+dioxus = { version = "0.7.10", default-features = false, features = [
   "minimal",
   "asset",
   "document",
   "mounted",
+  "web",
 ] }
 semver = { version = "1.0.28", default-features = false }
 bitcode = { version = "0.6.9", default-features = false }
-base64 = { version = "0.22", default-features = false, features = ["alloc"] }
-
-# Web dependencies
-getrandom = { version = "0.4.2", optional = true }
-urlencoding = { version = "2.1.3", optional = true }
+base64 = { version = "0.23.1", default-features = false, features = ["alloc"] }
+getrandom = { version = "0.4.3", features = ["wasm_js"] }
+urlencoding = { version = "2.1.3" }
 gloo-storage = { version = "0.4.0" }
 gloo-timers = { version = "0.4.0", features = ["futures"] }
 thousands = { version = "0.2.0", default-features = false }
 wasm-bindgen = "0.2.117"
-js-sys = "0.3.94"
-wasm-bindgen-futures = "0.4.67"
+js-sys = "0.3.104"
+wasm-bindgen-futures = "0.4.77"
+dioxus-sdk = { version = "0.7.0", features = ["storage"] }
 
-[dependencies.web-sys]
-version = "0.3"
-features = ["Window", "Response"]
-
-[dependencies.dioxus-free-icons]
-version = "0.10.0"
-features = ["bootstrap"]
+web-sys = { version = "0.3.104", features = ["Window", "Response"] }
+dioxus-free-icons = { version = "0.10.0", features = ["bootstrap"] }
+tracing = "0.1.44"
+reqwest = { version = "0.13.4", default-features = false }
 
 [dependencies.arrata-lib]
 git = "https://github.com/Arrata-TTRPG/Arrata-LIB"
-tag = "v0.1.1"
-
-[features]
-web = ["dioxus/web", "getrandom/wasm_js", "dep:urlencoding"]
-desktop = ["dioxus/desktop"]
-mobile = ["dioxus/mobile"]
-
+branch = "main"
+features = ["dioxus"]
 
 [profile.release]
 opt-level = 'z'
@@ -61,6 +53,9 @@ codegen-units = 1
 strip = true
 incremental = false
 
+[profile.wasm-release]
+inherits = "release"
+
 [profile.release.package."*"]
 opt-level = 'z'
 debug = false
@@ -69,9 +64,3 @@ strip = true
 [profile.wasm-dev]
 inherits = "dev"
 opt-level = 1
-
-[profile.server-dev]
-inherits = "dev"
-
-[profile.android-dev]
-inherits = "dev"

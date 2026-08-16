@@ -1,19 +1,22 @@
 use dioxus::prelude::*;
 use dioxus_free_icons::{
-    icons::bs_icons::{BsDice6, BsTrash},
     Icon,
+    icons::bs_icons::{BsDice6, BsTrash},
 };
 use thousands::Separable;
 
-use arrata_lib::{Item, Quality, Resource, Stat};
+use arrata_lib::{
+    Item, ItemStoreExt, Quality, Resource, ResourceStoreExt, Stat, StatStoreExt,
+    character::{Character, CharacterStoreExt},
+};
 
-use crate::{CHARACTER, DICE_ROLL_STATE};
+use crate::DICE_ROLL_STATE;
 
 #[component]
-pub(crate) fn RenderStats() -> Element {
+pub(crate) fn RenderStats(character: WriteStore<Character>) -> Element {
     rsx! {
         div { class: "flex w-full min-[1281px]:w-1/2 min-[1921px]:w-1/3 flex-col justify-center px-2 gap-4",
-            RenderCoreStats {}
+            RenderCoreStats { character }
             RenderSkills {}
             //RenderResources {} // TODO: Overhaul resources
             RenderInventory {}
@@ -22,8 +25,8 @@ pub(crate) fn RenderStats() -> Element {
 }
 
 #[component]
-fn RenderCoreStats() -> Element {
-    let stats_total = CHARACTER()
+fn RenderCoreStats(mut character: Store<Character>) -> Element {
+    let stats_total = character()
         .stats
         .iter()
         .map(|stat| {
@@ -40,92 +43,101 @@ fn RenderCoreStats() -> Element {
     rsx! {
         h1 { "Stats {stats_total}" }
         div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
-            for (i, stat) in CHARACTER().stats.iter().enumerate() {
-                div { class: "flex-col-md border rounded-lg p-2 flex-1 w-full",
-                    div { class: "inline-field",
-                        h3 { class: "flex-grow",
-                            "{stat.name}"
-                        }
-                        button {
-                            class: "btn-ghost",
-                            onclick: move |_| {
-                                DICE_ROLL_STATE
-                                    .with_mut(|state| {
-                                        state.0 = true;
-                                        state.1 = Some(CHARACTER().stats[i].clone());
-                                    });
-                            },
-                            Icon {
-                                width: 45,
-                                height: 45,
-                                fill: "white",
-                                icon: BsDice6,
+            for (i, stat) in character.stats().iter().enumerate() {
+
+            }
+        }
+    }
+}
+
+#[component]
+fn RenderStat(stat: Store<Stat>, core: bool) -> Element {
+    let name = stat.name();
+    let quantity = stat.quantity();
+    let quality = stat.quality();
+
+    rsx! {
+        div { class: "flex-col-md border rounded-lg p-2 flex-1 w-full",
+            div { class: "inline-field",
+                if core {
+                    h3 { class: "flex-grow",
+                        {name}
+                    }
+                }
+                button {
+                    class: "btn-ghost",
+                    onclick: move |_| {
+                        DICE_ROLL_STATE
+                            .with_mut(|state| {
+                                state.0 = true;
+                                state.1 = Some(stat().clone());
+                            });
+                    },
+                    Icon {
+                        width: 45,
+                        height: 45,
+                        fill: "white",
+                        icon: BsDice6,
+                    }
+                }
+            }
+            div { class: "flex flex-wrap w-full h-full justify-center items-center gap-2",
+                div { class: "inline-field flex-1 gap-2",
+                    select {
+                        class: "select-field min-w-12 flex-1",
+                        onchange: move |evt| {
+                            stat.quality() = match evt.value().parse::<usize>().unwrap_or(0) {
+                                1 => Quality::Adept,
+                                2 => Quality::Superb,
+                                _ => Quality::Basic,
                             }
+                        },
+                        option {
+                            value: 0,
+                            selected: stat.quality() == Quality::Basic,
+                            "Basic"
+                        }
+                        option {
+                            value: 1,
+                            selected: CHARACTER().stats[i].quality == Quality::Adept,
+                            "Adept"
+                        }
+                        option {
+                            value: 2,
+                            selected: CHARACTER().stats[i].quality == Quality::Superb,
+                            "Superb"
                         }
                     }
-                    div { class: "flex flex-wrap w-full h-full justify-center items-center gap-2",
-                        div { class: "inline-field flex-1 gap-2",
-                            select {
-                                class: "select-field min-w-12 flex-1",
-                                onchange: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.stats[i].quality = match evt.value().parse::<usize>().unwrap_or(1)
-                                            {
-                                                1 => Quality::Adept,
-                                                2 => Quality::Superb,
-                                                _ => Quality::Basic,
-                                            }
-                                        });
-                                },
-                                option {
-                                    value: 0,
-                                    selected: CHARACTER().stats[i].quality == Quality::Basic,
-                                    "Basic"
-                                }
-                                option {
-                                    value: 1,
-                                    selected: CHARACTER().stats[i].quality == Quality::Adept,
-                                    "Adept"
-                                }
-                                option {
-                                    value: 2,
-                                    selected: CHARACTER().stats[i].quality == Quality::Superb,
-                                    "Superb"
-                                }
-                            }
-                            input {
-                                class: "input-counter flex-1",
-                                r#type: "number",
-                                value: "{stat.quantity}",
-                                min: "0",
-                                max: usize::MAX -1,
-                                oninput: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
-                                        });
-                                },
-                            }
-                        }
-                        div { class: "inline-field-sm",
-                            span { class: "label", "Checks:" }
-                            input {
-                                class: "input-counter",
-                                r#type: "number",
-                                value: "{stat.checks.unwrap_or_default()}",
-                                min: "0",
-                                max: usize::MAX,
-                                oninput: move |evt| {
-                                    CHARACTER
-                                        .with_mut(|character| {
-                                            character.stats[i].checks = Some(
-                                                evt.value().parse::<usize>().unwrap_or(0),
-                                            );
-                                        });
-                                },
-                            }
-                        }
+                    input {
+                        class: "input-counter flex-1",
+                        r#type: "number",
+                        value: "{stat.quantity}",
+                        min: "0",
+                        max: usize::MAX -1,
+                        oninput: move |evt| {
+                            CHARACTER
+                                .with_mut(|character| {
+                                    character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
+                                });
+                        },
+                    }
+                }
+                div { class: "inline-field-sm",
+                    span { class: "label", "Checks:" }
+                    input {
+                        class: "input-counter",
+                        r#type: "number",
+                        value: "{stat.checks.unwrap_or_default()}",
+                        min: "0",
+                        max: usize::MAX,
+                        oninput: move |evt| {
+                            CHARACTER
+                                .with_mut(|character| {
+                                    character.stats[i].checks = Some(
+                                        evt.value().parse::<usize>().unwrap_or(0),
+                                    );
+                                });
+                        },
                     }
                 }
             }

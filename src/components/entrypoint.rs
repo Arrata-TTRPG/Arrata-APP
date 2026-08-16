@@ -1,8 +1,16 @@
 use dioxus::prelude::*;
 
+use dioxus_sdk::storage::use_persistent;
+
+use arrata_lib::Character;
+
 use crate::{
-    DICE_ROLL_STATE, VERSION, load_initial_quirks,
-    render::{CharacterIO, CharacterSidebar, RenderCharacter, RenderRolls, SidebarToggle},
+    DICE_ROLL_STATE, Roster, RosterStoreExt, VERSION,
+    components::{
+        CharacterIO, CharacterSidebar, RenderCharacter, RenderRolls, SidebarToggle,
+        popup::PopupOverlay,
+    },
+    load_initial_quirks,
 };
 
 const TAILWIND_CSS: Asset = asset!("public/tailwind.css");
@@ -15,43 +23,32 @@ pub fn App() -> Element {
         load_initial_quirks().await;
     });
 
-    #[cfg(any(feature = "web", feature = "desktop"))]
-    {
-        use crate::{
-            ACTIVE_IDX, CHARACTER, CHARACTERS, PREMADE_QUIRKS,
-            storage::{read_characters, read_quirks, write_characters, write_quirks},
-        };
+    let mut persisted =
+        use_persistent::<Vec<Character>>("characters", || vec![Character::default()]);
 
-        use_future(|| async {
-            if let Some(characters) = read_characters() {
-                *CHARACTERS.write() = characters;
-            }
-            let first = CHARACTERS().into_iter().next().unwrap_or_default();
-            *CHARACTER.write() = first;
-            *ACTIVE_IDX.write() = 0;
+    let roster = use_store(|| Roster {
+        characters: persisted(), // read once, store owns the value
+        active: 0,
+    });
 
-            let quirks_key = format!("quirks-{}-{}", VERSION().major, VERSION().minor);
-            if let Some(quirks) = read_quirks(&quirks_key) {
-                PREMADE_QUIRKS.write().extend(quirks);
-            }
-        });
+    use_effect(move || {
+        persisted.set(roster.characters()());
+    });
 
-        use_effect(move || {
-            let character = CHARACTER();
-            let idx = ACTIVE_IDX();
-            let mut chars = CHARACTERS.write();
-            if let Some(slot) = chars.get_mut(idx) {
-                *slot = character;
-            }
-            write_characters(&chars);
-        });
+    use_context_provider(|| roster);
 
-        let quirks_key = format!("quirks-{}-{}", VERSION().major, VERSION().minor);
-        use_effect(move || {
-            let quirks = PREMADE_QUIRKS();
-            write_quirks(&quirks, &quirks_key);
-        });
+    rsx! {
+        Sheet {}
     }
+}
+
+#[component]
+fn Sheet() -> Element {
+    let char_store = use_context::<Store<Roster>>();
+    let active = char_store.active()();
+    let Some(character) = char_store.characters().get(active) else {
+        return rsx! {};
+    };
 
     rsx! {
         Stylesheet { href: TAILWIND_CSS }
@@ -77,13 +74,13 @@ pub fn App() -> Element {
                             "ARRATA"
                         }
                         span { class: "h-full font-bold align-bottom pl-2 lg:text-base md:text-sm text-xs",
-                            "v{VERSION()}"
+                            {VERSION}
                         }
                     }
                 }
 
                 CharacterIO {}
-                RenderCharacter {}
+                RenderCharacter { character: character }
 
                 if DICE_ROLL_STATE().0 {
                     if let Some(_) = DICE_ROLL_STATE().1 {
@@ -92,5 +89,7 @@ pub fn App() -> Element {
                 }
             }
         }
+
+        PopupOverlay {}
     }
 }

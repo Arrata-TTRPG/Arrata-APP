@@ -21,6 +21,8 @@ pub(crate) use stats::RenderStats;
 pub(crate) mod combat;
 pub(crate) use combat::RenderCombat;
 
+pub(crate) mod popup;
+
 use arrata_lib::character::Character;
 use base64::prelude::*;
 use dioxus::prelude::document;
