@@ -1,0 +1,171 @@
+/* Design tokens, reset, and bare-element defaults.
+   Everything downstream styles through these variables — there are no
+   hard-coded colours or spacings in the other sheets. */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --bg: #000;
+  --surface: #0f172a;
+  --surface-raised: #1e293b;
+  --surface-sunken: #020617;
+  --surface-hover: #475569;
+
+  /* Text */
+  --fg: #fff;
+  --fg-muted: #cbd5e1;
+  --fg-dim: #64748b;
+
+  /* Lines. `currentColor` reproduces the white hairline the sheet is built on;
+     --line is the softer divider used inside chrome (sidebar, overlays). */
+  --edge: 1px solid currentColor;
+  --edge-thick: 2px solid currentColor;
+  --line: #334155;
+
+  /* Intent */
+  --danger: #450a0a;
+  --danger-strong: #b91c1c;
+  --danger-hover: #dc2626;
+  --danger-fg: #f87171;
+  --success: #052e16;
+  --success-fg: #22c55e;
+
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  /* Rhythm */
+  --gap-xs: 0.25rem;
+  --gap: 0.5rem;
+  --gap-lg: 1rem;
+  --pad: 0.5rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Edge length of square, glyph- or icon-only buttons. */
+  --control: 2.5rem;
+  --control-sm: 2rem;
+
+  /* Type scale */
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+html {
+  line-height: 1.5;
+  tab-size: 4;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  text-align: center;
+}
+
+img,
+svg,
+object,
+canvas {
+  display: block;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* Headings carry only size — weight, family and centring are shared. */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--mono);
+  font-weight: 700;
+  text-align: center;
+}
+
+h1 {
+  font-size: var(--text-4xl);
+}
+h2 {
+  font-size: var(--text-3xl);
+}
+h3 {
+  font-size: var(--text-2xl);
+}
+h4 {
+  font-size: var(--text-xl);
+  font-weight: 400;
+}
+
+p {
+  font-family: var(--mono);
+}
+
+span {
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+  color: #e2e8f0;
+}
+
+/* Form controls inherit typography rather than the UA defaults. */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  background: transparent;
+  border-radius: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+select,
+option,
+textarea {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+input[type="number"] {
+  font-family: var(--mono);
+  text-align: center;
+}
+
+/* Native content sizing replaces the JS auto-resize the sheet used to run
+   on every keystroke. */
+textarea {
+  field-sizing: content;
+  resize: none;
+  overflow: hidden;
+}
+
+::placeholder {
+  color: color-mix(in oklab, currentColor 50%, transparent);
+}

@@ -1,0 +1,243 @@
+/* Layout primitives and the page shell.
+   The primitives (.row/.col/.card/.grid/.field) are what the shared Rust
+   components in `components::shared::layout` render — component code should
+   reach for those rather than writing these class names by hand. */
+
+/* ── Primitives ─────────────────────────────────────────────── */
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.row--tight,
+.col--tight {
+  gap: var(--gap-xs);
+}
+.row--loose,
+.col--loose {
+  gap: var(--gap-lg);
+}
+.row--start,
+.col--start {
+  align-items: flex-start;
+}
+
+/* Pack content at the top instead of centring it in the free space. Needed
+   whenever a column is stretched by a taller sibling. */
+.col--top {
+  justify-content: flex-start;
+}
+
+/* Keep a row on one line — for rows whose main child is a growable field. */
+.row--nowrap {
+  flex-wrap: nowrap;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+  padding: var(--pad);
+  border: var(--edge);
+  border-radius: var(--radius-lg);
+}
+
+/* Wrapping tray of cards — weapons, armor, talents, inventory. */
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  justify-content: center;
+  gap: var(--gap-lg);
+  width: 100%;
+  padding: var(--pad);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.card-grid > * {
+  flex: 1;
+  min-width: 19rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--gap-lg);
+  width: 100%;
+}
+
+/* Two-up, collapsing to one column on narrow viewports. */
+.grid--pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 650px) {
+  .grid--pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* A `label: control` pair. */
+.field {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.label {
+  font-family: var(--mono);
+  font-size: var(--text-lg);
+  white-space: nowrap;
+}
+
+/* Heading of a collapsible `Section`. */
+.section__title {
+  font-size: var(--text-4xl);
+}
+
+.section__title--sm {
+  font-size: var(--text-3xl);
+}
+
+/* ── Shared modifiers ───────────────────────────────────────── */
+
+.fill {
+  width: 100%;
+}
+.grow {
+  flex: 1;
+}
+.bordered {
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+.scroll-y {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* ── Page shell ─────────────────────────────────────────────── */
+
+.app {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-lg);
+  padding: var(--pad) 1.25rem;
+}
+
+.masthead__logo {
+  width: 4.5rem;
+  height: 4.5rem;
+  padding-top: var(--pad);
+}
+
+.masthead__wordmark {
+  display: flex;
+  align-items: baseline;
+}
+
+.masthead__wordmark h1 {
+  font-size: clamp(3.5rem, 11vw, 8rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.masthead__version {
+  padding-left: var(--pad);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+@media (min-width: 640px) {
+  .masthead__logo {
+    width: 6rem;
+    height: 6rem;
+  }
+  .masthead__version {
+    font-size: var(--text-sm);
+  }
+}
+
+@media (min-width: 1024px) {
+  .masthead__logo {
+    width: 9rem;
+    height: 9rem;
+  }
+  .masthead__version {
+    font-size: var(--text-md);
+  }
+}
+
+/* ── Character sheet columns ────────────────────────────────── */
+
+.sheet {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: var(--gap-lg) 0;
+}
+
+.sheet__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  width: 100%;
+  padding: 0 var(--pad) var(--gap-lg);
+}
+
+@media (min-width: 1281px) {
+  .sheet__column {
+    width: 50%;
+  }
+}
+
+@media (min-width: 1921px) {
+  .sheet__column {
+    width: 33.3333%;
+  }
+}
+
+/* Import/export strip under the masthead. */
+.io {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  width: fit-content;
+  max-width: 668px;
+  margin: 0 auto;
+  padding: 0 1.25rem 1.25rem;
+}

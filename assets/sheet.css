@@ -1,0 +1,364 @@
+/* Chrome that isn't part of the sheet grid: roster sidebar, modal overlays,
+   the dice roller and the premade-quirk browser. */
+
+/* ── Roster sidebar ─────────────────────────────────────────── */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border-right: 0 solid var(--line);
+  transition: width 300ms, opacity 300ms;
+}
+
+.sidebar--open {
+  width: 100%;
+  opacity: 1;
+  border-right-width: 1px;
+}
+
+@media (min-width: 640px) {
+  .sidebar--open {
+    width: 16rem;
+  }
+}
+
+.sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar__header span {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+}
+
+.sidebar__close {
+  padding: 0 var(--gap-xs);
+  font-size: var(--text-xl);
+  background: none;
+  border: 0;
+  transition: color 150ms;
+}
+
+.sidebar__close:hover {
+  color: var(--fg-dim);
+}
+
+.sidebar__actions {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar__action {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+  padding: 0.75rem;
+  font-size: var(--text-lg);
+  background: var(--surface-raised);
+  border: 0;
+}
+
+.sidebar__action + .sidebar__action {
+  border-left: 1px solid var(--line);
+}
+
+.sidebar__action:hover {
+  background: var(--line);
+}
+
+.sidebar__list {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.sidebar__entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--surface-raised);
+  transition: background-color 150ms;
+}
+
+.sidebar__entry:hover {
+  background: var(--surface-raised);
+}
+
+.sidebar__entry--active,
+.sidebar__entry--active:hover {
+  background: var(--line);
+}
+
+.sidebar__name {
+  flex-grow: 1;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__hp {
+  font-size: var(--text-md);
+  color: var(--fg-muted);
+  text-align: left;
+}
+
+/* Reopen handle, pinned to the left edge while the sidebar is closed. */
+.sidebar__toggle {
+  position: fixed;
+  left: 0;
+  top: 1.25rem;
+  z-index: 50;
+  padding: 0.75rem;
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-hover);
+  border-left: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.sidebar__toggle:hover {
+  background: var(--surface-hover);
+}
+
+/* Inline Yes/No confirmation. */
+.confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap);
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--danger-hover);
+  border-radius: var(--radius);
+}
+
+.confirm__prompt {
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+/* ── Modal surfaces ─────────────────────────────────────────── */
+
+/* A centred, self-sizing dialog. */
+.dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap);
+  width: 24rem;
+  max-width: 80%;
+  height: fit-content;
+  max-height: 80%;
+  margin: auto;
+  padding: var(--pad) 0;
+  overflow: hidden;
+  background: var(--surface-raised);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+/* A full-bleed panel — the premade-quirk browser. */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: var(--pad);
+  background: var(--bg);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.overlay__close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 20;
+  padding: var(--pad);
+}
+
+/* ── Dice roller ────────────────────────────────────────────── */
+
+.roll__stat {
+  padding: var(--pad);
+  font-size: var(--text-2xl);
+  background: var(--surface);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.roll__odds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap-lg);
+}
+
+.roll__odds > div {
+  padding: var(--gap-xs);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.roll__odds > .advantage {
+  background: var(--success);
+}
+.roll__odds > .disadvantage {
+  background: var(--danger);
+}
+
+.roll__odds input {
+  width: 3rem;
+  padding: var(--gap-xs);
+  appearance: none;
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.roll__tally {
+  display: flex;
+  justify-content: center;
+}
+
+.roll__tally .success {
+  padding: var(--pad);
+  color: var(--success-fg);
+}
+.roll__tally .failure {
+  padding: var(--pad);
+  color: var(--danger-hover);
+}
+
+.roll__dice {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--gap-xs);
+  width: 100%;
+  max-height: 100%;
+  padding: var(--gap-xs);
+  overflow: auto;
+  background: var(--surface);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.roll__die {
+  padding: 0 var(--gap-xs);
+  background: var(--surface-sunken);
+  border-radius: var(--radius);
+  color: var(--danger-hover);
+}
+
+.roll__die--hit {
+  color: var(--success-fg);
+}
+
+/* ── Premade quirk browser ──────────────────────────────────── */
+
+.browser__columns {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--gap);
+  min-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .browser__columns {
+    flex-direction: row;
+  }
+}
+
+.browser__column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--gap);
+  min-height: 0;
+  padding: var(--gap-xs);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.browser__entries {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  padding: var(--gap-xs) 0.75rem 0 0;
+  overflow-y: auto;
+  border-top: var(--edge);
+}
+
+.quirk-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  height: fit-content;
+  padding: var(--gap-xs);
+  background: var(--surface-sunken);
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.quirk-card__description {
+  padding: 0 var(--gap-xs);
+  font-size: var(--text-md);
+}
+
+.quirk-card__effects {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: var(--pad);
+  border-top: var(--edge);
+  word-spacing: -4px;
+}
+
+.quirk-card__effects > :first-child {
+  border-right: var(--edge);
+}
+
+.quirk-card__effects ul {
+  padding: 0 var(--pad);
+  list-style: disc inside;
+}
+
+.quirk-card__effects li {
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.quirk-card__effects li:not(:last-child) {
+  padding-bottom: var(--gap-xs);
+  border-bottom: var(--edge);
+}
+
+/* ── Sheet-local scroll regions ─────────────────────────────── */
+
+.quirk-list {
+  max-height: 24rem;
+  overflow-y: auto;
+}

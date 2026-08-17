@@ -1,0 +1,196 @@
+/* Buttons, text fields, selects and textareas.
+   Each family is one base class plus modifiers, mirroring the variant enums
+   in `components::shared::{buttons, inputs}`. */
+
+/* ── Buttons ────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  gap: var(--gap);
+  padding: 0 1rem;
+  font-family: var(--mono);
+  font-weight: 700;
+  /* Collapse the inherited 1.5 leading, so flex centring lines up with the
+     glyphs rather than with a line box taller than they are. */
+  line-height: 1;
+  background: var(--surface);
+  border: var(--edge);
+  border-radius: var(--radius);
+  transition: background-color 150ms;
+}
+
+.btn:hover {
+  background: var(--surface-hover);
+}
+
+.btn--sm {
+  padding: 0 var(--pad);
+}
+
+/* Glyph- and icon-only buttons stay square and centre themselves in the row,
+   rather than stretching to the tallest field beside them. */
+.btn--add,
+.btn--danger {
+  flex: 0 0 auto;
+  align-self: center;
+  width: var(--control);
+  height: var(--control);
+  padding: 0;
+}
+
+/* The `+` next to a section heading. */
+.btn--add {
+  font-size: var(--text-lg);
+}
+
+/* Full-width primary action — file import/export. */
+.btn--lg {
+  flex: 1;
+  font-size: var(--text-xl);
+}
+
+/* Chrome-less trigger; used for the dice-roll icon. Sized by its icon, so it
+   is already square — it only needs to stop stretching. */
+.btn--ghost {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.btn--danger {
+  background: var(--danger);
+  border: var(--edge-thick);
+  border-radius: var(--radius-lg);
+}
+
+.btn--danger:hover {
+  background: var(--danger-hover);
+}
+
+.btn--danger.btn--sm {
+  width: var(--control-sm);
+  height: var(--control-sm);
+  padding: 0;
+  border: var(--edge);
+}
+
+.btn--confirm {
+  padding: var(--gap-xs) 1rem;
+  background: var(--danger-strong);
+  border: 0;
+}
+
+.btn--confirm:hover {
+  background: var(--danger-hover);
+}
+
+.btn--cancel {
+  padding: var(--gap-xs) 1rem;
+  background: var(--line);
+  border: 0;
+}
+
+.btn--cancel:hover {
+  background: var(--surface-hover);
+}
+
+/* Momentary "saved!" acknowledgement. */
+.btn--flash,
+.btn--flash:hover {
+  background: var(--success-fg);
+}
+
+/* Close (✕) affordance on overlays. */
+.btn--close {
+  padding: 0;
+  color: var(--danger-hover);
+  background: var(--surface-sunken);
+  border: 0;
+}
+
+.btn--close:hover {
+  background: var(--line);
+}
+
+/* ── Text fields ────────────────────────────────────────────── */
+
+.input {
+  min-width: 0;
+  padding: var(--pad);
+  font-family: var(--mono);
+  text-align: center;
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+/* Grows to fill its row, but never forces the row wider. */
+.input--stat {
+  flex: 1;
+  width: 0;
+  font-size: var(--text-lg);
+  overflow: hidden;
+}
+
+.input--count {
+  width: 4rem;
+  font-size: var(--text-lg);
+}
+
+/* `.grow` on a counter means "share the row", not "stay 4rem". */
+.input--count.grow {
+  width: auto;
+  min-width: 4rem;
+}
+
+.select {
+  padding: var(--pad);
+  font-family: var(--mono);
+  font-size: var(--text-lg);
+  text-align: center;
+  appearance: none;
+  cursor: pointer;
+  border: var(--edge);
+  border-radius: var(--radius);
+}
+
+.select:hover {
+  background: var(--line);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--pad);
+  font-family: var(--mono);
+  font-size: var(--text-lg);
+  border: var(--edge);
+  border-radius: var(--radius-lg);
+}
+
+/* Quirk boons/flaws: square, tighter. */
+.textarea--flat {
+  font-size: var(--text-md);
+  border-radius: 0;
+}
+
+/* Shares a row with a sibling control rather than claiming the whole line. */
+.textarea--inline {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+}
+
+/* Argos: dotted "graph paper" backdrop. */
+.textarea--argos {
+  color: #969696;
+  text-align: center;
+  background-image: radial-gradient(circle, #fff 0.4px, transparent 1px),
+    radial-gradient(circle, #fff 0.4px, transparent 1px);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+}

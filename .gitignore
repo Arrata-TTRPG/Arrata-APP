@@ -2,7 +2,6 @@
 /dist
 *.arrata
 Cargo.lock
-*.css
 *.html
 *.wasm
 *.exe
