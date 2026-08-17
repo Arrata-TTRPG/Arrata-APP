@@ -35,7 +35,6 @@ From there:
 
 - Rust Nightly (with `wasm32-unknown-unknown` target and `rust-src` component)
 - [Dioxus CLI](https://dioxuslabs.com/learn/0.7/getting_started): `cargo install dioxus-cli`
-- [Tailwind CSS v4](https://tailwindcss.com/docs/installation)
 - Platform-specific dependencies:
   - **Linux:** WebkitGtk - `sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev`
   - **Windows:** [WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (included with Microsoft Edge)
@@ -45,8 +44,7 @@ From there:
 
 1. Clone the repo: `git clone https://github.com/Arrata-TTRPG/Arrata-APP.git`
 2. `cd Arrata-APP`
-3. `tailwindcss -i input.css -o public/tailwind.css`
-4. `dx serve --platform web` or `dx serve --platform desktop`
+3. `dx serve --platform web` or `dx serve --platform desktop`
 
 ## Roadmap
 

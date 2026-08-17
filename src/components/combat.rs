@@ -1,15 +1,22 @@
+//! Right column: derived combat stats, then weapons, armor and talents.
+//!
+//! `Weapon`, `Armor` and `Talent` don't derive `Store`, so their fields are
+//! reached with [`field!`](crate::components::shared::field) rather than
+//! generated accessors.
+
 use dioxus::prelude::*;
-use dioxus_free_icons::{icons::bs_icons::BsTrash, Icon};
 use thousands::Separable;
 
-use arrata_lib::{combat, Armor, Talent, Weapon};
+use arrata_lib::{
+    Armor, Character, CharacterStoreExt, CoreStatsStoreExt, StatStoreExt, Talent, Weapon, combat,
+};
 
-use crate::{render::auto_resize_js, CHARACTER};
+use crate::components::shared::{
+    Btn, BtnKind, Card, CardGrid, DeleteBtn, Dropdown, Field, NotesArea, NumberInput, Row, Section,
+    SignedInput, TextInput, field,
+};
 
-const WILL_IDX: usize = 0;
-const SPEED_IDX: usize = 4;
-const FORTE_IDX: usize = 5;
-
+/// The core stats a weapon can add to its damage.
 const STAT_NAMES: [&str; 7] = [
     "Will",
     "Perception",
@@ -20,137 +27,84 @@ const STAT_NAMES: [&str; 7] = [
     "None",
 ];
 
-/// Top-level combat section: derived stats, then weapon/armor/talent lists.
+/// Right column of the sheet.
 #[component]
-pub(crate) fn RenderCombat() -> Element {
+pub fn RenderCombat(character: Store<Character>) -> Element {
     rsx! {
-        div { class: "flex flex-wrap w-full max-[1920px]:pt-10 min-[1921px]:w-1/3 min-[1921px]:pt-0 px-2 justify-center gap-y-4",
-            RenderCombatStats {}
-            RenderWeapons {}
-            RenderArmor {}
-            RenderTalents {}
+        div { class: "sheet__column",
+            CombatStats { character }
+            Weapons { character }
+            ArmorList { character }
+            Talents { character }
         }
     }
 }
 
-// Combat stats
-
+/// Health, injury and action points. Maxima are derived from core stats.
 #[component]
-fn RenderCombatStats() -> Element {
-    let will_qty = CHARACTER().stats.get(WILL_IDX).map_or(1, |s| s.quantity);
-    let forte_qty = CHARACTER().stats.get(FORTE_IDX).map_or(1, |s| s.quantity);
-    let speed_qty = CHARACTER().stats.get(SPEED_IDX).map_or(1, |s| s.quantity);
+fn CombatStats(character: Store<Character>) -> Element {
+    let stats = character.stats();
+    let max_health = combat::max_health(stats.will().quantity()(), stats.forte().quantity()());
+    let max_ap = combat::ap_cap(stats.speed().quantity()());
 
-    let max_hp = combat::max_health(will_qty, forte_qty);
-    let max_ap = combat::ap_cap(speed_qty);
-    let mut current_ap = use_signal(|| 0);
-    let current_hp = CHARACTER().current_health;
-    let injury = CHARACTER().injury;
+    let mut injury = character.injury();
+    let action_points = use_signal(|| 0usize);
 
     rsx! {
-        div { class: "flex w-full flex-col gap-3 pb-4 gap-4",
-            h1 { "Combat" }
-
-            div { class: "flex-grid-big max-[1280px]:flex-col min-[1281px]:flex-row",
-                // Health
-                div { class: "flex-col-md border rounded-lg min-w-30 max-[1280px]:w-full",
-                    span { "Health" }
-                    div { class: "inline-field",
-                        input {
-                            class: "input-counter flex-1 min-[1281px]:max-w-30",
-                            r#type: "number",
-                            value: current_hp,
-                            min: "0",
-                            max: usize::MAX,
-                            oninput: move |evt| {
-                                CHARACTER
-                                    .with_mut(|c| {
-                                        c.current_health = evt.value().parse::<usize>().unwrap_or(0);
-                                    });
-                            },
-                        }
-                        p { class: "label whitespace-nowrap", "/ {max_hp.separate_with_commas()}" }
+        h1 { "Combat" }
+        Row { class: "row--loose fill",
+            Card { class: "grow",
+                span { "Health" }
+                div { class: "field",
+                    NumberInput { value: character.current_health() }
+                    p { class: "label", "/ {max_health.separate_with_commas()}" }
+                }
+            }
+            Card { class: "grow",
+                span { "Injury" }
+                div { class: "field",
+                    Btn {
+                        kind: BtnKind::Add,
+                        onclick: move |_| injury.set(injury().saturating_add(1)),
+                        "+"
+                    }
+                    h2 { "{injury}" }
+                    Btn {
+                        kind: BtnKind::Add,
+                        onclick: move |_| injury.set(injury().saturating_sub(1)),
+                        "-"
                     }
                 }
-
-                // Injury
-                div { class: "flex-col-md border rounded-lg min-w-30 max-[1280px]:w-full min-[1281px]:h-full",
-                    span { "Injury" }
-                    div { class: "inline-field",
-                        button {
-                            class: "btn-add",
-                            onclick: move |_| {
-                                CHARACTER
-                                    .with_mut(|c| {
-                                        c.injury += 1;
-                                    });
-                            },
-                            "+"
-                        }
-                        h2 { "{injury.separate_with_commas()}" }
-                        button {
-                            class: "btn-add",
-                            onclick: move |_| {
-                                CHARACTER
-                                    .with_mut(|c| {
-                                        c.injury = c.injury.saturating_sub(1);
-                                    });
-                            },
-                            "-"
-                        }
-                    }
-                }
-
-                // Action Points
-                div { class: "flex-col-md border rounded-lg min-w-30 max-[1280px]:w-full",
-                    span { "Action Points" }
-                    div { class: "inline-field",
-                        input {
-                            class: "input-counter flex-1 min-[1281px]:max-w-30",
-                            r#type: "number",
-                            min: isize::MIN,
-                            max: isize::MAX,
-                            value: "{current_ap()}",
-                            oninput: move |evt| {
-                                current_ap.set(evt.value().parse::<isize>().unwrap_or(0));
-                            },
-                        }
-                        p { class: "label whitespace-nowrap", "/ {max_ap.separate_with_commas()}" }
-                    }
+            }
+            Card { class: "grow",
+                span { "Action Points" }
+                div { class: "field",
+                    NumberInput { value: action_points, class: "grow" }
+                    p { class: "label", "/ {max_ap.separate_with_commas()}" }
                 }
             }
         }
     }
 }
 
-// Weapons
-
 #[component]
-fn RenderWeapons() -> Element {
-    let mut show = use_signal(|| false);
+fn Weapons(character: Store<Character>) -> Element {
+    let mut weapons = character.weapons();
+
     rsx! {
-        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pr-1 w-full flex-col gap-2",
-            div { class: "inline-field",
-                h2 { "Weapons {CHARACTER().weapons.iter().count().separate_with_commas()}" }
-                button {
-                    class: "btn-add",
-                    onclick: move |_| CHARACTER.write().weapons.push(Weapon::default()),
-                    "+"
-                }
-                button {
-                    class: "btn text-lg",
-                    onclick: move |_| show.set(!show()),
-                    if show() {
-                        "Hide"
-                    } else {
-                        "Show"
-                    }
-                }
-            }
-            if show() {
-                div { class: "card-grid",
-                    for (i, _) in CHARACTER().weapons.iter().enumerate() {
-                        RenderWeapon { index: i }
+        Section {
+            title: "Weapons",
+            small: true,
+            count: weapons.len(),
+            onadd: move |_| weapons.push(Weapon::default()),
+            CardGrid {
+                for (index , weapon) in weapons.iter().enumerate() {
+                    WeaponCard {
+                        key: "{index}",
+                        weapon,
+                        ondelete: move |_| {
+                            weapons.remove(index);
+                        },
                     }
                 }
             }
@@ -159,148 +113,74 @@ fn RenderWeapons() -> Element {
 }
 
 #[component]
-fn RenderWeapon(index: usize) -> Element {
-    let Some(w) = CHARACTER().weapons.get(index).cloned() else {
-        return rsx! {};
-    };
-
+fn WeaponCard(mut weapon: Store<Weapon>, ondelete: EventHandler<MouseEvent>) -> Element {
     rsx! {
-        div { class: "flex-col-md border flex-1 border rounded-lg min-w-[310px]",
-            // Name + delete
-            div { class: "inline-field",
-                input {
-                    class: "input-stat",
-                    r#type: "text",
+        Card {
+            Row { class: "fill",
+                TextInput {
+                    value: field!(weapon, name),
+                    class: "input--stat",
                     placeholder: "Weapon Name",
-                    value: "{w.name}",
-                    oninput: move |evt| {
-                        CHARACTER.write().weapons[index].name = evt.value();
-                    },
                 }
-                button {
-                    class: "btn-danger",
-                    onclick: move |_| {
-                        std::mem::drop(CHARACTER.write().weapons.remove(index));
-                    },
-                    Icon {
-                        width: 25,
-                        height: 25,
-                        fill: "white",
-                        icon: BsTrash,
-                    }
-                }
+                DeleteBtn { onclick: ondelete }
             }
-
-            // Skill (bounded) + Req (fixed)
-            div { class: "flex-grid-big",
-                div { class: "inline-field-sm flex-1",
-                    p { class: "label", "Skill:" }
-                    input {
-                        class: "input-stat",
-                        r#type: "text",
-                        value: "{w.skill}",
+            Row { class: "row--loose fill",
+                Field { label: "Skill:", class: "grow",
+                    TextInput {
+                        value: field!(weapon, skill),
+                        class: "input--stat",
                         placeholder: "None",
-                        oninput: move |evt| {
-                            CHARACTER.write().weapons[index].skill = evt.value();
-                        },
                     }
                 }
-                div { class: "inline-field-sm",
-                    p { class: "label", "Min:" }
+                Field { label: "Min:",
+                    // Stored as `Option<String>`; an empty box means "no minimum".
                     input {
-                        class: "input-counter",
+                        class: "input input--count",
                         r#type: "text",
-                        value: "{w.skill_requirement.clone().unwrap_or_default()}",
                         placeholder: "B0",
-                        oninput: move |evt| {
-                            let v = evt.value();
-                            CHARACTER.write().weapons[index].skill_requirement =
-                                if v.is_empty() { None } else { Some(v) };
+                        value: "{weapon().skill_requirement.unwrap_or_default()}",
+                        oninput: move |event| {
+                            let requirement = event.value();
+                            weapon.write().skill_requirement = (!requirement.is_empty())
+                                .then_some(requirement);
                         },
                     }
                 }
             }
-
-            // Base dmg + stat dropdown
-            div { class: "flex-grid-md",
-                div { class: "inline-field-sm",
-                    p { class: "label", "Base dmg:" }
-                    input {
-                        class: "input-counter",
-                        r#type: "number",
-                        value: isize::from(w.base_damage),
-                        oninput: move |evt| {
-                            CHARACTER.write().weapons[index].base_damage =
-                                evt.value().parse::<isize>().unwrap_or(0);
-                        },
-                    }
+            Row { class: "fill",
+                Field { label: "Base dmg:",
+                    SignedInput { value: field!(weapon, base_damage) }
                 }
-                div { class: "inline-field-sm",
-                    p { class: "label", "+" }
-                    select {
-                        class: "select-field",
-                        onchange: move |evt| {
-                            CHARACTER.write().weapons[index].stat_modifier = evt.value();
-                        },
-                        for name in STAT_NAMES {
-                            option {
-                                value: "{name}",
-                                selected: w.stat_modifier == name,
-                                "{name}"
-                            }
-                        }
+                Field { label: "+",
+                    Dropdown {
+                        value: field!(weapon, stat_modifier),
+                        options: STAT_NAMES.map(String::from).to_vec(),
                     }
                 }
             }
-
-            // Notes
-            textarea {
-                id: "weapon-notes-{index}",
-                class: "textarea-notes",
-                style: "min-height: 2.75rem",
-                placeholder: "Notes",
-                value: "{w.notes}",
-                onmounted: move |_| async move {
-                    let _ = document::eval(&auto_resize_js(&format!("weapon-notes-{index}"), true))
-                        .await;
-                },
-                oninput: move |evt| {
-                    CHARACTER.write().weapons[index].notes = evt.value();
-                    let _ = document::eval(&auto_resize_js(&format!("weapon-notes-{index}"), false));
-                },
-            }
+            NotesArea { value: field!(weapon, notes), placeholder: "Notes" }
         }
     }
 }
 
-// Armor
-
 #[component]
-fn RenderArmor() -> Element {
-    let mut show = use_signal(|| false);
+fn ArmorList(character: Store<Character>) -> Element {
+    let mut armor = character.armor();
+
     rsx! {
-        div { class: "flex min-[1281px]:max-[1920px]:w-1/2 min-[1281px]:max-[1920px]:pl-1 min-[1281px]:max-[1920px]:py-0 w-full flex-col gap-2 py-4",
-            div { class: "inline-field",
-                h2 { "Armor {CHARACTER().armor.iter().count().separate_with_commas()}" }
-                button {
-                    class: "btn-add",
-                    onclick: move |_| CHARACTER.write().armor.push(Armor::default()),
-                    "+"
-                }
-                button {
-                    class: "btn text-lg",
-                    onclick: move |_| show.set(!show()),
-                    if show() {
-                        "Hide"
-                    } else {
-                        "Show"
-                    }
-                }
-            }
-            if show() {
-                div { class: "card-grid",
-                    for (i, _) in CHARACTER().armor.iter().enumerate() {
-                        RenderArmorPiece { index: i }
+        Section {
+            title: "Armor",
+            small: true,
+            count: armor.len(),
+            onadd: move |_| armor.push(Armor::default()),
+            CardGrid {
+                for (index , piece) in armor.iter().enumerate() {
+                    ArmorCard {
+                        key: "{index}",
+                        armor: piece,
+                        ondelete: move |_| {
+                            armor.remove(index);
+                        },
                     }
                 }
             }
@@ -309,119 +189,51 @@ fn RenderArmor() -> Element {
 }
 
 #[component]
-fn RenderArmorPiece(index: usize) -> Element {
-    let Some(a) = CHARACTER().armor.get(index).cloned() else {
-        return rsx! {};
-    };
-
+fn ArmorCard(mut armor: Store<Armor>, ondelete: EventHandler<MouseEvent>) -> Element {
     rsx! {
-        div { class: "flex-col-md border flex-1 border rounded-lg min-w-[310px]",
-            // Name + delete
-            div { class: "inline-field",
-                input {
-                    class: "input-stat",
-                    r#type: "text",
+        Card {
+            Row { class: "fill",
+                TextInput {
+                    value: field!(armor, name),
+                    class: "input--stat",
                     placeholder: "Armor Name",
-                    value: "{a.name}",
-                    oninput: move |evt| {
-                        CHARACTER.write().armor[index].name = evt.value();
-                    },
                 }
-                button {
-                    class: "btn-danger",
-                    onclick: move |_| {
-                        std::mem::drop(CHARACTER.write().armor.remove(index));
-                    },
-                    Icon {
-                        width: 25,
-                        height: 25,
-                        fill: "white",
-                        icon: BsTrash,
-                    }
+                DeleteBtn { onclick: ondelete }
+            }
+            h4 { "Reductions" }
+            Row { class: "fill",
+                Field { label: "Flat:",
+                    SignedInput { value: field!(armor, flat_reduction) }
+                }
+                Field { label: "Percent:",
+                    SignedInput { value: field!(armor, pct_reduction), min: 0, max: 100 }
+                    p { class: "label", "%" }
                 }
             }
-
-            // Reductions
-            div { class: "flex-col-md",
-                h4 { "Reductions" }
-                div { class: "flex-grid-md",
-                    div { class: "inline-field-sm",
-                        p { class: "label", "Flat:" }
-                        input {
-                            class: "input-counter",
-                            r#type: "number",
-                            value: isize::from(a.flat_reduction),
-                            oninput: move |evt| {
-                                CHARACTER.write().armor[index].flat_reduction =
-                                    evt.value().parse::<isize>().unwrap_or(0);
-                            },
-                        }
-                    }
-                    div { class: "inline-field-sm",
-                        p { class: "label", "Percent:" }
-                        input {
-                            class: "input-counter",
-                            r#type: "number",
-                            value: isize::from(a.pct_reduction),
-                            min: 0,
-                            max: 100,
-                            oninput: move |evt| {
-                                CHARACTER.write().armor[index].pct_reduction =
-                                    evt.value().parse::<isize>().unwrap_or(0);
-                            },
-                        }
-                        p { class: "label", "%" }
-                    }
-                }
-            }
-
-            // Notes
-            textarea {
-                id: "armor-notes-{index}",
-                class: "textarea-notes",
-                style: "min-height: 2.75rem",
-                placeholder: "Notes",
-                value: "{a.notes}",
-                onmounted: move |_| async move {
-                    let _ = document::eval(&auto_resize_js(&format!("armor-notes-{index}"), true))
-                        .await;
-                },
-                oninput: move |evt| {
-                    CHARACTER.write().armor[index].notes = evt.value();
-                    let _ = document::eval(&auto_resize_js(&format!("armor-notes-{index}"), false));
-                },
-            }
+            NotesArea { value: field!(armor, notes), placeholder: "Notes" }
         }
     }
 }
 
-// Talents
-
 #[component]
-fn RenderTalents() -> Element {
-    let mut show = use_signal(|| false);
+fn Talents(character: Store<Character>) -> Element {
+    let mut talents = character.talents();
+
     rsx! {
-        div { class: "inline-field",
-            h2 { "Talents {CHARACTER().talents.iter().count().separate_with_commas()}" }
-            button {
-                class: "btn-add",
-                onclick: move |_| CHARACTER.write().talents.push(Talent::default()),
-                "+"
-            }
-            button {
-                class: "btn text-lg",
-                onclick: move |_| show.set(!show()),
-                if show() {
-                    "Hide"
-                } else {
-                    "Show"
-                }
-            }
-        }
-        if show() {
-            div { class: "card-grid",
-                for (i, _) in CHARACTER().talents.iter().enumerate() {
-                    RenderTalent { index: i }
+        Section {
+            title: "Talents",
+            small: true,
+            count: talents.len(),
+            onadd: move |_| talents.push(Talent::default()),
+            CardGrid {
+                for (index , talent) in talents.iter().enumerate() {
+                    TalentCard {
+                        key: "{index}",
+                        talent,
+                        ondelete: move |_| {
+                            talents.remove(index);
+                        },
+                    }
                 }
             }
         }
@@ -429,81 +241,28 @@ fn RenderTalents() -> Element {
 }
 
 #[component]
-fn RenderTalent(index: usize) -> Element {
-    let Some(t) = CHARACTER().talents.get(index).cloned() else {
-        return rsx! {};
-    };
-
+fn TalentCard(mut talent: Store<Talent>, ondelete: EventHandler<MouseEvent>) -> Element {
     rsx! {
-        div { class: "flex-col-md border flex-1 border rounded-lg min-w-[310px]",
-            // Name + AP cost + delete
-            div { class: "inline-field",
-                input {
-                    class: "input-stat",
-                    r#type: "text",
+        Card {
+            Row { class: "fill",
+                TextInput {
+                    value: field!(talent, name),
+                    class: "input--stat",
                     placeholder: "Talent Name",
-                    value: "{t.name}",
-                    oninput: move |evt| {
-                        CHARACTER.write().talents[index].name = evt.value();
-                    },
                 }
-                p { class: "label", "AP:" }
-                input {
-                    class: "input-counter",
-                    r#type: "number",
-                    value: isize::try_from(t.ap_cost).unwrap_or_default(),
-                    min: 0,
-                    oninput: move |evt| {
-                        CHARACTER.write().talents[index].ap_cost =
-                            evt.value().parse::<usize>().unwrap_or(0);
-                    },
+                Field { label: "AP:",
+                    NumberInput { value: field!(talent, ap_cost) }
                 }
-                button {
-                    class: "btn-danger",
-                    onclick: move |_| {
-                        std::mem::drop(CHARACTER.write().talents.remove(index));
-                    },
-                    Icon {
-                        width: 25,
-                        height: 25,
-                        fill: "white",
-                        icon: BsTrash,
-                    }
-                }
+                DeleteBtn { onclick: ondelete }
             }
-
-            // Required skill
-            div { class: "inline-field",
-                p { class: "label", "Req. skill:" }
-                input {
-                    class: "input-stat",
-                    r#type: "text",
+            Field { label: "Req. skill:", class: "fill",
+                TextInput {
+                    value: field!(talent, required_skill),
+                    class: "input--stat",
                     placeholder: "None",
-                    value: "{t.required_skill}",
-                    oninput: move |evt| {
-                        CHARACTER.write().talents[index].required_skill = evt.value();
-                    },
                 }
             }
-
-            // Effect
-            textarea {
-                id: "talent-effect-{index}",
-                class: "textarea-notes",
-                style: "min-height: 2.75rem",
-                placeholder: "Effects",
-                value: "{t.description}",
-                onmounted: move |_| async move {
-                    let _ = document::eval(&auto_resize_js(&format!("talent-effect-{index}"), true))
-                        .await;
-                },
-                oninput: move |evt| {
-                    CHARACTER.write().talents[index].description = evt.value();
-                    let _ = document::eval(
-                        &auto_resize_js(&format!("talent-effect-{index}"), false),
-                    );
-                },
-            }
+            NotesArea { value: field!(talent, description), placeholder: "Effects" }
         }
     }
 }

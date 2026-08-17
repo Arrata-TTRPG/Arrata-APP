@@ -1,223 +1,171 @@
-use arrata_lib::{character::Character, combat};
+//! Roster sidebar: switch between characters, create, import and delete them.
+
 use dioxus::prelude::*;
 use dioxus_free_icons::{
     Icon,
-    icons::bs_icons::{BsBoxArrowInDown, BsList, BsPersonPlusFill, BsTrash},
+    icons::bs_icons::{BsBoxArrowInDown, BsList, BsPersonPlusFill},
 };
 
-use crate::render::pick_character_file;
-use crate::{ACTIVE_IDX, CHARACTER, CHARACTERS, SIDEBAR_OPEN};
+use arrata_lib::{Character, CharacterStoreExt, CoreStatsStoreExt, StatStoreExt, combat};
 
-/// Sidebar toggle button — only rendered when sidebar is closed.
+use crate::components::{
+    io::pick_character,
+    shared::{Btn, BtnKind, DeleteBtn, IconBtn},
+};
+use crate::{Roster, RosterStoreExt, Ui, UiStoreExt};
+
+/// Reopen handle, pinned to the left edge while the sidebar is collapsed.
 #[component]
-pub(crate) fn SidebarToggle() -> Element {
-    if SIDEBAR_OPEN() {
+pub fn SidebarToggle() -> Element {
+    let mut open = use_context::<Store<Ui>>().sidebar();
+
+    if open() {
         return rsx! {};
     }
+
     rsx! {
-        button {
-            class: "fixed left-0 top-[20px] z-50 bg-slate-800 hover:bg-slate-600 border border-slate-600 rounded-r-lg p-3",
-            onclick: move |_| *SIDEBAR_OPEN.write() = true,
-            Icon {
-                width: 28,
-                height: 28,
-                fill: "white",
-                icon: BsList,
-            }
+        IconBtn {
+            icon: BsList,
+            size: 28,
+            kind: BtnKind::Ghost,
+            class: "sidebar__toggle",
+            onclick: move |_| open.set(true),
         }
     }
 }
 
-/// Collapsible sidebar listing all characters in the roster.
+/// The roster list itself. Collapses to zero width rather than unmounting, so
+/// the open/close transition has something to animate.
 #[component]
-pub(crate) fn CharacterSidebar() -> Element {
-    // Per-entry delete-confirm state: `Some(i)` means entry `i` is pending confirm.
-    let mut confirm_delete: Signal<Option<usize>> = use_signal(|| None);
+pub fn Sidebar() -> Element {
+    let roster = use_context::<Store<Roster>>();
+    let mut open = use_context::<Store<Ui>>().sidebar();
+    let characters = roster.characters();
 
     rsx! {
-        // Full-screen on small devices, fixed 260px column on larger ones.
-        // Slide in/out via width + opacity transition.
-        div {
-            class: "h-full flex flex-col bg-slate-900 overflow-hidden transition-all duration-300 shrink-0",
-            class: if SIDEBAR_OPEN() { "sm:w-64 w-full opacity-100 border-r border-slate-700" } else { "w-0 opacity-0 border-r-0" },
-
-            // Header row
-            div { class: "flex items-center justify-between px-4 py-3 border-b border-slate-700",
-                span { class: "font-mono font-extrabold text-2xl", "Characters" }
+        aside { class: if open() { "sidebar sidebar--open" } else { "sidebar" },
+            div { class: "sidebar__header",
+                span { "Characters" }
                 button {
-                    class: "font-mono text-xl hover:text-slate-400 transition-colors px-1",
+                    class: "sidebar__close",
                     title: "Close sidebar",
-                    onclick: move |_| *SIDEBAR_OPEN.write() = false,
+                    onclick: move |_| open.set(false),
                     "✕"
                 }
             }
 
-            // New + Import buttons
-            div { class: "flex border-b border-slate-700",
+            div { class: "sidebar__actions",
                 button {
-                    class: "flex items-center justify-center gap-2 flex-1 px-3 py-3 font-mono text-lg bg-slate-800 hover:bg-slate-700 border-r border-slate-700",
+                    class: "sidebar__action",
                     title: "New Character",
-                    onclick: move |_| {
-                        sync_active_to_roster();
-                        let mut chars = CHARACTERS.write();
-                        chars.push(Character::default());
-                        let new_idx = chars.len() - 1;
-                        drop(chars);
-                        switch_to(new_idx);
-                    },
-                    Icon {
-                        width: 20,
-                        height: 20,
-                        fill: "white",
-                        icon: BsPersonPlusFill,
-                    }
+                    onclick: move |_| add_character(roster, Character::default()),
+                    Icon { width: 20, height: 20, icon: BsPersonPlusFill }
                     "New"
                 }
                 button {
-                    class: "flex items-center justify-center gap-2 flex-1 px-3 py-3 font-mono text-lg bg-slate-800 hover:bg-slate-700",
+                    class: "sidebar__action",
                     title: "Import as New Character",
-                    onclick: move |_| {
-                        spawn(async move {
-                            if let Some(character) = pick_character_file().await {
-                                sync_active_to_roster();
-                                let mut chars = CHARACTERS.write();
-                                chars.push(character);
-                                let new_idx = chars.len() - 1;
-                                drop(chars);
-                                switch_to(new_idx);
-                            }
-                        });
+                    onclick: move |_| async move {
+                        if let Some(character) = pick_character().await {
+                            add_character(roster, character);
+                        }
                     },
-                    Icon {
-                        width: 20,
-                        height: 20,
-                        fill: "white",
-                        icon: BsBoxArrowInDown,
-                    }
+                    Icon { width: 20, height: 20, icon: BsBoxArrowInDown }
                     "Import"
                 }
             }
 
-            // Character list
-            div { class: "flex flex-col overflow-y-auto flex-grow",
-                for (i, character) in CHARACTERS().iter().enumerate() {
-                    {
-                        let is_active = ACTIVE_IDX() == i;
-                        let will_qty = character.stats.first().map_or(1, |s| s.quantity);
-                        let forte_qty = character.stats.get(5).map_or(1, |s| s.quantity);
-                        let max_hp = combat::max_health(will_qty, forte_qty);
-                        let current_hp = character.current_health;
-                        let pending = confirm_delete() == Some(i);
-                        let display_name = if character.name.is_empty() {
-                            "Unnamed".to_string()
-                        } else {
-                            character.name.clone()
-                        };
-
-                        rsx! {
-                            div {
-                                key: "{i}",
-                                class: "flex flex-col px-4 py-3 border-b border-slate-800 cursor-pointer gap-1 transition-colors",
-                                class: if is_active { "bg-slate-700" } else { "hover:bg-slate-800" },
-
-                                // Name row + delete button
-                                div { class: "flex items-center justify-between gap-2",
-                                    span {
-                                        class: "font-mono text-lg font-bold truncate flex-grow",
-                                        onclick: move |_| {
-                                            sync_active_to_roster();
-                                            switch_to(i);
-                                        },
-                                        "{display_name}"
-                                    }
-                                    if pending {
-                                        div { class: "flex gap-2 shrink-0",
-                                            button {
-                                                class: "font-mono text-base text-red-400 hover:text-red-300 border border-red-700 rounded px-2 py-1",
-                                                onclick: move |evt| {
-                                                    evt.stop_propagation();
-                                                    delete_character(i);
-                                                    confirm_delete.set(None);
-                                                },
-                                                "Yes"
-                                            }
-                                            button {
-                                                class: "font-mono text-base text-slate-400 hover:text-slate-300 border border-slate-600 rounded px-2 py-1",
-                                                onclick: move |evt| {
-                                                    evt.stop_propagation();
-                                                    confirm_delete.set(None);
-                                                },
-                                                "No"
-                                            }
-                                        }
-                                    } else {
-                                        button {
-                                            class: "text-slate-500 hover:text-red-400 shrink-0 transition-colors",
-                                            onclick: move |evt| {
-                                                evt.stop_propagation();
-                                                confirm_delete.set(Some(i));
-                                            },
-                                            Icon {
-                                                width: 18,
-                                                height: 18,
-                                                fill: "currentColor",
-                                                icon: BsTrash,
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // HP row
-                                div {
-                                    class: "font-mono text-base text-slate-300",
-                                    onclick: move |_| {
-                                        sync_active_to_roster();
-                                        switch_to(i);
-                                    },
-                                    "HP {current_hp} / {max_hp}"
-                                }
-                            }
-                        }
-                    }
+            div { class: "sidebar__list",
+                for (index , character) in characters.iter().enumerate() {
+                    RosterEntry { key: "{index}", index, character }
                 }
             }
         }
     }
 }
 
-/// Flush `CHARACTER` (the live edited copy) back into `CHARACTERS[ACTIVE_IDX]`.
-pub(crate) fn sync_active_to_roster() {
-    let idx = ACTIVE_IDX();
-    let character = CHARACTER();
-    let mut chars = CHARACTERS.write();
-    if let Some(slot) = chars.get_mut(idx) {
-        *slot = character;
+/// One row of the roster: name, current/max health, and a guarded delete.
+#[component]
+fn RosterEntry(index: usize, character: Store<Character>) -> Element {
+    let roster = use_context::<Store<Roster>>();
+    let mut confirming = use_signal(|| false);
+
+    let stats = character.stats();
+    let max_health = combat::max_health(stats.will().quantity()(), stats.forte().quantity()());
+    let name = character.name()();
+    let name = if name.is_empty() { "Unnamed" } else { &name };
+    let active = roster.active()() == index;
+
+    rsx! {
+        div { class: if active { "sidebar__entry sidebar__entry--active" } else { "sidebar__entry" },
+            div { class: "row fill",
+                span {
+                    class: "sidebar__name",
+                    onclick: move |_| roster.active().set(index),
+                    {name}
+                }
+                if confirming() {
+                    div { class: "row row--tight",
+                        Btn {
+                            kind: BtnKind::Confirm,
+                            class: "btn--sm",
+                            onclick: move |event: MouseEvent| {
+                                event.stop_propagation();
+                                delete_character(roster, index);
+                                confirming.set(false);
+                            },
+                            "Yes"
+                        }
+                        Btn {
+                            kind: BtnKind::Cancel,
+                            class: "btn--sm",
+                            onclick: move |event: MouseEvent| {
+                                event.stop_propagation();
+                                confirming.set(false);
+                            },
+                            "No"
+                        }
+                    }
+                } else {
+                    DeleteBtn {
+                        small: true,
+                        onclick: move |event: MouseEvent| {
+                            event.stop_propagation();
+                            confirming.set(true);
+                        },
+                    }
+                }
+            }
+            div {
+                class: "sidebar__hp",
+                onclick: move |_| roster.active().set(index),
+                "HP {character.current_health()} / {max_health}"
+            }
+        }
     }
 }
 
-/// Switch the active character to index `idx`, loading from the roster.
-fn switch_to(idx: usize) {
-    let character = CHARACTERS().into_iter().nth(idx).unwrap_or_default();
-    *CHARACTER.write() = character;
-    *ACTIVE_IDX.write() = idx;
+/// Appends `character` to the roster and switches to it.
+fn add_character(roster: Store<Roster>, character: Character) {
+    let mut characters = roster.characters();
+    characters.push(character);
+    roster.active().set(characters.len() - 1);
 }
 
-/// Delete character at `idx`, adjusting active index as needed.
-fn delete_character(idx: usize) {
-    sync_active_to_roster();
-    let mut chars = CHARACTERS.write();
-    if chars.len() <= 1 {
-        // Always keep at least one character
-        chars[0] = Character::default();
-        drop(chars);
-        *CHARACTER.write() = Character::default();
-        *ACTIVE_IDX.write() = 0;
-        return;
+/// Removes the character at `index`, keeping the roster non-empty and the
+/// active index in range.
+fn delete_character(roster: Store<Roster>, index: usize) {
+    let mut characters = roster.characters();
+
+    if characters.len() <= 1 {
+        characters.set(vec![Character::default()]);
+    } else {
+        characters.remove(index);
     }
-    chars.remove(idx);
-    let new_idx = ACTIVE_IDX().min(chars.len() - 1);
-    let character = chars[new_idx].clone();
-    drop(chars);
-    *CHARACTER.write() = character;
-    *ACTIVE_IDX.write() = new_idx;
+
+    let last = characters.len() - 1;
+    let mut active = roster.active();
+    if active() > last {
+        active.set(last);
+    }
 }

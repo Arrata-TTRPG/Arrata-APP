@@ -1,17 +1,31 @@
-use arrata_lib::*;
+//! The character sheet: identity header, import/export, and the three columns.
+
 use dioxus::prelude::*;
 
+use arrata_lib::{Character, CharacterStoreExt};
+
 use crate::components::{
-    RenderCombat, RenderQuirks, RenderStats, download_character, pick_character_file,
+    combat::RenderCombat,
+    io::{download_character, pick_character},
+    quirks::RenderQuirks,
+    shared::{Btn, BtnKind, Confirm, Field, Row, TextInput},
+    stats::RenderStats,
 };
-use crate::{Roster, RosterStoreExt};
 
+/// Name and stock, then the three sheet columns.
 #[component]
-pub(crate) fn RenderCharacter(character: Store<Character>) -> Element {
+pub fn RenderCharacter(character: Store<Character>) -> Element {
     rsx! {
-        RenderHeader { character }
+        Row { class: "fill",
+            Field { label: "Name:",
+                TextInput { value: character.name() }
+            }
+            Field { label: "Stock:",
+                TextInput { value: character.stock() }
+            }
+        }
 
-        div { class: "flex flex-grow flex-wrap pt-4 pb-4 items-start",
+        div { class: "sheet",
             RenderStats { character }
             RenderQuirks { character }
             RenderCombat { character }
@@ -19,83 +33,32 @@ pub(crate) fn RenderCharacter(character: Store<Character>) -> Element {
     }
 }
 
+/// Export the active character, or overwrite it from a `.arrata` file.
 #[component]
-fn RenderHeader(character: WriteStore<Character>) -> Element {
-    let mut name = character.name();
-    let mut stock = character.stock();
-    rsx! {
-        div { class: "flex-grid-md",
-            div { class: "inline-field-sm",
-                h2 { class: "label p-2", "Name:" }
-                input {
-                    class: "input-name",
-                    value: name,
-                    oninput: move |evt| name.set(evt.value()),
-                }
-            }
-            div { class: "inline-field-sm",
-                h2 { class: "label p-2", "Stock:" }
-                input {
-                    class: "input-name",
-                    value: stock,
-                    oninput: move |evt| stock.set(evt.value()),
-                }
-            }
-        }
-    }
-}
+pub fn CharacterIO(mut character: Store<Character>) -> Element {
+    let mut incoming = use_signal::<Option<Character>>(|| None);
 
-#[component]
-pub(crate) fn CharacterIO() -> Element {
-    let roster = use_context::<Store<Roster>>();
-    let mut character = roster.characters().get(roster.active()()).unwrap();
-    let mut pending_import = use_signal::<Option<Character>>(|| None);
     rsx! {
-        div { class: "w-full flex justify-center",
-            div { class: "px-5 pb-5 font-mono origin-center w-fit max-w-[668px] flex flex-wrap gap-2",
-
-                // ── Export ───
-                button {
-                    class: "btn-lg",
+        div { class: "io",
+            if let Some(replacement) = incoming() {
+                Confirm {
+                    prompt: "Overwrite \"{character.name()}\" with \"{replacement.name}\"?",
+                    on_yes: move |_| {
+                        character.set(replacement.clone());
+                        incoming.set(None);
+                    },
+                    on_no: move |_| incoming.set(None),
+                }
+            } else {
+                Btn {
+                    kind: BtnKind::Large,
                     onclick: move |_| download_character(&character()),
                     "Export Character"
                 }
-
-                // ── Import into Existing ──
-                if let Some(incoming) = pending_import() {
-                    div { class: "w-full flex flex-col items-center gap-2 border border-red-600 rounded p-3",
-                        p { class: "font-mono text-sm text-center",
-                            "Overwrite \"{character.name()}\" with \"{incoming.name}\"?"
-                        }
-                        div { class: "flex gap-2",
-                            button {
-                                class: "btn-confirm-delete",
-                                onclick: move |_| {
-                                    character.set(incoming.clone());
-                                },
-                                "Confirm"
-                            }
-                            button {
-                                class: "btn-cancel",
-                                onclick: move |_| {
-                                    pending_import.set(None);
-                                },
-                                "Cancel"
-                            }
-                        }
-                    }
-                } else {
-                    button {
-                        class: "btn-lg",
-                        onclick: move |_| {
-                            spawn(async move {
-                                if let Some(character) = pick_character_file().await {
-                                    pending_import.set(Some(character));
-                                }
-                            });
-                        },
-                        "Import Overwrite"
-                    }
+                Btn {
+                    kind: BtnKind::Large,
+                    onclick: move |_| async move { incoming.set(pick_character().await) },
+                    "Import Overwrite"
                 }
             }
         }

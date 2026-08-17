@@ -112,10 +112,6 @@ jobs:
           sudo chmod 777 ~/.cargo/**
           sudo chmod 777 target/**
 
-      - name: Create CSS
-        run: |
-          nix develop -c tailwindcss -i input.css -o public/tailwind.css --minify
-
       - name: Modify Dioxus.toml
         run: |
           sed -i 's/#base_path/base_path/' Dioxus.toml
