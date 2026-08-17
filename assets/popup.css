@@ -22,7 +22,6 @@
 }
 .popup-fading {
   opacity: 0;
-  transform: (-120%);
   transition: opacity 1.5s ease-out;
 }
 .fetching {
