@@ -6,7 +6,7 @@ use dioxus_free_icons::{
 use thousands::Separable;
 
 use arrata_lib::{
-    Item, ItemStoreExt, Quality, Resource, ResourceStoreExt, Stat, StatStoreExt,
+    CoreStatsStoreExt, Item, ItemStoreExt, Quality, Resource, ResourceStoreExt, Stat, StatStoreExt,
     character::{Character, CharacterStoreExt},
 };
 
@@ -39,12 +39,15 @@ fn RenderCoreStats(mut character: Store<Character>) -> Element {
         })
         .sum::<usize>()
         .separate_with_commas();
+    let cs = character.stats();
+
+    let stats = vec![cs.will(), cs.perception()];
 
     rsx! {
         h1 { "Stats {stats_total}" }
         div { class: "grid max-[650px]:grid-cols-1 grid-cols-2 gap-4 justify-center content-center w-full",
-            for (i, stat) in character.stats().iter().enumerate() {
-
+            for stat in character.stats().iter() {
+                RenderStat { stat, core: true }
             }
         }
     }
@@ -52,9 +55,10 @@ fn RenderCoreStats(mut character: Store<Character>) -> Element {
 
 #[component]
 fn RenderStat(stat: Store<Stat>, core: bool) -> Element {
-    let name = stat.name();
-    let quantity = stat.quantity();
-    let quality = stat.quality();
+    let mut name = stat.name();
+    let mut quantity = stat.quantity();
+    let mut quality = stat.quality();
+    let mut checks = stat.checks();
 
     rsx! {
         div { class: "flex-col-md border rounded-lg p-2 flex-1 w-full",
@@ -63,6 +67,8 @@ fn RenderStat(stat: Store<Stat>, core: bool) -> Element {
                     h3 { class: "flex-grow",
                         {name}
                     }
+                } else {
+                    SkillNameRow {}
                 }
                 button {
                     class: "btn-ghost",
@@ -86,39 +92,37 @@ fn RenderStat(stat: Store<Stat>, core: bool) -> Element {
                     select {
                         class: "select-field min-w-12 flex-1",
                         onchange: move |evt| {
-                            stat.quality() = match evt.value().parse::<usize>().unwrap_or(0) {
+                            let q = match evt.value().parse::<usize>().unwrap_or(0) {
                                 1 => Quality::Adept,
                                 2 => Quality::Superb,
                                 _ => Quality::Basic,
-                            }
+                            };
+                            quality.set(q);
                         },
                         option {
                             value: 0,
-                            selected: stat.quality() == Quality::Basic,
+                            selected: quality() == Quality::Basic,
                             "Basic"
                         }
                         option {
                             value: 1,
-                            selected: CHARACTER().stats[i].quality == Quality::Adept,
+                            selected: quality() == Quality::Adept,
                             "Adept"
                         }
                         option {
                             value: 2,
-                            selected: CHARACTER().stats[i].quality == Quality::Superb,
+                            selected: quality() == Quality::Superb,
                             "Superb"
                         }
                     }
                     input {
                         class: "input-counter flex-1",
                         r#type: "number",
-                        value: "{stat.quantity}",
+                        value: "{quantity}",
                         min: "0",
                         max: usize::MAX -1,
                         oninput: move |evt| {
-                            CHARACTER
-                                .with_mut(|character| {
-                                    character.stats[i].quantity = evt.value().parse::<usize>().unwrap_or(0);
-                                });
+                            quantity.set(evt.value().parse::<usize>().unwrap_or_default());
                         },
                     }
                 }
@@ -127,16 +131,11 @@ fn RenderStat(stat: Store<Stat>, core: bool) -> Element {
                     input {
                         class: "input-counter",
                         r#type: "number",
-                        value: "{stat.checks.unwrap_or_default()}",
+                        value: "{checks().unwrap_or_default()}",
                         min: "0",
                         max: usize::MAX,
                         oninput: move |evt| {
-                            CHARACTER
-                                .with_mut(|character| {
-                                    character.stats[i].checks = Some(
-                                        evt.value().parse::<usize>().unwrap_or(0),
-                                    );
-                                });
+                            checks.set(Some(evt.value().parse().unwrap_or_default()));
                         },
                     }
                 }
