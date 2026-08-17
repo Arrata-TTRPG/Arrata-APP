@@ -42,9 +42,10 @@ pub fn QuirkBrowser() -> Element {
                 Btn {
                     onclick: move |_| async move {
                         let loaded = pick_quirks().await;
-                        premade.write().extend(loaded);
-                        premade.write().sort_by(|a, b| a.name.cmp(&b.name));
-                        premade.write().dedup();
+                        let mut write = premade.write();
+                        write.extend(loaded);
+                        write.sort_by(|a, b| a.name.cmp(&b.name));
+                        write.dedup();
                     },
                     "Load .quirks File"
                 }

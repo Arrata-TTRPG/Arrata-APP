@@ -91,7 +91,8 @@ pub(crate) async fn load_premade_quirks(ui: Store<Ui>) {
     }
 
     let mut premade = ui.premade();
-    premade.write().extend(fetched);
-    premade.write().sort_by(|a, b| a.name.cmp(&b.name));
-    premade.write().dedup();
+    let mut write = premade.write();
+    write.extend(fetched);
+    write.sort_by(|a, b| a.name.cmp(&b.name));
+    write.dedup();
 }
